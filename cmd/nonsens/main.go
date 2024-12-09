@@ -6,28 +6,30 @@ import (
 	"runtime/pprof"
 	"syscall"
 
-	"nonsens/internal/config"
-	"nonsens/internal/sensors"
-	"nonsens/internal/server"
-
-	"github.com/maxb-odessa/slog"
-
 	"github.com/pborman/getopt/v2"
+
+	log "nonsens/internal/logger"
+	"nonsens/internal/sensors"
+	"nonsens/internal/templates"
+	"nonsens/internal/webpage"
 )
 
 func main() {
 
-	// get cmdline args and parse them
+	// config defaults
 	help := false
 	profile := false
 	debug := 0
-	configFile := os.ExpandEnv("$HOME/.local/etc/nonsens.conf")
+	dataDir := os.ExpandEnv("$HOME/.local/share/nonsens")
 	getopt.HelpColumn = 0
+
+	// get cmdline args and parse them
 	getopt.FlagLong(&help, "help", 'h', "Show this help")
 	getopt.FlagLong(&debug, "debug", 'd', "Set debug log level")
 	getopt.FlagLong(&profile, "profile", 'p', "Enable CPU profiler (/tmp/nonsens.prof)")
-	getopt.FlagLong(&configFile, "config", 'c', "Path to config file")
+	getopt.FlagLong(&dataDir, "dataDir", 'D', "Path to data directory")
 	getopt.Parse()
+	log.SetDebugLevel(debug)
 
 	// help-only requested
 	if help {
@@ -35,19 +37,17 @@ func main() {
 		return
 	}
 
-	// setup logger
-	slog.Init("", debug, "")
-
 	// don't run us as root
 	if os.Getuid() == 0 || os.Geteuid() == 0 {
-		slog.Err("Please don't run me as root")
+		log.Err("Please don't run me as root")
 		return
 	}
 
 	if profile {
 		if fd, err := os.Create("/tmp/nonsens.prof"); err != nil {
-			slog.Warn("Failed to enable profiler: %s", err)
+			log.Warn("Failed to enable profiler: %s", err)
 		} else {
+			log.Info("Saving profiling output to '/tmp/nonsens.prof'")
 			pprof.StartCPUProfile(fd)
 			defer pprof.StopCPUProfile()
 		}
@@ -59,33 +59,43 @@ func main() {
 		sigChan := make(chan os.Signal, 1)
 		signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 		for sig := range sigChan {
-			slog.Info("Got signal '%s'", sig)
+			log.Info("Got signal '%s'", sig)
 			done <- true
 		}
 	}()
 
-	slog.Info("Started")
-	defer slog.Info("Exited")
+	log.Info("Started")
+	defer log.Info("Exited")
 
-	conf := new(config.Config)
-	if err := conf.Load(configFile); err != nil {
-		slog.Fatal("Failed to load config file '%s': %s", configFile, err)
+	// load and init templates
+	if err := templates.Init(dataDir); err != nil {
+		log.Fatal("Failed to init templates: %s", err)
 		return
 	}
 
-	// start polling sensors
-	if err := sensors.Run(conf); err != nil {
-		slog.Fatal("Failed to start sensors poller: %s", err)
+	// load and init webpage
+	if err := webpage.Init(dataDir); err != nil {
+		log.Fatal("Failed to init webpage: %s", err)
+		return
+	}
+
+	// load and init saved sensors
+	if err := sensors.Init(dataDir); err != nil {
+		log.Fatal("Failed to init sensors: %s", err)
 		return
 	}
 
 	// start http server
-	if err := server.Run(conf); err != nil {
-		slog.Fatal("Failed to start HTTP server: %s", err)
+	if err := webpage.Run(); err != nil {
+		log.Fatal("Failed to run HTTP server: %s", err)
 		return
+	}
+
+	// start sensors poller
+	if err := sensors.Run(); err != nil {
+		log.Fatal("Failed to run sensors poller: %s", err)
 	}
 
 	// now wait
 	<-done
-
 }
