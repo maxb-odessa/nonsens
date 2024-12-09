@@ -1,8 +1,0 @@
-{
-    "server": {
-        "listen": ":12346",
-        "resources": "$HOME/.local/share/nonsens"
-    },
-    "sysinfo poll": 10,
-    "columns": []
-}
