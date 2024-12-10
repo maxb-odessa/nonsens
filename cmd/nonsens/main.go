@@ -11,7 +11,7 @@ import (
 	log "nonsens/internal/logger"
 	"nonsens/internal/sensors"
 	"nonsens/internal/templates"
-	"nonsens/internal/webpage"
+	"nonsens/internal/webserver"
 )
 
 func main() {
@@ -56,9 +56,9 @@ func main() {
 	// set proggie termination signal handler(s)
 	done := make(chan bool)
 	go func() {
-		sigChan := make(chan os.Signal, 1)
-		signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-		for sig := range sigChan {
+		sigCh := make(chan os.Signal, 1)
+		signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+		for sig := range sigCh {
 			log.Info("Got signal '%s'", sig)
 			done <- true
 		}
@@ -74,7 +74,7 @@ func main() {
 	}
 
 	// load and init webpage
-	if err := webpage.Init(dataDir); err != nil {
+	if err := webserver.Init(dataDir); err != nil {
 		log.Fatal("Failed to init webpage: %s", err)
 		return
 	}
@@ -86,7 +86,7 @@ func main() {
 	}
 
 	// start http server
-	if err := webpage.Run(); err != nil {
+	if err := webserver.Run(); err != nil {
 		log.Fatal("Failed to run HTTP server: %s", err)
 		return
 	}
