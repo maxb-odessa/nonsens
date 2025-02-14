@@ -1,5 +1,6 @@
 package utils
 
+// Package utils provides various useful functions
 import (
 	"crypto/md5"
 	"fmt"
@@ -12,9 +13,9 @@ import (
 	"github.com/danwakefield/fnmatch"
 )
 
-// load no more than "maxNum"  files with extension "ext" of max size "maxSize" from dir "dir"
-// and put them into map "holder" using filename without extension
-func LoadDir(holder map[string][]byte, dir string, ext string, maxSize uint64, maxNum uint) error {
+// LoadDir loads no more than "maxNum"  files with extension "ext" of max size "maxSize" from dir "dir"
+// and puts them into map "holder" using filename without extension as a key
+func LoadDir(holder map[string][]byte, dir string, ext string, maxSize int64, maxNum int) error {
 
 	absDir, _ := filepath.Abs(os.ExpandEnv(dir))
 
