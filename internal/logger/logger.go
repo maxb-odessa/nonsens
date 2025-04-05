@@ -1,8 +1,10 @@
 package logger
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"runtime"
 )
 
 var (
@@ -49,7 +51,20 @@ func Fatal(args ...any) {
 }
 
 func Debug(level int, args ...any) {
-	if level >= debugLevel {
-		debug.Printf(args[0].(string), args[1:]...)
+	if level < debugLevel {
+		return
 	}
+
+	var prefix string
+	if pc, file, no, ok := runtime.Caller(1); ok {
+		details := runtime.FuncForPC(pc)
+		if details != nil {
+			prefix += fmt.Sprintf("%s():%d", details.Name(), no)
+		} else {
+			prefix = fmt.Sprintf("%s:%d", file, no)
+		}
+		prefix += " "
+	}
+
+	debug.Printf(prefix+args[0].(string), args[1:]...)
 }

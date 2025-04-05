@@ -1,7 +1,7 @@
 package sensors
 
-func Init(dir string) error {
-	return nil
+func Init(dataDir string) error {
+	return restore(dataDir + "/sensors.json")
 }
 
 func Run() error {

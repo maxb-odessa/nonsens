@@ -9,27 +9,29 @@ import (
 	"github.com/pborman/getopt/v2"
 
 	log "nonsens/internal/logger"
-	"nonsens/internal/sensors"
 	"nonsens/internal/templates"
 	"nonsens/internal/webserver"
+	"nonsens/internal/sensors"
+	
 )
 
 func main() {
 
 	// config defaults
 	help := false
-	profile := false
-	debug := 0
+	profileTo := ""
+	debugLevel := 0
 	dataDir := os.ExpandEnv("$HOME/.local/share/nonsens")
+	listenAt := "localhost:12346"
 	getopt.HelpColumn = 0
 
 	// get cmdline args and parse them
 	getopt.FlagLong(&help, "help", 'h', "Show this help")
-	getopt.FlagLong(&debug, "debug", 'd', "Set debug log level")
-	getopt.FlagLong(&profile, "profile", 'p', "Enable CPU profiler (/tmp/nonsens.prof)")
-	getopt.FlagLong(&dataDir, "dataDir", 'D', "Path to data directory")
+	getopt.FlagLong(&debugLevel, "debug", 'd', "Set debug log level [0]")
+	getopt.FlagLong(&profileTo, "profile", 'p', "Enable runtime profiler and write output to this file")
+	getopt.FlagLong(&dataDir, "datadir", 'D', "Path to data directory")
+	getopt.FlagLong(&listenAt, "listen", 'l', "Serve requests at this interface[:port]")
 	getopt.Parse()
-	log.SetDebugLevel(debug)
 
 	// help-only requested
 	if help {
@@ -37,17 +39,19 @@ func main() {
 		return
 	}
 
+	log.SetDebugLevel(debugLevel)
+
 	// don't run us as root
 	if os.Getuid() == 0 || os.Geteuid() == 0 {
 		log.Err("Please don't run me as root")
 		return
 	}
 
-	if profile {
-		if fd, err := os.Create("/tmp/nonsens.prof"); err != nil {
+	if len(profileTo) > 0 {
+		if fd, err := os.Create(profileTo); err != nil {
 			log.Warn("Failed to enable profiler: %s", err)
 		} else {
-			log.Info("Saving profiling output to '/tmp/nonsens.prof'")
+			log.Info("Saving profiling output to '" + profileTo + "'")
 			pprof.StartCPUProfile(fd)
 			defer pprof.StopCPUProfile()
 		}
@@ -65,36 +69,28 @@ func main() {
 	}()
 
 	log.Info("Started")
-	defer log.Info("Exited")
+	defer log.Info("Stopped")
 
-	// load and init templates
+	// load templates
 	if err := templates.Init(dataDir); err != nil {
-		log.Fatal("Failed to init templates: %s", err)
-		return
+		log.Fatal("Failed to load templates: %s", err)
 	}
 
-	// load and init webpage
-	if err := webserver.Init(dataDir); err != nil {
-		log.Fatal("Failed to init webpage: %s", err)
-		return
+	// init web server
+	if err := webserver.Init(listenAt, dataDir); err != nil {
+		log.Fatal("Failed to init web server: %s", err)
 	}
 
 	// load and init saved sensors
 	if err := sensors.Init(dataDir); err != nil {
 		log.Fatal("Failed to init sensors: %s", err)
-		return
 	}
 
-	// start http server
-	if err := webserver.Run(); err != nil {
-		log.Fatal("Failed to run HTTP server: %s", err)
-		return
-	}
+	// run webserver
+	webserver.Run()
 
-	// start sensors poller
-	if err := sensors.Run(); err != nil {
-		log.Fatal("Failed to run sensors poller: %s", err)
-	}
+	// run sensors
+	sensors.Run()
 
 	// now wait
 	<-done
