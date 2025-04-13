@@ -2,30 +2,19 @@ package sensors
 
 import "sync"
 
-type input interface {
-	SetPath(string) error
-	SetKeepAlive(bool)
-	Get() (float64, error)
-	Close()
-}
-
-type inputValue struct {
-	value float64
-	err   error
-}
-
 type Sensor struct {
-	pvt struct {
-		sync.Mutex
-		input input
-	}
+	// private
+	sync.Mutex
 
-	runtime struct {
-		value float64
-	}
+	input input
+
+	// runtime
+	value [2]inputValue // store prev and curr value
+
+	// public, storable
+	Uid string
 
 	Type      string
-	Uid       string
 	Path      string
 	KeepAlive bool
 
@@ -37,17 +26,7 @@ type Sensor struct {
 }
 
 func (s *Sensor) setup() error {
-	switch s.Type {
-	case "file":
-		s.pvt.input = new(inFile)
-	case "cmd":
-		s.pvt.input = new(inCmd)
-	}
-
-	s.pvt.input.SetPath(s.Path)
-	s.pvt.input.SetKeepAlive(s.KeepAlive)
-
-	return nil
+	return s.input.setup(s.Path, s.Type, s.KeepAlive)
 }
 
 func (s *Sensor) read() error {
