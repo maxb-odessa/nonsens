@@ -1,0 +1,186 @@
+:root {
+    user-select: none;
+    touch-action: pan-x pan-y;
+    height: 100% 
+    /* put it here? overscroll-behavior: contain; */ 
+}
+
+body {
+    overscroll-behavior: contain; /* or none */
+    background: black;
+    /*
+    background-image: url('background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    */
+    /*background-attachment: fixed;*/
+    height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+    height: calc(var(--vh, 1vh) * 100);
+    color: white;
+    margin: 0;
+    margin-top: 0px;
+    margin-bottom: 0;
+    padding: 0;
+    padding-top: 0px;
+    padding-bottom: 0;
+}
+
+table.main {
+    border: 0;
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 5px;
+}
+
+td.column {
+    vertical-align: top;
+    width: auto;
+    margin: 10px;
+}
+
+fieldset.group {
+    border: 1px solid white;
+    border-radius: 8px;
+    margin-top: 3%;
+    padding: 10px;
+    background: #303030;
+}
+
+div.group {
+    text-align: left;
+    width: 100%;
+}
+
+legend.group-name {
+    border: 0px solid white;
+    border-radius: 6px;
+    background: #606060;
+    box-shadow: 3px 3px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+div.sensor {
+    width: 100%;
+    text-align: left;
+    color: gray;
+    margin-bottom: 10px;
+}
+
+div.widget {
+    top: 0;
+    left: 0;
+    position: absolute;
+    border-radius: 6px;
+    border: solid 0px white;
+    text-align: center;
+    background: linear-gradient(90deg, #00FF00, #FF0000);
+    width: 100%;
+    height: 100%;
+}
+
+div.widget_text {
+    position: relative;
+    border-radius: 6px;
+    border: solid 1px gray;
+    color: white;
+    z-index: 10;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+.sysinfo {
+}
+
+div.editor {
+    width: 50%;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /*width: 70%;*/
+    transform: translate(-50%, -50%);
+    background: rgba(90, 90, 90, 0.95);
+    z-index: 99;
+    border: 1px white solid;
+    border-radius: 8px;
+    box-shadow: 20px 20px 5px 5px rgba(0, 0, 0, 0.7);
+    padding: 5px;
+    margin: 0 auto;
+}
+
+div.editor fieldset {
+    width: auto;
+}
+
+div.editor .buttons {
+    position: relative;
+    text-align: center;
+}
+
+div.editor label {
+    display: inline-block;
+    width: 50%;
+    text-align: right;
+    margin: 3px;
+    font-style: italic;
+}
+
+div.editor input,
+div.editor select {
+    display: inline-block;
+    text-align: left;
+    border: 0;
+    border-radius: 4px;
+}
+
+div.info-window {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    border: 1px solid white;
+    border-radius: 5px;
+    box-shadow: 10px 10px 5px 5px rgba(0, 0, 0, 0.7);
+    padding: 25px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(180, 180, 10, 0.95);
+    color: black;
+}
+
+div.sysinfo-time {
+    border: 1px outset white;
+    border-radius: 5px;
+    color: #9090ff;
+    background: #303030;
+    margin: 3px;
+    text-align: center;
+}
+
+div.sysinfo-la {
+    border: 1px outset white;
+    border-radius: 6px;
+    color: #ff9090;
+    background: #303030;
+    margin: 3px;
+    text-align: center;
+}
+
+div.sysinfo-mem {
+    border: 1px outset white;
+    border-radius: 6px;
+    color: #90ff90;
+    background: #303030;
+    margin: 3px;
+    text-align: center;
+}
+
+div.sysinfo-buttons {
+    border: 1px outset white;
+    border-radius: 6px;
+    color: #909090;
+    background: #303030;
+    margin: 3px;
+    text-align: center;
+}

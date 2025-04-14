@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>NonSENS - a sensors monitor</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+</head>
+
+<body>
+
+<!-- informational window -->
+<div class="info-window" id="info-window" onClick="return showInfo('', false);"></div>
+
+<!-- main sensors viewport -->
+<table class="main" id="main"></table>
+
+<!-- group editor -->
+<div class="editor" id="group-editor">
+    <form id="group-editor-form" onSubmit="return closeGroupEditor('apply');">
+       <fieldset class="editor">
+            <legend>Group Editor</legend>
+            <param id="group-edit-id" type="hidden">
+            <label for="group-edit-name">Name</label>
+            <param id="group-edit-new" value="" hidden>
+            <input
+                type="text"
+                id="group-edit-name"
+                minlength="0"
+                maxlength="30"
+                pattern="[^\<\>\&]{0,27}"
+                title="0 to 28 chars excluding [\<\>\&] starting with alpha-num">
+            <br>
+            <label for="group-edit-column">Column number</label>
+            <select id="group-edit-column"></select>
+            <br>
+            <label for="group-edit-totop">Move to column top</label>
+            <input type="checkbox" id="group-edit-totop">
+            <br>
+            <label for="group-new-sensor">This group</label>
+            <input id="group-new-sensor" type="button" value="Add new sensor" onClick="return newSensor(true);">
+            <br>
+            <label for="group-edit-remove" style="color: #ff5050;">Remove empty group</label>
+            <input id="group-edit-remove" type="checkbox" onClick="confirmation('group-edit-remove');">
+            <br>
+
+       </fieldset>
+       <br>
+        <div class="buttons">
+       <button class="button">Apply</button>
+       <button class="button" onClick="return closeGroupEditor('cancel');">Cancel</button>
+        </div>
+    </form>
+</div>
+
+
+<!-- sensor editor -->
+<div class="editor" id="sensor-editor">
+    <form id="sensor-editor-form" onSubmit="return closeSensorEditor(true);">
+        <fieldset class="editor">
+            <legend>Sensor Editor</legend>
+            <param id="sensor-edit-id" hidden>
+            <param id="sensor-edit-new" value="" hidden>
+            <label for="sensor-edit-name">Name</label>
+            <input
+                type="text"
+                id="sensor-edit-name"
+                minlength="0"
+                maxlength="30"
+                pattern="[^\<\>\&].{0,30}"
+                title="0 to 30 chars excluding [\<\>\&]">
+            <br>
+            <label for="sensor-edit-group">Group</label>
+            <select id="sensor-edit-group"></select>
+            <br>
+            <label for="sensor-edit-device">Sensor device</label>
+            <input
+                type="text"
+                id="sensor-edit-device"
+                required
+                minlength="1"
+                maxlength="128"
+                pattern="[0-9a-zA-Z]{1}[\-0-9a-zA-Z:_.]{0,128}"
+                title="1 to 128 chars of [0-9a-zA-Z:_.] starting with alpha-num">
+            <br>
+            <label for="sensor-edit-input">Sensor input file</label>
+            <input
+                type="text"
+                id="sensor-edit-input"
+                required
+                minlength="1"
+                maxlength="128"
+                pattern="[0-9a-zA-Z]{1}[\-0-9a-zA-Z:_.\/]{0,128}"
+                title="1 to 128 chars of [0-9a-zA-Z:_.\/] starting with alpha-num">
+            <br>
+            <label for="sensor-edit-divider">Input value divider</label>
+            <input
+                type="number"
+                id="sensor-edit-divider"
+                required
+                step="0.00000001">
+            <br>
+            <label for="sensor-edit-min">Minimal value</label>
+            <input
+                type="number"
+                id="sensor-edit-min"
+                required
+                step="0.00000001">
+            <br>
+            <label for="sensor-edit-max">Maximal value</label>
+            <input
+                type="number"
+                id="sensor-edit-max"
+                required
+                step="0.00000001">
+            <br>
+            <label for="sensor-edit-fractions">Shown value precision</label>
+            <select id="sensor-edit-fractions">
+                <option value="0">1</option>
+                <option value="1">1.2</option>
+                <option value="2">1.23</option>
+                <option value="3">1.234</option>
+                <option value="4">1.2345</option>
+                <option value="5">1.23456</option>
+                <option value="6">1.234567</option>
+                <option value="7">1.2345678</option>
+                <option value="8">1.23456789</option>
+            </select>
+            <br>
+            <label for="sensor-edit-units">Value unit suffix</label>
+            <input
+                type="text"
+                id="sensor-edit-units"
+                required
+                minlength="0"
+                maxlength="15"
+                pattern="[^\<\>]{0,14}"
+                title="0 to 14 chars excluding [\<\>]">
+            <br>
+            <label for="sensor-edit-poll">Poll interval, seconds</label>
+            <input
+                type="number"
+                id="sensor-edit-poll"
+                required
+                min="0.5"
+                max="3600.0"
+                step="0.5">
+            <br>
+            <fieldset class="widget-color-maker">
+                <legend>Widget gradient colors</legend>
+                <br>
+                <div style="display: inline-block; float: left;">
+                <input id="sensor-edit-widget-color0" type="color" class="color-picker" onChange="return makeGradient();">
+                </div>
+                <input id="sensor-edit-widget-colorN" type="color" class="color-picker" onChange="return makeGradient();">
+                <div style="display: inline-block; float: right;">
+                <input id="sensor-edit-widget-color100" type="color" class="color-picker" onChange="return makeGradient();">
+                </div>
+                <br>
+                <input list="sensor-edit-widget-color-percents"
+                    class="sensor-edit-widget-color-slider"
+                    id="sensor-edit-widget-color-slider"
+                    type="range"
+                    step="1"
+                    min="0"
+                    max="100"
+                    value="50"
+                    onInput="return makeGradient();" />
+                <datalist id="sensor-edit-widget-color-percents" style="display: flex; justify-content: space-between;">
+                    <option value="0" label="0%"></option>
+                    <option value="25" label="25%"></option>
+                    <option value="50" label="50%"></option>
+                    <option value="75" label="75%"></option>
+                    <option value="100" label="100%"></option>
+                </datalist>
+                <div style="display: inline-block; float: left; width: 100%; text-align: left;">
+                <label for="sensor-edit-widget-show-gradient">Show full gradient on gauge</label>
+                <input type="checkbox" id="sensor-edit-widget-show-gradient">
+                </div>
+            </fieldset>
+            <br>
+            <label for="sensor-edit-totop">Move to group top</label>
+            <input type="checkbox" id="sensor-edit-totop">
+            <br>
+            <label for="sensor-edit-remove" style="color: #ff5050;">Remove sensor</label>
+            <input id="sensor-edit-remove" type="checkbox" onClick="confirmation('sensor-edit-remove');">
+            <br>
+        </fieldset>
+        <br>
+        <div class="buttons">
+        <button class="button">Apply</button>
+        <button class="button" onClick="return closeSensorEditor(false);">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<!-- settings form -->
+<div class="editor" style="z-index: 50;" id="settings-editor">
+    <form id="settings-editor-form">
+       <fieldset class="editor">
+            <legend>Settings</legend>
+            <input id="settings-new-group" type="button" value="Create new group" onClick="return newGroup();">
+            <br>
+            <input id="settings-new-sensor" type="button" value="Create new sensor" onClick="return newSensor(false);">
+            <br>
+            <input id="settings-scan" type="button" value="Scan for sensors" onClick="return confirm('\tAre you sure?\n\nThis action will scan for all available sensors.\nAll currently configured sensors will be replaced by them.\nYou can always restore current configuration by hitting\n[Restore prev configuration]\nbutton in Settings menu.') && scanSensors();">
+            <br>
+            <input id="settings-restore" type="button" value="Restore prev configuration" onClick="return confirm('\tAre you sure?\n\nThis will restore prev sensors config (if exists) overwriting currently configured sensors.') && restoreConfig();">
+            <br>
+            <input id="settings-save" type="button" value="Save current configuration" onClick="return confirm('\tAre you sure?\n\nThis will replace all prev configured sensors.\nNew config file will be written.\nYou will not be able to restore prev config anymore.') && saveConfig();">
+            <br>
+            <input id="settings-help" type="button" value="Read help" onClick="return showHelpPage(true);">
+       </fieldset>
+       <br>
+        <div class="buttons">
+       <button class="button" onClick="return closeSettings('cancel');">Close</button>
+        </div>
+    </form>
+</div>
+
+<div id="help-page" style="display: none;" class="help-page">
+    <button class="button" style="margin: 2px; float: right;" onClick="return showHelpPage(false);">Close</button>
+    <br>
+    <object width="100%" height="100%" type="text/html" data="/help.html"</object>
+    <br>
+</div>
+
+
+<!--------------------- SCRIPTS ---------------------->
+<script>
+
+function showHelpPage(show) {
+    if (show) {
+        document.getElementById("help-page").style.display = 'block';
+    } else {
+        document.getElementById("help-page").style.display = 'none';
+    }
+    return false;
+}
+
+// gloablly defined WS wsocket
+var wsocket;
+
+function scanSensors() {
+    showInfo("Scanning for existing sensors...", true, 2000);
+    let obj = new Object();
+    obj.action = "scan";
+    wsocket.send(JSON.stringify(obj));
+    return false;
+}
+
+function saveConfig() {
+    let obj = new Object();
+    obj.action = "save";
+    wsocket.send(JSON.stringify(obj));
+    return false;
+}
+
+function restoreConfig() {
+    let obj = new Object();
+    obj.action = "restore";
+    wsocket.send(JSON.stringify(obj));
+    return false;
+}
+
+
+
+function makeGradient() {
+    
+    let color0 = document.getElementById("sensor-edit-widget-color0").value;
+    let colorN = document.getElementById("sensor-edit-widget-colorN").value;
+    let color100 = document.getElementById("sensor-edit-widget-color100").value;
+    let atN = document.getElementById("sensor-edit-widget-color-slider").value;
+
+    let grad = 'background-image: linear-gradient(to right,' +color0 + ', ' + colorN + ' ' + atN +'%, ' + color100 + ');';
+
+    let slider = document.getElementById("sensor-edit-widget-color-slider");
+
+    slider.style.cssText = grad;
+
+    return false;
+}
+
+function newSensor(inGroup) {
+
+    document.getElementById("sensor-edit-id").value = "" // will be generated by the server
+    document.getElementById("sensor-edit-name").value = "New Sensor";
+    document.getElementById("sensor-edit-new").value = "new";
+
+    document.getElementById("sensor-edit-group").innerHTML = "";
+    let groups = document.getElementsByName("group");
+    const zeroOp = document.createElement("option");
+    if (inGroup) {
+        zeroOp.value = document.getElementById("group-edit-id").value;
+        zeroOp.innerHTML = document.getElementById("group-edit-name").value;
+        document.getElementById("sensor-edit-group").disabled = true;
+        document.getElementById("sensor-edit-group").appendChild(zeroOp);
+    } else {
+        zeroOp.value = "";
+        zeroOp.innerHTML = "(auto-create)";
+        document.getElementById("sensor-edit-group").appendChild(zeroOp);
+        for (let i = 0; i < groups.length; i++) {
+            const op = document.createElement("option");
+            op.value = groups[i].getAttribute("id");
+            op.innerHTML = groups[i].getAttribute("data-group-name");
+            document.getElementById("sensor-edit-group").appendChild(op);
+        }
+    }
+
+    document.getElementById("sensor-edit-device").value = "DEVICE_ID";
+    document.getElementById("sensor-edit-input").value = "sensor1_input"
+    document.getElementById("sensor-edit-min").value = 0;
+    document.getElementById("sensor-edit-max").value = 99999.0;
+    document.getElementById("sensor-edit-divider").value = 1.0;
+    document.getElementById("sensor-edit-poll").value = 1000.0 / 1000.0; // just to not make a mistake (value in mSec)
+    document.getElementById("sensor-edit-units").value = "Units"
+    document.getElementById("sensor-edit-fractions").value = 1.0;
+    document.getElementById("sensor-edit-widget-color0").value = "#00FF00";
+    document.getElementById("sensor-edit-widget-colorN").value = "#0000FF";
+    document.getElementById("sensor-edit-widget-color100").value = "#FF0000";
+    document.getElementById("sensor-edit-widget-color-slider").value = "50";
+    document.getElementById("sensor-edit-widget-show-gradient").checked = false;
+    document.getElementById("sensor-edit-totop").checked = false;
+    document.getElementById("sensor-edit-remove").disabled = true;
+
+    makeGradient();
+
+    document.getElementById("sensor-editor").style.display = 'block';
+
+    return false;
+
+}
+
+function showSettings() {
+    document.getElementById("settings-editor").style.display = 'block';
+    return false;
+}
+
+function closeSettings(action) {
+    document.getElementById("settings-editor").style.display = 'none';
+    return false;
+}
+
+function confirmation(id) {
+    let text = "Are you sure?";
+    if (confirm(text) == true) {
+        document.getElementById(id).checked = true;
+    } else {
+        document.getElementById(id).checked = false;
+    }
+}
+
+function newGroup() {
+    document.getElementById("group-editor").style.display = 'block';
+
+    document.getElementById("group-edit-id").value = "";  // will be generated by server
+    document.getElementById("group-edit-name").value = "New Group";
+    document.getElementById("group-edit-new").value = "new";
+
+    // here: delete excess columns from option list
+    // leave no more than #columns + 1 (new)
+    document.getElementById("group-edit-column").innerHTML = ""
+    let colsNum = document.getElementById("columns").getAttribute("data-columns-num");
+    for (let i = 0; i <= colsNum; i++) {
+        const op = document.createElement("option");
+        op.value = i;
+        if (i != colsNum) {
+            op.innerHTML = i+1;
+        } else {
+            op.innerHTML = i+1+' (new)';
+        }
+        document.getElementById("group-edit-column").appendChild(op);
+    } 
+
+    document.getElementById("group-edit-totop").checked = false;
+
+    document.getElementById("group-edit-remove").checked = false;
+    document.getElementById("group-edit-remove").disabled = "disabled";
+
+    return false;
+}
+
+function editGroup(id) {
+    document.getElementById("group-editor").style.display = 'block';
+
+    document.getElementById("group-edit-id").value = id;
+    document.getElementById("group-edit-name").value = document.getElementById(id).getAttribute("data-group-name");
+    document.getElementById("group-edit-new").value = "";
+
+    // here: delete excess columns from option list
+    // leave no more than #columns + 1 (new)
+    document.getElementById("group-edit-column").innerHTML = ""
+    let colsNum = document.getElementById("columns").getAttribute("data-columns-num");
+    let col = document.getElementById(id).getAttribute("data-column");
+    for (let i = 0; i <= colsNum; i++) {
+        const op = document.createElement("option");
+        op.value = i;
+        if (i != colsNum) {
+            if (i == col) {
+                op.selected = true;
+            }
+            op.innerHTML = i+1;
+        } else {
+            op.innerHTML = i+1+' (new)';
+        }
+        document.getElementById("group-edit-column").appendChild(op);
+    } 
+
+    document.getElementById("group-edit-totop").checked = false;
+
+    document.getElementById("group-edit-remove").checked = false;
+    let groupLen = Number(document.getElementById(id).getAttribute("data-sensors-num"));
+    if (groupLen > 0) {
+        document.getElementById("group-edit-remove").disabled = "disabled";
+    } else {
+        document.getElementById("group-edit-remove").removeAttribute("disabled");
+    }
+
+    return false;
+}
+
+function closeGroupEditor(action) {
+    document.getElementById("group-editor").style.display = 'none';
+
+    // cancel
+    if (action === "cancel") {
+        return false;
+    }
+
+    let obj1 = new Object();
+    let obj2 = new Object();
+
+    obj2.name = document.getElementById("group-edit-name").value;
+
+    obj2.column = Number(document.getElementById("group-edit-column").value);
+    obj2.totop = Boolean(document.getElementById("group-edit-totop").checked);
+
+    if (document.getElementById("group-edit-remove").checked) {
+        obj1.action = "remove";
+    } else if (document.getElementById("group-edit-new").value == "new") {
+        obj1.action = "new";
+    } else {
+        obj1.action = "modify";
+    }
+
+    obj1.id = document.getElementById("group-edit-id").value;
+    obj1.group = obj2;
+
+    wsocket.send(JSON.stringify(obj1));
+
+    return false;
+}
+
+function editSensor(id) {
+    let jdata = document.getElementById('json-'+id).innerHTML;
+    if (jdata == null)
+        return false;
+
+    let data = JSON.parse(jdata);
+
+    document.getElementById("sensor-edit-id").value = id;
+    document.getElementById("sensor-edit-new").value = "";
+    document.getElementById("sensor-edit-name").value = document.getElementById(id).getAttribute("data-sensor-name");
+    let groupId = document.getElementById(id).getAttribute("data-group-id");
+
+    document.getElementById("sensor-edit-group").innerHTML = "";
+    let groups = document.getElementsByName("group");
+    for (let i = 0; i < groups.length; i++) {
+        const op = document.createElement("option");
+        op.value = groups[i].getAttribute("id");
+        op.innerHTML = groups[i].getAttribute("data-group-name");
+        if (op.value == groupId) {
+            op.selected = true;
+        }
+        document.getElementById("sensor-edit-group").appendChild(op);
+    } 
+
+    document.getElementById("sensor-edit-device").value = data.options.device;
+    document.getElementById("sensor-edit-input").value = data.options.input;
+    document.getElementById("sensor-edit-min").value = data.options.min;
+    document.getElementById("sensor-edit-max").value = data.options.max;
+    document.getElementById("sensor-edit-divider").value = data.options.divider;
+    document.getElementById("sensor-edit-poll").value = data.options.poll / 1000.0;
+    document.getElementById("sensor-edit-units").value = data.widget.units;
+    document.getElementById("sensor-edit-fractions").value = data.widget.fractions;
+    document.getElementById("sensor-edit-widget-color0").value = data.widget.color0;
+    document.getElementById("sensor-edit-widget-colorN").value = data.widget.colorn;
+    document.getElementById("sensor-edit-widget-color100").value = data.widget.color100;
+    document.getElementById("sensor-edit-widget-color-slider").value = data.widget.colornp;
+    document.getElementById("sensor-edit-widget-show-gradient").checked = data.widget.gradient;
+    document.getElementById("sensor-edit-totop").checked = false;
+    document.getElementById("sensor-edit-remove").checked = false;
+
+    makeGradient();
+
+    document.getElementById("sensor-editor").style.display = 'block';
+
+    return false;
+};
+
+function closeSensorEditor(isOk) {
+    document.getElementById("sensor-editor").style.display = 'none';
+
+    // cancelled, do nothing
+    if (! isOk) {
+        return false;
+    }
+
+    let obj1 = new Object();
+    let obj2 = new Object();
+    let obj3 = new Object();
+
+    obj3.options = new Object();
+    obj3.widget = new Object();
+
+    obj3.options.device = document.getElementById("sensor-edit-device").value;
+    obj3.options.input = document.getElementById("sensor-edit-input").value;
+    obj3.options.min = Number(document.getElementById("sensor-edit-min").value);
+    obj3.options.max = Number(document.getElementById("sensor-edit-max").value);
+    obj3.options.divider = Number(document.getElementById("sensor-edit-divider").value);
+    obj3.options.poll = Number(document.getElementById("sensor-edit-poll").value) * 1000;
+    obj3.widget.name = document.getElementById("sensor-edit-name").value;
+    obj3.widget.fractions = Number(document.getElementById("sensor-edit-fractions").value);
+    obj3.widget.units = document.getElementById("sensor-edit-units").value;
+    obj3.widget.color0 = document.getElementById("sensor-edit-widget-color0").value;
+    obj3.widget.colorn = document.getElementById("sensor-edit-widget-colorN").value;
+    obj3.widget.color100 = document.getElementById("sensor-edit-widget-color100").value;
+    obj3.widget.colornp = Number(document.getElementById("sensor-edit-widget-color-slider").value);
+    obj3.widget.gradient = Boolean(document.getElementById("sensor-edit-widget-show-gradient").checked);
+
+    obj2.sensor = obj3;
+    obj2.groupid = document.getElementById("sensor-edit-group").value;
+    obj2.totop = Boolean(document.getElementById("sensor-edit-totop").checked);
+
+    if (document.getElementById("sensor-edit-remove").checked) {
+        obj1.action = "remove";
+    } else if (document.getElementById("sensor-edit-new").value == "new") {
+        obj1.action = "new";
+    } else {
+        obj1.action = "modify";
+    }
+
+
+    obj1.id = document.getElementById("sensor-edit-id").value;
+    obj1.sensor = obj2;
+
+    wsocket.send(JSON.stringify(obj1));
+
+    return false;
+};
+
+
+function loadCSS() {
+    document.getElementsByTagName('head')[0].insertAdjacentHTML(
+        'beforeend',
+        '<link rel="stylesheet" type="text/css" href="/nonsens.css?'+Date.now()+'" />');
+};
+
+window.onload = function () {
+    loadCSS();
+};
+
+const wsUrl = "ws://" + window.location.hostname + ":" + window.location.port + "/ws";
+
+showInfo("Connecting...", true);
+
+loop();
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+async function showInfo(text, show, timeOut) {
+    let output = document.getElementById("info-window");
+
+    if (show) {
+        output.innerHTML = text;
+        output.style.display = "block";
+        if (timeOut > 0) {
+            await delay(timeOut);
+            output.style.display = "none"
+        }
+    } else {
+        output.innerHTML = "";
+        output.style.display = "none";
+    }
+}
+
+async function loop() {
+
+
+    while (1) {
+
+        let reconnect = false;
+
+        wsocket = {};
+        wsocket = new WebSocket(wsUrl);
+
+        wsocket.onopen = function() {
+            showInfo("", false);
+            reconnect = false;
+        };
+
+        wsocket.onmessage = function(msg) {
+            const obj = JSON.parse(msg.data);
+            let target = obj.target;
+            let data = obj.data;
+            // informational message
+            if (target === "info") {
+                showInfo(data, true, 3000);
+            } else {
+                let output = document.getElementById(target);
+                if (output !== null) {
+                    output.innerHTML = data;
+                }
+            }
+        };
+
+        wsocket.onerror = function(ev) {
+            reconnect = true;
+        }
+
+        wsocket.onclose = function(ev) {
+            showInfo("Reconnecting...", true);
+            reconnect = true;
+        };
+
+        await waitUntil(() => reconnect === true);
+
+    };
+
+};
+
+async function waitUntil(condition, time = 1000) {
+    while (!condition()) {
+        await new Promise((resolve) => setTimeout(resolve, time));
+    }
+}
+
+</script>
+
+</body>
+
+</html>

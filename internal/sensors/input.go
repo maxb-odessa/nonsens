@@ -11,7 +11,7 @@ import (
 )
 
 type feeder interface {
-	setup(string, bool) error
+	setup(string, bool, uint32) error
 	open() error
 	readAt([]byte, int64) (int, error)
 	close()
@@ -37,7 +37,7 @@ const (
 
 // path should be in form "line:offset:/full/path"
 // ex: 10:32:/proc/meminfo
-func (in *input) setup(path string, inType string, keepAlive bool) error {
+func (in *input) setup(path string, inType string, keepOpen bool, timeout uint32) error {
 
 	var line, offset int
 	var filePath string
@@ -60,7 +60,7 @@ func (in *input) setup(path string, inType string, keepAlive bool) error {
 		return fmt.Errorf("sensor type '%s' is not implemented", inType)
 	}
 
-	in.feeder.setup(path, keepAlive)
+	in.feeder.setup(path, keepOpen, timeout)
 
 	return nil
 }

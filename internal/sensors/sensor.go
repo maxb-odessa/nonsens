@@ -6,27 +6,26 @@ type Sensor struct {
 	// private
 	sync.Mutex
 
-	input input
-
 	// runtime
-	value [2]inputValue // store prev and curr value
+	input                input      // sensor input interface
+	prevValue, currValue inputValue // store prev and curr value
+	valueDiff            float64    // diff between curr and prev: <0.0 decreasing, =0.0 steady, >0.0 rising
 
 	// public, storable
-	Uid string
-
-	Type      string
-	Path      string
-	KeepAlive bool
-
-	Min, Max     float64
-	Divider      float64
-	PollInterval float32
+	Uid          string  `json:"uid"`
+	Type         string  `json:"type"`
+	Path         string  `json:"path"`
+	KeepOpen     bool    `json:"keep_open"`
+	Min          float64 `json:"min"`
+	Max          float64 `json:"max"`
+	Divider      float64 `json:"divider"`
+	PollInterval uint32  `json:"poll_interval"` // milliseconds
 
 	Widget *Widget
 }
 
 func (s *Sensor) setup() error {
-	return s.input.setup(s.Path, s.Type, s.KeepAlive)
+	return s.input.setup(s.Path, s.Type, s.KeepOpen, s.PollInterval)
 }
 
 func (s *Sensor) read() error {

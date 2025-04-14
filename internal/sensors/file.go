@@ -9,27 +9,30 @@ import (
 )
 
 type feederFile struct {
-	fpath      string
-	fkeepAlive bool
-	ffd        *os.File
+	ioFd *os.File
+
+	// private
+	fpath     string
+	keepOpen bool
 }
 
 func (f *feederFile) fd() io.ReadCloser {
-	return f.ffd
+	return f.ioFd
 }
 
 func (f *feederFile) path() string {
 	return f.fpath
 }
 
-func (f *feederFile) setup(path string, keepAlive bool) error {
-
-	if f.fpath != "" {
-		return errors.New("path already set")
-	}
+// ignore read timeout for files (for now)
+func (f *feederFile) setup(path string, keepOpen bool, _ uint32) error {
 
 	if path == "" {
 		return errors.New("path cannot be empty")
+	}
+
+	if f.fpath != "" {
+		return errors.New("path already set")
 	}
 
 	f.fpath = path
@@ -40,13 +43,13 @@ func (f *feederFile) setup(path string, keepAlive bool) error {
 func (f *feederFile) open() error {
 
 	// feederFile is stil opened
-	if f.ffd != nil {
-		// not keepalive - close it
-		if !f.fkeepAlive {
+	if f.ioFd != nil {
+		// not keepopen - close it
+		if !f.keepOpen {
 			f.close()
 		} else {
-			// is keepalive - rewind it
-			if _, err := f.ffd.Seek(0, io.SeekStart); err != nil {
+			// is keepopen - rewind it
+			if _, err := f.ioFd.Seek(0, io.SeekStart); err != nil {
 				// rewind faild - close and reopen it later
 				log.Warn("seek() failed, closing feederFile: %s", f.fpath, err)
 				f.close()
@@ -61,19 +64,19 @@ func (f *feederFile) open() error {
 		log.Debug(1, "open() failed: %s", f.fpath, err)
 		return err
 	} else {
-		f.ffd = fd
+		f.ioFd = fd
 	}
 
 	return nil
 }
 
 func (f *feederFile) readAt(buf []byte, max int64) (int, error) {
-	return f.ffd.ReadAt(buf, max)
+	return f.ioFd.ReadAt(buf, max)
 }
 
 func (f *feederFile) close() {
-	if f.ffd != nil {
-		f.ffd.Close()
-		f.ffd = nil
+	if f.ioFd != nil {
+		f.ioFd.Close()
+		f.ioFd = nil
 	}
 }

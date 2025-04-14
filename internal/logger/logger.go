@@ -48,6 +48,7 @@ func Err(args ...any) {
 
 func Fatal(args ...any) {
 	fatal.Printf(args[0].(string), args[1:]...)
+	os.Exit(1)
 }
 
 func Debug(level int, args ...any) {

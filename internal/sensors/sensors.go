@@ -1,9 +1,22 @@
+// Package sensors provides sensor data
 package sensors
 
-func Init(dataDir string) error {
-	return restore(dataDir + "/sensors.json")
+import "nonsens/internal/def"
+
+var configFilePath string
+
+func Run(dataDir string) error {
+	configFilePath = dataDir + def.SensorsConfigFile
+
+	conf := new(config)
+
+	if err := conf.restore(); err != nil {
+		return err
+	}
+
+	return startAll(conf)
 }
 
-func Run() error {
+func startAll(cf *config) error {
 	return nil
 }

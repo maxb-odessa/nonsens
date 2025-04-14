@@ -8,11 +8,10 @@ import (
 
 	"github.com/pborman/getopt/v2"
 
+	"nonsens/internal/def"
 	log "nonsens/internal/logger"
-	"nonsens/internal/templates"
-	"nonsens/internal/webserver"
 	"nonsens/internal/sensors"
-	
+	"nonsens/internal/server"
 )
 
 func main() {
@@ -21,8 +20,8 @@ func main() {
 	help := false
 	profileTo := ""
 	debugLevel := 0
-	dataDir := os.ExpandEnv("$HOME/.local/share/nonsens")
-	listenAt := "localhost:12346"
+	dataDir := os.ExpandEnv(def.DataDir)
+	listenAt := def.ServerListen
 	getopt.HelpColumn = 0
 
 	// get cmdline args and parse them
@@ -71,26 +70,19 @@ func main() {
 	log.Info("Started")
 	defer log.Info("Stopped")
 
-	// load templates
-	if err := templates.Init(dataDir); err != nil {
-		log.Fatal("Failed to load templates: %s", err)
-	}
-
 	// init web server
-	if err := webserver.Init(listenAt, dataDir); err != nil {
-		log.Fatal("Failed to init web server: %s", err)
+	if err := server.Run(listenAt, dataDir); err != nil {
+		log.Fatal("Failed to run server: %s", err)
+	} else {
+		log.Info("Serving requests at %s", listenAt)
 	}
 
 	// load and init saved sensors
-	if err := sensors.Init(dataDir); err != nil {
-		log.Fatal("Failed to init sensors: %s", err)
+	if err := sensors.Run(dataDir); err != nil {
+		log.Fatal("Failed to run sensors: %s", err)
+	} else {
+		log.Info("Sensors poller started")
 	}
-
-	// run webserver
-	webserver.Run()
-
-	// run sensors
-	sensors.Run()
 
 	// now wait
 	<-done
