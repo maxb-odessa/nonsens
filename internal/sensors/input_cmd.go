@@ -14,9 +14,9 @@ type feederCmd struct {
 	ioFd io.ReadCloser
 
 	// private
-	pathArgs  []string
+	pathArgs []string
 	keepOpen bool
-	timeout   uint32
+	timeout  uint32
 
 	// command execution related
 	ctx        context.Context
@@ -51,8 +51,12 @@ func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
 
 	f.timeout = timeout
 
-	f.ctx, f.cancelFunc = context.WithTimeout(context.Background(), time.Duration(f.timeout)*time.Millisecond)
+	return nil
+}
 
+func (f *feederCmd) open() error {
+
+	f.ctx, f.cancelFunc = context.WithTimeout(context.Background(), time.Duration(f.timeout)*time.Millisecond)
 	f.cmd = exec.CommandContext(f.ctx, f.pathArgs[0], f.pathArgs[1:]...)
 
 	if fd, err := f.cmd.StdoutPipe(); err != nil {
@@ -61,15 +65,11 @@ func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
 		f.ioFd = fd
 	}
 
-	return nil
-}
-
-func (f *feederCmd) open() error {
 	return f.cmd.Start() // this will actualy execute a command and start feeding f.ioFd
 }
 
 func (f *feederCmd) readAt(buf []byte, max int64) (int, error) {
-
+	// TODO
 	// read f.ioFd here
 
 	// to implement

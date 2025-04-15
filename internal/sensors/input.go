@@ -21,7 +21,8 @@ type feeder interface {
 
 type input struct {
 	feeder       feeder
-	line, offset int
+	line, offset uint32
+	path         string
 	buf          []byte
 }
 
@@ -32,23 +33,17 @@ type inputValue struct {
 
 const (
 	inTypeFile = "file"
-	inTypeCmd  = "string"
+	inTypeCmd  = "cmd"
 )
 
 // path should be in form "line:offset:/full/path"
 // ex: 10:32:/proc/meminfo
 func (in *input) setup(path string, inType string, keepOpen bool, timeout uint32) error {
 
-	var line, offset int
-	var filePath string
-
-	n, err := fmt.Sscanf(path, "%d:%d:%s", &line, &offset, &filePath)
-	if err != nil || n != 3 || line < 0 || offset < 0 || filePath[0] != '/' {
+	if err := in.parsePath(path); err != nil {
 		return fmt.Errorf("invalid path format, expected 'line:offset:/full/path': %v", err)
 	}
 
-	in.line = line
-	in.offset = offset
 	in.buf = make([]byte, 64)
 
 	switch inType {
@@ -60,7 +55,7 @@ func (in *input) setup(path string, inType string, keepOpen bool, timeout uint32
 		return fmt.Errorf("sensor type '%s' is not implemented", inType)
 	}
 
-	in.feeder.setup(path, keepOpen, timeout)
+	in.feeder.setup(in.path, keepOpen, timeout)
 
 	return nil
 }
@@ -85,7 +80,7 @@ func (in *input) get() *inputValue {
 			return &inputValue{err: fmt.Errorf("empty file")}
 		}
 
-		strValue = strings.TrimSpace(string(in.buf))
+		strValue = string(in.buf)
 
 	} else {
 
@@ -96,8 +91,8 @@ func (in *input) get() *inputValue {
 		fScanner.Split(bufio.ScanLines)
 
 		// skip N lines
-		line := 0
-		for ; line < in.line; fScanner.Scan() {
+		var line uint32
+		for line = 0; line < in.line && fScanner.Scan(); line++ {
 		}
 
 		if line != in.line {
@@ -107,7 +102,7 @@ func (in *input) get() *inputValue {
 		sv := fScanner.Text()
 
 		// get data from offset P
-		if len(sv) <= in.offset {
+		if len(sv) <= int(in.offset) {
 			return &inputValue{err: fmt.Errorf("requested line offset %d, but line len is %d", in.offset, len(sv))}
 		} else {
 			strValue = sv[in.offset:]
@@ -116,11 +111,37 @@ func (in *input) get() *inputValue {
 	}
 
 	// convert read data into value
-	if val, err := strconv.ParseFloat(strValue, 64); err != nil {
+	//if val, err := strconv.ParseFloat(strValue, 64); err != nil {
+	var val float64
+	if n, err := fmt.Sscanf(strValue, "%32f", &val); err != nil || n != 1 {
 		return &inputValue{err: fmt.Errorf("failed to parse file data '%s'", strValue)}
 	} else {
-		log.Debug(1, "got value %f from '%s'", val, feeder.path)
+		log.Debug(5, "got value %f from '%s'", val, in.path)
 		return &inputValue{val: val}
 	}
 
+}
+
+func (in *input) parsePath(path string) error {
+
+	parts := strings.SplitN(path, ":", 3)
+	if len(parts) != 3 {
+		return fmt.Errorf("not enough fields")
+	}
+
+	if line, err := strconv.ParseUint(parts[0], 10, 32); err != nil {
+		return fmt.Errorf("line must be uint")
+	} else {
+		in.line = uint32(line)
+	}
+
+	if offset, err := strconv.ParseUint(parts[1], 10, 32); err != nil {
+		return fmt.Errorf("offset must be uint")
+	} else {
+		in.offset = uint32(offset)
+	}
+
+	in.path = parts[2]
+
+	return nil
 }

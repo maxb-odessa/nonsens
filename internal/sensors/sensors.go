@@ -1,7 +1,10 @@
 // Package sensors provides sensor data
 package sensors
 
-import "nonsens/internal/def"
+import (
+	"nonsens/internal/def"
+	log "nonsens/internal/logger"
+)
 
 var configFilePath string
 
@@ -18,5 +21,14 @@ func Run(dataDir string) error {
 }
 
 func startAll(cf *config) error {
+	for _, s := range cf.sensors {
+		if err := s.setup(); err != nil {
+			log.Warn("sensor '%s' setup failed: %s", s.Uid, err)
+		} else {
+			log.Info("starting sensor '%s'", s.Uid)
+			go s.start()
+		}
+	}
+
 	return nil
 }

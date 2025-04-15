@@ -9,10 +9,8 @@ import (
 )
 
 type feederFile struct {
-	ioFd *os.File
-
-	// private
-	fpath     string
+	ioFd     *os.File
+	fpath    string
 	keepOpen bool
 }
 

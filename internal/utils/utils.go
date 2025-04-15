@@ -2,13 +2,10 @@ package utils
 
 // Package utils provides various useful functions
 import (
-	"crypto/md5"
-	"fmt"
 	"html"
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/danwakefield/fnmatch"
 )
@@ -79,9 +76,4 @@ func IsDir(dir string) bool {
 		return true
 	}
 	return false
-}
-
-// very simple "unique identifier" generator
-func MakeUID() string {
-	return fmt.Sprintf("%x", md5.Sum([]byte(time.Now().String())))
 }

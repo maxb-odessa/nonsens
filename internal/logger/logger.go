@@ -21,7 +21,7 @@ func init() {
 	warn = log.New(os.Stdout, "WARNING: ", log.Lmsgprefix|log.Ldate|log.Ltime)
 	err = log.New(os.Stderr, "ERROR: ", log.Lmsgprefix|log.Ldate|log.Ltime)
 	fatal = log.New(os.Stderr, "FATAL: ", log.Lmsgprefix|log.Ldate|log.Ltime)
-	debug = log.New(os.Stdout, "DEBUG: ", log.Lmsgprefix|log.Ldate|log.Ltime|log.Lshortfile)
+	debug = log.New(os.Stdout, "DEBUG: ", log.Lmsgprefix|log.Ldate|log.Ltime)
 }
 
 func SetDebugLevel(level int) {
@@ -52,7 +52,7 @@ func Fatal(args ...any) {
 }
 
 func Debug(level int, args ...any) {
-	if level < debugLevel {
+	if level > debugLevel {
 		return
 	}
 
@@ -60,7 +60,7 @@ func Debug(level int, args ...any) {
 	if pc, file, no, ok := runtime.Caller(1); ok {
 		details := runtime.FuncForPC(pc)
 		if details != nil {
-			prefix += fmt.Sprintf("%s():%d", details.Name(), no)
+			prefix = fmt.Sprintf("%s():%d", details.Name(), no)
 		} else {
 			prefix = fmt.Sprintf("%s:%d", file, no)
 		}

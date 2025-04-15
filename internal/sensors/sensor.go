@@ -1,6 +1,10 @@
 package sensors
 
-import "sync"
+import (
+	log "nonsens/internal/logger"
+	"sync"
+	"time"
+)
 
 type Sensor struct {
 	// private
@@ -28,12 +32,12 @@ func (s *Sensor) setup() error {
 	return s.input.setup(s.Path, s.Type, s.KeepOpen, s.PollInterval)
 }
 
-func (s *Sensor) read() error {
-	return nil
-}
-
 func (s *Sensor) start( /* chan? */ ) error {
-	return nil
+	for {
+		v := s.input.get()
+		log.Debug(9, "sensor(%s).get() => %f, %+v", s.Uid, v.val, v.err)
+		time.Sleep(time.Duration(s.PollInterval) * time.Millisecond)
+	}
 }
 
 func (s *Sensor) stop() error {
