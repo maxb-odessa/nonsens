@@ -2,23 +2,11 @@
 {
 "uid": "uuid-123-36556767-654754",
 "type":"file",
-"path1": "0:0:/sys/class/hwmon/hwmon5/temp1_input",
-"path": "3:3:/tmp/fake_sensor",
+"path": "0:0:/sys/class/hwmon/hwmon7/temp1_input",
 "keep_open": true,
 "min": 0,
 "max": 100,
-"divider": 1.0,
-"poll_interval": 2000
-},
-{
-"uid": "uuid-f-543-cdsa-543fasd",
-"type":"cmd",
-"path": "3:3:/bin/ps al",
-"keep_open": true,
-"min": 0,
-"max": 100,
-"divider": 1.0,
+"divider": 1000.0,
 "poll_interval": 1000
 }
-
 ]

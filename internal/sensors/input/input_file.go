@@ -1,4 +1,4 @@
-package sensors
+package input
 
 import (
 	"errors"
@@ -10,16 +10,12 @@ import (
 
 type feederFile struct {
 	ioFd     *os.File
-	fpath    string
+	path     string
 	keepOpen bool
 }
 
 func (f *feederFile) fd() io.ReadCloser {
 	return f.ioFd
-}
-
-func (f *feederFile) path() string {
-	return f.fpath
 }
 
 // ignore read timeout for files (for now)
@@ -29,11 +25,11 @@ func (f *feederFile) setup(path string, keepOpen bool, _ uint32) error {
 		return errors.New("path cannot be empty")
 	}
 
-	if f.fpath != "" {
+	if f.path != "" {
 		return errors.New("path already set")
 	}
 
-	f.fpath = path
+	f.path = path
 
 	return nil
 }
@@ -49,7 +45,7 @@ func (f *feederFile) open() error {
 			// is keepopen - rewind it
 			if _, err := f.ioFd.Seek(0, io.SeekStart); err != nil {
 				// rewind faild - close and reopen it later
-				log.Warn("seek() failed, closing feederFile: %s", f.fpath, err)
+				log.Warn("seek() failed, closing feederFile: %s", f.path, err)
 				f.close()
 			} else {
 				return nil
@@ -58,8 +54,8 @@ func (f *feederFile) open() error {
 	}
 
 	// open failure could be normal, i.e. feederFile doesn't exist yet
-	if fd, err := os.Open(f.fpath); err != nil {
-		log.Debug(1, "open() failed: %s", f.fpath, err)
+	if fd, err := os.Open(f.path); err != nil {
+		log.Debug(1, "open() failed: %s", f.path, err)
 		return err
 	} else {
 		f.ioFd = fd

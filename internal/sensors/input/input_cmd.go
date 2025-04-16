@@ -1,4 +1,4 @@
-package sensors
+package input
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 	"io"
 	"nonsens/internal/def"
 	"os/exec"
-	"strings"
 	"time"
 )
 
@@ -14,7 +13,7 @@ type feederCmd struct {
 	ioFd io.ReadCloser
 
 	// private
-	pathArgs []string
+	path     string
 	keepOpen bool
 	timeout  uint32
 
@@ -24,12 +23,16 @@ type feederCmd struct {
 	cmd        *exec.Cmd
 }
 
+/* TODO
+allow exec of only files withing shared/exec direcory
+ignore cmdline ags
+the dir must not have group and other write perms
+as well as command within the dir
+symlinks are not allowed
+*/
+
 func (f *feederCmd) fd() io.ReadCloser {
 	return f.ioFd
-}
-
-func (f *feederCmd) path() string {
-	return f.pathArgs[0]
 }
 
 func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
@@ -38,7 +41,7 @@ func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
 		return errors.New("path cannot be empty")
 	}
 
-	if len(f.pathArgs) > 0 {
+	if len(f.path) > 0 {
 		return errors.New("path already set")
 	}
 
@@ -47,7 +50,7 @@ func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
 	}
 
 	// split cmd and args
-	f.pathArgs = strings.Fields(path)
+	f.path = path
 
 	f.timeout = timeout
 
@@ -57,7 +60,7 @@ func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
 func (f *feederCmd) open() error {
 
 	f.ctx, f.cancelFunc = context.WithTimeout(context.Background(), time.Duration(f.timeout)*time.Millisecond)
-	f.cmd = exec.CommandContext(f.ctx, f.pathArgs[0], f.pathArgs[1:]...)
+	f.cmd = exec.CommandContext(f.ctx, f.path)
 
 	if fd, err := f.cmd.StdoutPipe(); err != nil {
 		return err

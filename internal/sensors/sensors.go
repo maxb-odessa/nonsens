@@ -8,6 +8,14 @@ import (
 
 var configFilePath string
 
+var (
+	SensorsDataCh chan *SensorData
+)
+
+func init() {
+	SensorsDataCh = make(chan *SensorData, 32)
+}
+
 func Run(dataDir string) error {
 	configFilePath = dataDir + def.SensorsConfigFile
 
@@ -25,8 +33,7 @@ func startAll(cf *config) error {
 		if err := s.setup(); err != nil {
 			log.Warn("sensor '%s' setup failed: %s", s.Uid, err)
 		} else {
-			log.Info("starting sensor '%s'", s.Uid)
-			go s.start()
+			s.start(SensorsDataCh)
 		}
 	}
 

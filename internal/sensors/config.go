@@ -15,6 +15,8 @@ type config struct {
 }
 
 func (cf *config) restore() error {
+	cf.Lock()
+	defer cf.Unlock()
 
 	// read and unmarshal
 	data, err := ioutil.ReadFile(configFilePath)
@@ -39,5 +41,6 @@ func (cf *config) restore() error {
 }
 
 func store(path string) error {
+	// TODO
 	return nil
 }
