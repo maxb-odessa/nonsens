@@ -1,19 +1,18 @@
 package def
 
+// may be changed by cmdline
+var DataDir string = "$HOME/.local/nonsens"
+var ServerListen string = "localhost:12346"
+
 // relative paths and dirs
 const (
-	DataDir           = "$HOME/.local/nonsens"
 	SensorsConfigFile = "/sensors.json"
 	TemplatesDir      = "/templates/"
 	ServerDir         = "/server/"
+	CmdDir            = "/cmd"
 )
 
 // sensors defaults and limits
 const (
 	SensorMinPollInterval = 100 // in ms
-)
-
-// ws server defaults
-const (
-	ServerListen = "localhost:12346"
 )

@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"os/signal"
+	"path/filepath"
 	"runtime/pprof"
 	"syscall"
 
@@ -20,16 +21,14 @@ func main() {
 	help := false
 	profileTo := ""
 	debugLevel := 0
-	dataDir := os.ExpandEnv(def.DataDir)
-	listenAt := def.ServerListen
 	getopt.HelpColumn = 0
 
 	// get cmdline args and parse them
 	getopt.FlagLong(&help, "help", 'h', "Show this help")
 	getopt.FlagLong(&debugLevel, "debug", 'd', "Set debug log level [0]")
 	getopt.FlagLong(&profileTo, "profile", 'p', "Enable runtime profiler and write output to this file")
-	getopt.FlagLong(&dataDir, "datadir", 'D', "Path to data directory")
-	getopt.FlagLong(&listenAt, "listen", 'l', "Serve requests at this interface[:port]")
+	getopt.FlagLong(&def.DataDir, "datadir", 'D', "Path to data directory")
+	getopt.FlagLong(&def.ServerListen, "listen", 'l', "Serve requests at this interface[:port]")
 	getopt.Parse()
 
 	// help-only requested
@@ -39,6 +38,8 @@ func main() {
 	}
 
 	log.SetDebugLevel(debugLevel)
+
+	def.DataDir, _ = filepath.Abs(os.ExpandEnv(def.DataDir))
 
 	// don't run us as root
 	if os.Getuid() == 0 || os.Geteuid() == 0 {
@@ -71,14 +72,14 @@ func main() {
 	defer log.Info("Stopped")
 
 	// init web server
-	if err := server.Run(listenAt, dataDir); err != nil {
+	if err := server.Run(); err != nil {
 		log.Fatal("Failed to run server: %s", err)
 	} else {
-		log.Info("Serving requests at %s", listenAt)
+		log.Info("Serving requests at %s", def.ServerListen)
 	}
 
 	// load and init saved sensors
-	if err := sensors.Run(dataDir); err != nil {
+	if err := sensors.Run(); err != nil {
 		log.Fatal("Failed to run sensors: %s", err)
 	} else {
 		log.Info("Sensors poller started")

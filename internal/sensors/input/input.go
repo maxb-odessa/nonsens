@@ -2,8 +2,10 @@ package input
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
+	"nonsens/internal/def"
 	"strconv"
 	"strings"
 )
@@ -11,16 +13,15 @@ import (
 type feeder interface {
 	setup(string, bool, uint32) error
 	open() error
-	readAt([]byte, int64) (int, error)
 	close()
 	fd() io.ReadCloser
 }
 
 type Input struct {
-	feeder       feeder
-	line, offset uint32
-	path         string
-	buf          []byte
+	feeder    feeder
+	line, pos uint32
+	path      string
+	buf       []byte
 }
 
 type InputValue struct {
@@ -33,12 +34,18 @@ const (
 	inTypeCmd  = "cmd"
 )
 
-// path should be in form "line:offset:/full/path"
-// ex: 10:32:/proc/meminfo
+// path should be in form "line:pos:/full/path"
+// or for cmd: 1:2:cmdfile.sh
+// where line = line starting from 0, pos = field position starting with 0, \s+ is a delimiter
+// ex: 10:2:/proc/meminfo
 func (in *Input) Setup(path string, inType string, keepOpen bool, timeout uint32) error {
 
 	if err := in.parsePath(path); err != nil {
-		return fmt.Errorf("invalid path format, expected 'line:offset:/full/path': %v", err)
+		return fmt.Errorf("invalid path format, expected 'line:pos:/full/path': %v", err)
+	}
+
+	if timeout < def.SensorMinPollInterval {
+		return errors.New("invalid timeout value (too low)")
 	}
 
 	in.buf = make([]byte, 64)
@@ -47,14 +54,14 @@ func (in *Input) Setup(path string, inType string, keepOpen bool, timeout uint32
 	case inTypeFile:
 		in.feeder = new(feederFile)
 	case inTypeCmd:
+		// adjust cmd path
+		in.path = def.DataDir + def.CmdDir + "/" + in.path
 		in.feeder = new(feederCmd)
 	default:
 		return fmt.Errorf("sensor type '%s' is not implemented", inType)
 	}
 
-	in.feeder.setup(in.path, keepOpen, timeout)
-
-	return nil
+	return in.feeder.setup(in.path, keepOpen, timeout)
 }
 
 func (in *Input) Get() *InputValue {
@@ -64,14 +71,14 @@ func (in *Input) Get() *InputValue {
 		return &InputValue{Err: err}
 	}
 
+	fd := in.feeder.fd()
 	defer in.feeder.close()
 
 	var strValue string
 
-	// fast and common case: data is at first line
-	if in.line == 0 {
-
-		if n, err := in.feeder.readAt(in.buf, int64(in.offset)); err != io.EOF {
+	// fast and common case: data is at first line and at first position
+	if in.line == 0 && in.pos == 0 {
+		if n, err := fd.Read(in.buf); err != nil && err != io.EOF {
 			return &InputValue{Err: err}
 		} else if n == 0 {
 			return &InputValue{Err: fmt.Errorf("empty file")}
@@ -81,13 +88,13 @@ func (in *Input) Get() *InputValue {
 
 	} else {
 
-		// now read file at line N and offset P
+		// now read file at line N and pos P
 		// slowly and painfuly
-		fd := in.feeder.fd()
 		fScanner := bufio.NewScanner(fd)
 		fScanner.Split(bufio.ScanLines)
 
 		// skip N lines
+		// BUG: doesn't work well wich command output (or FD)
 		var line uint32
 		for line = 0; line < in.line && fScanner.Scan(); line++ {
 		}
@@ -96,15 +103,16 @@ func (in *Input) Get() *InputValue {
 			return &InputValue{Err: fmt.Errorf("requested line %d, but only %d lines present", in.line, line)}
 		}
 
-		sv := fScanner.Text()
+		strValue = fScanner.Text()
+	}
 
-		// get data from offset P
-		if len(sv) <= int(in.offset) {
-			return &InputValue{Err: fmt.Errorf("requested line offset %d, but line len is %d", in.offset, len(sv))}
-		} else {
-			strValue = sv[in.offset:]
-		}
-
+	// get data from pos P
+	fields := strings.Fields(strValue)
+	if len(fields) < int(in.pos) {
+		return &InputValue{Err: fmt.Errorf("requested line pos %d, but only %d positions present", in.pos, len(fields))}
+	} else {
+		// reuse the var
+		strValue = fields[in.pos]
 	}
 
 	// convert read data into value
@@ -135,10 +143,10 @@ func (in *Input) parsePath(path string) error {
 		in.line = uint32(line)
 	}
 
-	if offset, err := strconv.ParseUint(parts[1], 10, 32); err != nil {
-		return fmt.Errorf("offset must be uint")
+	if pos, err := strconv.ParseUint(parts[1], 10, 32); err != nil {
+		return fmt.Errorf("position must be uint")
 	} else {
-		in.offset = uint32(offset)
+		in.pos = uint32(pos)
 	}
 
 	in.path = parts[2]

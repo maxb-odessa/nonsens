@@ -72,8 +72,18 @@ func SafeHTML(s string) string {
 }
 
 func IsDir(dir string) bool {
-	if stat, err := os.Stat(dir); err == nil && stat.IsDir() {
-		return true
+	realDir, _ := filepath.Abs(dir)
+	if stat, err := os.Stat(realDir); err == nil {
+		return stat.IsDir()
 	}
+	return false
+}
+
+func IsFile(path string) bool {
+	realPath, _ := filepath.Abs(path)
+	if stat, err := os.Stat(realPath); err == nil {
+		return stat.Mode().IsRegular()
+	}
+
 	return false
 }

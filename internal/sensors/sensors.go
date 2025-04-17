@@ -13,11 +13,11 @@ var (
 )
 
 func init() {
-	SensorsDataCh = make(chan *SensorData, 32)
+	SensorsDataCh = make(chan *SensorData, 256)
 }
 
-func Run(dataDir string) error {
-	configFilePath = dataDir + def.SensorsConfigFile
+func Run() error {
+	configFilePath = def.DataDir + def.SensorsConfigFile
 
 	conf := new(config)
 

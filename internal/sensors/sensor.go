@@ -101,7 +101,7 @@ func (s *Sensor) start(outCh chan *SensorData) error {
 
 		// get new value
 		s.value[0] = s.input.Get()
-		log.Debug(9, "sensor(%s).get() => %f, %s", s.Path, s.value[0].Val, s.value[0].Err)
+		log.Debug(9, "sensor(%s).get() => %f, %v", s.Path, s.value[0].Val, s.value[0].Err)
 
 		s.data.Online = s.value[0].Err == nil
 

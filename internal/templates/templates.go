@@ -15,8 +15,7 @@ type Tmpl *template.Template
 var loadedTemplates map[string]Tmpl
 
 // Init loads all template files
-func Load(dir string) error {
-	templatesDir := dir + "/templates"
+func Load(templatesDir string) error {
 
 	files := make(map[string][]byte)
 

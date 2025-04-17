@@ -21,4 +21,6 @@
 go.work
 
 /nonsens
-/etc/nonsens.json-dev*
+.*.swp
+.*.swo
+
