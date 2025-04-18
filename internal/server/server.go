@@ -2,14 +2,13 @@ package server
 
 import (
 	"fmt"
-	"nonsens/internal/def"
-	"nonsens/internal/templates"
+	"nonsens/internal/server/templates"
 )
 
 func Run() error {
 
 	// load templates
-	if err := templates.Load(def.DataDir + def.TemplatesDir); err != nil {
+	if err := templates.Load(); err != nil {
 		return fmt.Errorf("failed to load templates: %s", err)
 	}
 

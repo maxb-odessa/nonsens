@@ -94,7 +94,6 @@ func (in *Input) Get() *InputValue {
 		fScanner.Split(bufio.ScanLines)
 
 		// skip N lines
-		// BUG: doesn't work well wich command output (or FD)
 		var line uint32
 		for line = 0; line < in.line && fScanner.Scan(); line++ {
 		}

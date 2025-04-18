@@ -6,6 +6,7 @@ import (
 	"errors"
 	"text/template"
 
+	"nonsens/internal/def"
 	log "nonsens/internal/logger"
 	"nonsens/internal/utils"
 )
@@ -15,12 +16,12 @@ type Tmpl *template.Template
 var loadedTemplates map[string]Tmpl
 
 // Init loads all template files
-func Load(templatesDir string) error {
+func Load() error {
 
 	files := make(map[string][]byte)
 
 	// precaution: load no more than 64 files max 64k bytes each
-	if err := utils.LoadDir(files, templatesDir, ".tmpl", 64*1024, 64); err != nil {
+	if err := utils.LoadDir(files, def.DataDir+def.TemplatesDir, ".tmpl", 64*1024, 64); err != nil {
 		return err
 	}
 

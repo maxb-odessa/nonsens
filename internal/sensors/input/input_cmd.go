@@ -22,12 +22,11 @@ type feederCmd struct {
 	cmd        *exec.Cmd
 }
 
-/* TODO
+/*
 allow exec of only files withing shared/exec direcory
 ignore cmdline ags
-the dir must not have group and other write perms
-as well as command within the dir
-symlinks are not allowed
+the dir must not have group and other write perms TODO
+as well as command within the dir TODO?
 path should be relative only
 */
 
@@ -41,6 +40,10 @@ func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
 		return errors.New("path already set")
 	}
 
+	if path[0] != '/' {
+		return errors.New("path must be absolute")
+	}
+
 	f.path = path
 
 	f.timeout = timeout
@@ -51,7 +54,7 @@ func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
 func (f *feederCmd) open() error {
 
 	f.ctx, f.cancelFunc = context.WithTimeout(context.Background(), time.Duration(f.timeout)*time.Millisecond)
-	f.cmd = exec.CommandContext(f.ctx, "/bin/sh", f.path)
+	f.cmd = exec.CommandContext(f.ctx, f.path, "")
 
 	if fd, err := f.cmd.StdoutPipe(); err != nil {
 		return err

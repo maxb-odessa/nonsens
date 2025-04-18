@@ -25,6 +25,10 @@ func (f *feederFile) setup(path string, keepOpen bool, _ uint32) error {
 		return errors.New("path already set")
 	}
 
+	if path[0] != '/' {
+		return errors.New("path must be absolute")
+	}
+
 	f.path = path
 
 	return nil
