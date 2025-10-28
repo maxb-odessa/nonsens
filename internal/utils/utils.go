@@ -6,64 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/danwakefield/fnmatch"
 )
-
-// LoadDir loads no more than "maxNum"  files with extension "ext" of max size "maxSize" from dir "dir"
-// and puts them into map "holder" using filename without extension as a key
-func LoadDir(holder map[string][]byte, dir string, ext string, maxSize int64, maxNum int) error {
-
-	absDir, _ := filepath.Abs(os.ExpandEnv(dir))
-
-	d, err := os.Open(absDir)
-	if err != nil {
-		return err
-	}
-
-	defer d.Close()
-
-	files, err := d.Readdir(0)
-	if err != nil {
-		return err
-	}
-
-	for _, f := range files {
-
-		// too much files already loaded
-		if len(holder) >= maxNum {
-			break
-		}
-
-		// match file extension
-		if !fnmatch.Match(`*`+ext, f.Name(), fnmatch.FNM_PATHNAME) {
-			continue
-		}
-
-		// only regular files accepted
-		if !f.Mode().IsRegular() {
-			continue
-		}
-
-		// skip too bog files
-		if f.Size() > maxSize {
-			continue
-		}
-
-		// read the file
-		path := absDir + `/` + f.Name()
-		if data, err := os.ReadFile(path); err != nil {
-			return err
-		} else {
-			// store loaded file
-			noExt := strings.TrimSuffix(f.Name(), ext)
-			holder[noExt] = data
-		}
-
-	}
-
-	return nil
-}
 
 // TODO: see https://pkg.go.dev/github.com/google/safehtml#HTML
 func SafeHTML(s string) string {

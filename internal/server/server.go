@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"nonsens/internal/bcast"
 	"nonsens/internal/server/templates"
 )
 
@@ -13,5 +14,9 @@ func Run() error {
 	}
 
 	// load index, js and css files
+
+	_ = new(bcast.Bcast)
+
+	// start reading sensors
 	return nil
 }

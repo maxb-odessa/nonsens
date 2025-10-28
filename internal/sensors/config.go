@@ -1,46 +1,50 @@
-package sensors
+package config
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"errors"
+	"os"
 	"sync"
-
-	log "nonsens/internal/logger"
 )
 
-type config struct {
-	sync.Mutex
-	sensors    []*Sensor
-	sensorsMap map[string]*Sensor //aux for fast searches
-}
+type Config any
 
-func (cf *config) restore() error {
-	cf.Lock()
-	defer cf.Unlock()
+var mutex sync.Mutex
+
+func Read(path string, data any) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	// it's ok if no config file exists yet
+	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
 
 	// read and unmarshal
-	data, err := ioutil.ReadFile(configFilePath)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, &cf.sensors)
+	err = json.Unmarshal(data, &Config)
 	if err != nil {
 		return err
-	}
-
-	log.Info("Loaded %d sensors", len(cf.sensors))
-
-	// make a map for fast searches
-	cf.sensorsMap = make(map[string]*Sensor)
-	for _, s := range cf.sensors {
-		cf.sensorsMap[s.Uid] = s
 	}
 
 	return nil
 }
 
-func store(path string) error {
-	// TODO
+func Save(path string) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	return nil
+}
+
+func WriteLock() {
+	mutex.RWLock()
+}
+
+func WriteUnlock() {
+	mutex.RWUnlock()
 }

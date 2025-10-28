@@ -2,10 +2,8 @@ package input
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"io"
-	"nonsens/internal/def"
 	"strconv"
 	"strings"
 )
@@ -44,9 +42,9 @@ func (in *Input) Setup(path string, inType string, keepOpen bool, timeout uint32
 		return fmt.Errorf("invalid path format, expected 'line:pos:/full/path': %v", err)
 	}
 
-	if timeout < def.SensorMinPollInterval {
+	/*if timeout < def.SensorMinPollInterval {
 		return errors.New("invalid timeout value (too low)")
-	}
+	}*/
 
 	in.buf = make([]byte, 64)
 
@@ -55,7 +53,7 @@ func (in *Input) Setup(path string, inType string, keepOpen bool, timeout uint32
 		in.feeder = new(feederFile)
 	case inTypeCmd:
 		// adjust cmd path
-		in.path = def.DataDir + def.CmdDir + "/" + in.path
+		//in.path = def.DataDir + def.CmdDir + "/" + in.path
 		in.feeder = new(feederCmd)
 	default:
 		return fmt.Errorf("sensor type '%s' is not implemented", inType)

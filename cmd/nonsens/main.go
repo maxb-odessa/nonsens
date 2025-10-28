@@ -11,7 +11,6 @@ import (
 
 	"nonsens/internal/def"
 	log "nonsens/internal/logger"
-	"nonsens/internal/sensors"
 	"nonsens/internal/server"
 )
 
@@ -25,9 +24,9 @@ func main() {
 
 	// get cmdline args and parse them
 	getopt.FlagLong(&help, "help", 'h', "Show this help")
-	getopt.FlagLong(&debugLevel, "debug", 'd', "Set debug log level [0]")
+	getopt.FlagLong(&debugLevel, "debug", 'D', "Set debug log level [0]")
 	getopt.FlagLong(&profileTo, "profile", 'p', "Enable runtime profiler and write output to this file")
-	getopt.FlagLong(&def.DataDir, "datadir", 'D', "Path to data directory")
+	getopt.FlagLong(&def.DataDir, "datadir", 'd', "Path to application data directory")
 	getopt.FlagLong(&def.ServerListen, "listen", 'l', "Serve requests at this interface[:port]")
 	getopt.Parse()
 
@@ -58,33 +57,28 @@ func main() {
 	}
 
 	// set proggie termination signal handler(s)
-	done := make(chan bool)
+	doneCh := make(chan bool)
 	go func() {
 		sigCh := make(chan os.Signal, 1)
 		signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 		for sig := range sigCh {
 			log.Info("Got signal '%s'", sig)
-			done <- true
+			doneCh <- true
 		}
 	}()
 
 	log.Info("Started")
 	defer log.Info("Stopped")
 
-	// init web server
-	if err := server.Run(); err != nil {
-		log.Fatal("Failed to run server: %s", err)
-	} else {
-		log.Info("Serving requests at %s", def.ServerListen)
-	}
-
-	// load and init saved sensors
-	if err := sensors.Run(); err != nil {
-		log.Fatal("Failed to run sensors: %s", err)
-	} else {
-		log.Info("Sensors poller started")
-	}
+	// run!
+	go func() {
+		if err := server.Run(); err != nil {
+			log.Fatal("Failed to run server: %s", err)
+		} else {
+			log.Info("Started")
+		}
+	}()
 
 	// now wait
-	<-done
+	<-doneCh
 }

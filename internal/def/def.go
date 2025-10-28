@@ -1,18 +1,21 @@
 package def
 
-// may be changed by cmdline
-var DataDir string = "$HOME/.local/nonsens"
-var ServerListen string = "localhost:12346"
+import "time"
 
-// relative paths and dirs
+// may be overwritten by cmdline
+var (
+	DataDir      string = "$HOME/.local/nonsens"
+	ServerListen string = "localhost:12346"
+)
+
+// should not be changed
 const (
-	SensorsConfigFile = "/sensors.json"
-	TemplatesDir      = "/templates/"
-	ServerDir         = "/server/"
-	CmdDir            = "/cmd"
+	ConfigFile = "/config.json"
+	ServerDir  = "/server/"
+	ExecDir    = "/exec"
 )
 
 // sensors defaults and limits
 const (
-	SensorMinPollInterval = 100 // in ms
+	SensorMinPollInterval = 100 * time.Millisecond
 )
