@@ -1,19 +1,26 @@
-package config
+package sensors
 
 import (
 	"encoding/json"
 	"errors"
+	log "nonsens/internal/logger"
 	"os"
 	"sync"
 )
 
-type Config any
+var configPath string
 
-var mutex sync.Mutex
+type configData struct {
+	sync.Mutex
+	Sensors map[string]*Sensor
+	Groups  map[string]*Group
+}
 
-func Read(path string, data any) error {
-	mutex.Lock()
-	defer mutex.Unlock()
+// load sensors from config file
+func configLoad(path string, conf *configData) error {
+
+	conf.Lock()
+	defer conf.Unlock()
 
 	// it's ok if no config file exists yet
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
@@ -26,7 +33,7 @@ func Read(path string, data any) error {
 		return err
 	}
 
-	err = json.Unmarshal(data, &Config)
+	err = json.Unmarshal(data, conf)
 	if err != nil {
 		return err
 	}
@@ -34,17 +41,12 @@ func Read(path string, data any) error {
 	return nil
 }
 
-func Save(path string) error {
-	mutex.Lock()
-	defer mutex.Unlock()
+func configSave(path string, conf *configData) error {
+	conf.Lock()
+	defer conf.Unlock()
 
-	return nil
-}
+	jsConf, _ := json.MarshalIndent(conf, "", "    ")
 
-func WriteLock() {
-	mutex.RWLock()
-}
-
-func WriteUnlock() {
-	mutex.RWUnlock()
+	log.Info("Saving config to '%s'", path)
+	return os.WriteFile(path, jsConf, 0644)
 }

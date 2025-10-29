@@ -14,7 +14,7 @@ type feederCmd struct {
 	// private
 	path     string
 	keepOpen bool
-	timeout  uint32
+	timeout  time.Duration
 
 	// command execution related
 	ctx        context.Context
@@ -34,7 +34,7 @@ func (f *feederCmd) fd() io.ReadCloser {
 	return f.ioFd
 }
 
-func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
+func (f *feederCmd) setup(path string, _ bool, timeout time.Duration) error {
 
 	if f.path != "" {
 		return errors.New("path already set")
@@ -53,7 +53,7 @@ func (f *feederCmd) setup(path string, _ bool, timeout uint32) error {
 
 func (f *feederCmd) open() error {
 
-	f.ctx, f.cancelFunc = context.WithTimeout(context.Background(), time.Duration(f.timeout)*time.Millisecond)
+	f.ctx, f.cancelFunc = context.WithTimeout(context.Background(), f.timeout)
 	f.cmd = exec.CommandContext(f.ctx, f.path, "")
 
 	if fd, err := f.cmd.StdoutPipe(); err != nil {

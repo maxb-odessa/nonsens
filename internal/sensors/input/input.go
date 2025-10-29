@@ -4,12 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"nonsens/internal/def"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type feeder interface {
-	setup(string, bool, uint32) error
+	setup(string, bool, time.Duration) error
 	open() error
 	close()
 	fd() io.ReadCloser
@@ -36,15 +38,15 @@ const (
 // or for cmd: 1:2:cmdfile.sh
 // where line = line starting from 0, pos = field position starting with 0, \s+ is a delimiter
 // ex: 10:2:/proc/meminfo
-func (in *Input) Setup(path string, inType string, keepOpen bool, timeout uint32) error {
+func (in *Input) Setup(path string, inType string, keepOpen bool, timeout time.Duration) error {
 
 	if err := in.parsePath(path); err != nil {
 		return fmt.Errorf("invalid path format, expected 'line:pos:/full/path': %v", err)
 	}
 
-	/*if timeout < def.SensorMinPollInterval {
-		return errors.New("invalid timeout value (too low)")
-	}*/
+	if timeout < def.SensorMinPollInterval {
+		timeout = def.SensorMinPollInterval
+	}
 
 	in.buf = make([]byte, 64)
 

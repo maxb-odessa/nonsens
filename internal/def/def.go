@@ -8,14 +8,16 @@ var (
 	ServerListen string = "localhost:12346"
 )
 
-// should not be changed
+// paths relative to DataDir, should not be changed
 const (
-	ConfigFile = "/config.json"
-	ServerDir  = "/server/"
-	ExecDir    = "/exec"
+	ConfigFile = "config.json"
+	ServerDir  = "server"
+	ExecDir    = "exec"
 )
 
 // sensors defaults and limits
 const (
 	SensorMinPollInterval = 100 * time.Millisecond
+	ServerReadTimeout     = 15 * time.Second
+	ServerWriteTimeout    = 15 * time.Second
 )

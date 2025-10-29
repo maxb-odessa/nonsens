@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"time"
 
 	log "nonsens/internal/logger"
 )
@@ -19,7 +20,7 @@ func (f *feederFile) fd() io.ReadCloser {
 }
 
 // ignore read timeout for files (for now)
-func (f *feederFile) setup(path string, keepOpen bool, _ uint32) error {
+func (f *feederFile) setup(path string, keepOpen bool, _ time.Duration) error {
 
 	if f.path != "" {
 		return errors.New("path already set")
