@@ -2,6 +2,7 @@ package input
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"nonsens/internal/def"
@@ -76,6 +77,9 @@ func (in *Input) Get() *InputValue {
 
 	var strValue string
 
+	// clear buffer
+	clear(in.buf)
+
 	// fast and common case: data is at first line and at first position
 	if in.line == 0 && in.pos == 0 {
 		if n, err := fd.Read(in.buf); err != nil && err != io.EOF {
@@ -118,7 +122,7 @@ func (in *Input) Get() *InputValue {
 	//if val, err := strconv.ParseFloat(strValue, 64); err != nil {
 	var val float64
 	if n, err := fmt.Sscanf(strValue, "%32f", &val); err != nil || n != 1 {
-		return &InputValue{Err: fmt.Errorf("failed to parse file data '%s'", strValue)}
+		return &InputValue{Err: errors.New("unable to parse data")}
 	} else {
 		return &InputValue{Val: val}
 	}

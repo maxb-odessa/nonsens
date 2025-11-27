@@ -32,7 +32,7 @@ func Run() error {
 	sensorsDataCh := make(chan *sensors.Sensor, 64)
 
 	// start reading sensors data
-	go readSensors(sensorsDataCh)
+	go receiveSensorsValues(sensorsDataCh)
 
 	// run sensors poller
 	if err := sensors.Start(sensorsDataCh); err != nil {
@@ -48,24 +48,33 @@ const (
 	REMOTE_MSG_TYPE_VAL  = 'V'
 	REMOTE_MSG_TYPE_FULL = 'F'
 
-	// remote message sensor action: add, del, update
+	// remote message target: sensor or group
+	REMOTE_MSG_TARGET_SENSOR = 'S'
+	REMOTE_MSG_TARGET_GROUP  = 'G'
+
+	// remote message sensor/group action: add, del, update
 	REMOTE_MSG_ACTION_ADD = 'A'
 	REMOTE_MSG_ACTION_DEL = 'D'
 	REMOTE_MSG_ACTION_UPD = 'U'
+	REMOTE_MSG_ACTION_CLR = 'C' // to remote: clear all widgets and groups
 )
 
 // message to send to remote via websocket
 type RemoteMsg struct {
-	Type byte // message type (sse above)
-	Data any  // data to send/read
+	Type   byte // message type (sse above)
+	Target byte // message taget: sensor or group
+	Action byte // action type
+	Data   any  // data to send/read
 }
 
-// the data read is always of "full" type, thus me should extract its "value"
-func readSensors(ch chan *sensors.Sensor) {
-	for full := range ch {
+// the data read from sensors chan is always of "full" type, thus me should extract its "value"
+func receiveSensorsValues(ch chan *sensors.Sensor) {
+	for sens := range ch {
 		msg := &RemoteMsg{
-			Type: REMOTE_MSG_TYPE_VAL,
-			Data: full.Value,
+			Type:   REMOTE_MSG_TYPE_VAL,
+			Target: REMOTE_MSG_TARGET_SENSOR,
+			Action: REMOTE_MSG_ACTION_UPD,
+			Data:   sens.Value,
 		}
 		if jmsg, err := json.Marshal(msg); err == nil {
 			sendToRemote([]byte(jmsg))
@@ -73,11 +82,55 @@ func readSensors(ch chan *sensors.Sensor) {
 	}
 }
 
+// send fully prepared json data to remote client
 func sendToRemote(data []byte) {
 	select {
 	case toRemoteCh <- data:
 	default:
 		log.Warn("toRemoteCh is full, dropping data")
+	}
+}
+
+// NB: lock all sensors on every upd/add/del operation
+// do not unlock untill all updated data sent back to remote!
+
+// send all configured sensors params for remote client upon connection/reconfiguration
+func sendAllGroupsAndSensors() {
+	sensors.LockAll()
+	defer sensors.UnlockAll()
+
+	// clear webpage content first
+	msg := &RemoteMsg{
+		Action: REMOTE_MSG_ACTION_CLR,
+	}
+	if jmsg, err := json.Marshal(msg); err == nil {
+		sendToRemote([]byte(jmsg))
+	}
+
+	// send all groups first
+	for _, gr := range sensors.GetAllGroups() {
+		msg := &RemoteMsg{
+			Type:   REMOTE_MSG_TYPE_FULL,
+			Target: REMOTE_MSG_TARGET_GROUP,
+			Action: REMOTE_MSG_ACTION_ADD,
+			Data:   gr,
+		}
+		if jmsg, err := json.Marshal(msg); err == nil {
+			sendToRemote([]byte(jmsg))
+		}
+	}
+
+	// now populate with new sensors and groups
+	for _, sens := range sensors.GetAllSensors() {
+		msg := &RemoteMsg{
+			Type:   REMOTE_MSG_TYPE_FULL,
+			Target: REMOTE_MSG_TARGET_SENSOR,
+			Action: REMOTE_MSG_ACTION_ADD,
+			Data:   sens,
+		}
+		if jmsg, err := json.Marshal(msg); err == nil {
+			sendToRemote([]byte(jmsg))
+		}
 	}
 }
 
@@ -136,6 +189,9 @@ func startServer() error {
 
 		// run websocket reader
 		go reader()
+
+		//  get and send all configured sensors (Full)
+		sendAllGroupsAndSensors()
 
 		// run websocket writer
 		for {

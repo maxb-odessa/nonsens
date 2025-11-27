@@ -36,12 +36,26 @@ func Start(ch chan *Sensor) error {
 func startSensors(conf *configData) {
 	for uid, s := range conf.Sensors {
 		log.Debug(5, "will start sensor %s", uid)
-		if err := s.setup(); err == nil {
-			s.start()
-		} else {
-			log.Warn("Sensor %s setup failed: %s", uid, err)
+		if err := s.start(); err != nil {
+			log.Warn("Sensor %s start failed: %s", uid, err)
 		}
 	}
+}
+
+func LockAll() {
+	sensorsData.Lock()
+}
+
+func UnlockAll() {
+	sensorsData.Unlock()
+}
+
+func GetAllSensors() map[string]*Sensor {
+	return sensorsData.Sensors
+}
+
+func GetAllGroups() map[string]*Group {
+	return sensorsData.Groups
 }
 
 func ttt() {

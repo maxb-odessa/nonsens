@@ -32,6 +32,7 @@ type Sensor struct {
 		Val, Diff float64
 		Percents  int
 		Online    bool
+		Hint      string
 	} `json:"-"`
 
 	// configured params
@@ -57,17 +58,17 @@ type Sensor struct {
 		ColorNP      float64 `json:"colornp"`    // colorN percents position
 		ShowGradient bool    `json:"gradient"`   // use gradient or plain color?
 
-		Group    *Group `json:"group"` // the widget belongs to this group
-		GroupRow int    `json:"row"`   // put the widget at this row in group
+		GroupId   string `json:"group_id"` // the widget belongs to this group
+		GroupCol  int    `json:"col"`      // put the widget at this col in group
+		GroupRow  int    `json:"row"`      // put the widget at this row in group
+		GroupColN int    `json:"col_n"`    // the widget occupies N columns inside a group
+		GroupRowN int    `json:"row_n"`    // the widget occupies N rows inside a group
 
 		Style string `json:"style"` // css style name for this widget
 	} `json:"widget"`
 }
 
 func (s *Sensor) setup() error {
-
-	s.pvt.Lock()
-	defer s.pvt.Unlock()
 
 	// invalid min/max range
 	if s.Config.Min >= s.Config.Max {
@@ -98,6 +99,15 @@ func (s *Sensor) setup() error {
 
 func (s *Sensor) start() error {
 
+	// lock the sensor for entire polling lifetime
+	// prevents sensor subsequents starts and in-run reconfigurations
+	s.pvt.Lock()
+
+	if err := s.setup(); err != nil {
+		s.pvt.Unlock()
+		return err
+	}
+
 	getReadings := func() {
 		defer func() {
 			log.Debug(9, "sensor %s collected: %+v", s.Uid, s.Value)
@@ -119,7 +129,10 @@ func (s *Sensor) start() error {
 
 		// sensor if offline - we're done here
 		if !s.Value.Online {
+			s.Value.Hint = s.runtime.values[0].Err.Error()
 			return
+		} else {
+			s.Value.Hint = ""
 		}
 
 		// if no errors: store new value and calc diff
@@ -138,14 +151,11 @@ func (s *Sensor) start() error {
 		s.pvt.cancelFunc = cancel
 		ticker := time.NewTicker(time.Duration(s.Config.PollInterval) * time.Millisecond)
 
-		// lock the sensor for entire polling lifetime
-		s.pvt.Lock()
-
 		defer func() {
 			ticker.Stop()
 			s.runtime.input.Close()
 			log.Info("Stopped sensor '%s'", s.Uid)
-			s.pvt.Unlock() // release the sensor
+			s.pvt.Unlock() // release the sensor at stop
 		}()
 
 		log.Info("Started sensor '%s'", s.Uid)
@@ -176,7 +186,7 @@ func (s *Sensor) stop() {
 	// signal sensor to stop
 	s.pvt.cancelFunc()
 
-	// wait for it to finish (it will unlock itself upon completeion)
+	// wait for it to finish (it will unlock itself upon finish)
 	s.pvt.Lock()
 
 	// cleanups
