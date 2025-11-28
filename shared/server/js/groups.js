@@ -9,66 +9,109 @@ function createUUID() {
 	}
 	s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
 	s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-	s[8] = s[13] = s[18] = s[23] = "-";
+	//s[8] = s[13] = s[18] = s[23] = "-";
 
 	var uuid = s.join("");
 	return uuid;
 }
 
-// generate new group html code and insert it
 var newGroupSeq = 0;
-function groupNew(e, containerId, menuId) {
+
+// generate new group html code and insert it
+function groupAdd(containerId) {
+
 	// group template
 	var uuid = createUUID();
 	const template = `
-		<fieldset id="${uuid}" class="group-container">
+		<fieldset id="gc/${uuid}" class="group-container">
 			<legend class="drag-handle group-legend">New Group #${newGroupSeq}</legend>
-			<div title="Click for group menu" class="group" onclick="saveGroupId(event, '${uuid}');"></div>
+			<div id="gr/${uuid}" title="Click for group menu" class="group" onclick="saveGroupId('${uuid}');"></div>
 			<div class="resize-handle">&nbsp;</div>
 		</fieldset>
 	`;
 	newGroupSeq ++;
 
 	document.getElementById(containerId).innerHTML += template;
-
-	// hide main menu
-	document.getElementById(menuId).style.display = "none";
 }
 
-// save clicked group id (uhm...)
 var savedGroupId = "";
-function saveGroupId(e, id) {
+
+// save clicked (last used) group id (uhm...)
+function saveGroupId(id) {
 	savedGroupId = id;
 }
 
-function showGroupEditor(show) {
-	editor = document.getElementById('group-editor');
+function showGroupEditor(editorId, show) {
+	editor = document.getElementById(editorId);
 	if (show) {
 		editor.style.display = "inline-block";
+		maskBelow(editor.id, true);
 
 	} else {
 		editor.style.display = "none";
+		maskBelow(editor.id, false);
 	}
-console.log(editor.style);
 }
 
 // edit the group
-function groupEdit(e, menuId) {
-
-	// hide group menu
-	document.getElementById(menuId).style.display = "none";
+function groupEdit(editorId) {
 
 	// fill in editor with current group data
-	editor = document.getElementById('group-editor');
-
+	editor = document.getElementById(editorId);
 
 	// show editor
-	showGroupEditor(true);
+	showGroupEditor(editorId, true);
 }
+
+var newSensorSeq = 0;
 
 // add new sensor
-function groupAddSensor(e, menuId) {
+function groupAddSensor() {
 
-	// hide group menu
-	document.getElementById(menuId).style.display = "none";
+	// sensor template
+	var uuid = createUUID();
+	const template = `
+		<fieldset id="sc/${uuid}" class="sensor-container">
+			<legend class="drag-handle sensor-legend">New Sensor #${newSensorSeq}</legend>
+			<div id="se/${uuid}" title="Click for sensor menu" class="sensor" onclick="saveSensorId('${uuid}');"></div>
+			<div class="resize-handle">&nbsp;</div>
+		</fieldset>
+	`;
+	newSensorSeq ++;
+
+	// add to group, not group container
+	document.getElementById("gr/"+savedGroupId).innerHTML += template;
+
 }
+
+var savedSensorId = "";
+
+// save clicked (last used) group id (uhm...)
+function saveSensorId(id) {
+	savedSensorId = id;
+}
+
+// delete a group
+function groupDelete() {
+
+	// delete the group
+	if (confirm("You are going to DELETE the group and all its sensors!\nConfirm?")) {
+		// delete whole group container
+		document.getElementById("gc/"+savedGroupId).remove();
+	}
+}
+
+// show/hide window mask to prevent interaction with lower elements
+function maskBelow(id, doMask) {
+	elem = document.getElementById(id);
+	mask = document.getElementById('masked-below');
+
+	elemStyle = window.getComputedStyle(elem);
+
+	if (doMask) {
+		mask.style.zIndex = elemStyle.zIndex - 1;
+	} else {
+		mask.style.zIndex = -1;
+	}
+}
+

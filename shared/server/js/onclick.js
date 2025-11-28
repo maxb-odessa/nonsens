@@ -23,8 +23,22 @@ function toggleMenu(e) {
 		return;
 	}
 
+
 	// hide the menu
 	if (menu.style.display && menu.style.display !== "none") {
+		showMenu(e, menu.id, false);
+		return;
+	}
+
+	showMenu(e, menu.id, true);
+
+	clicking = false;
+}
+
+function showMenu(e, id, doShow) {
+	menu = document.getElementById(id);
+
+	if (! doShow) {
 		menu.style.display = "none";
 		return;
 	}
@@ -32,10 +46,7 @@ function toggleMenu(e) {
 	pos = getPointerPos(e);
 
 	// show the menu and position it next to the pointer
-	menu.style.top = pos.pointerY + "px";
-	menu.style.left = pos.pointerX + "px";
+	menu.style.top = (pos.pointerY - 20) * 1 + "px";
+	menu.style.left = (pos.pointerX - 20) * 1 + "px";
 	menu.style.display = "inline-block";
-
-	clicking = false;
 }
-

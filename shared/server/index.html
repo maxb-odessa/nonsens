@@ -14,20 +14,24 @@
 		<!-- main sensors viewport -->
 		<div title="Click for main menu" class="main" id="main" onclick="toggleMenu(event);"></div>
 
+		<!-- a div to mask everything below -->
+		<div id="masked-below" class="masked-below"></div>
+
 		<!-- menues and popups -->
-		<div id="main-menu" class="main-menu">
+		<div id="main-menu" class="main-menu" onmouseleave="showMenu(event, 'main-menu', false);">
 			<ul>
-				<li onclick="groupNew(event, 'main', 'main-menu');">New group</li>
-				<li onclick="saveLayout(event, 'main-menu');">Save layout</li>
+				<li onclick="showMenu(event, 'main-menu', false); groupAdd('main');">Add New group</li>
+				<li onclick="showMenu(event, 'main-menu', false); saveLayout('main');">Save layout</li>
 				<hr>
 				<li onclick="alert('Some ABOUT info here');">About</li>
 			</ul>
 		</div>
 
-		<div id="group-menu" class="group-menu">
+		<div id="group-menu" class="group-menu" onmouseleave="showMenu(event, 'group-menu', false);">
 			<ul>
-				<li onclick="groupEdit(event, 'group-menu');">Edit group</li>
-				<li onclick="groupAddSensor(event, 'group-menu');">Add new sensor</li>
+				<li onclick="showMenu(event, 'group-menu', false); groupEdit('group-editor');">Edit group</li>
+				<li onclick="showMenu(event, 'group-menu', false); groupDelete();">Delete group</li>
+				<li onclick="showMenu(event, 'group-menu', false); groupAddSensor();">Add new sensor</li>
 			</ul>
 	
 		</div>
@@ -39,8 +43,17 @@
 
 		<!-- editors -->
 
-		<div id="group-editor" class="group-editor" onclick="showGroupEditor(false);">
-<p>EDIT</p>
+		<div id="group-editor" class="group-editor">
+			<form id="group-editor-form">
+			</fieldset>
+				<legend>Edit Group TBD</legend>
+				<label for="group-edit-name">Group name:</label>
+				<input type="text" id="group-edit-name" minlength="0" maxlength="30">
+			</fieldset>
+			<br>
+			<input type="button" value="Appy" onclick="showGroupEditor('group-editor', false);">
+			<input type="button" value="Cancel" onclick="showGroupEditor('group-editor', false);">
+			</form>
 		</div>
 
 

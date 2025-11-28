@@ -57,7 +57,7 @@ body {
 	cursor: se-resize;
 	z-index: 20;
 	resize: none;
-	font-size: 0.6ch;
+	font-size: 0.7ch;
 	&:hover {
 		resize: both;
 	}
@@ -75,7 +75,7 @@ body {
 	resize: none;
 	border: solid white 1px;
 	grid-column-start: 1;
-	grid-column-end: 20;
+	grid-column-end: 10;
 	grid-row-start: 1;
 	grid-row-end: 20;
 	.group-legend {
@@ -125,14 +125,73 @@ body {
 }
 
 .group-editor {
-	position: relative;
-	width: 100px;
-	height: 100px;
 	background-color: yellow;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
 	display: none;
-	top: 100px;
-	left: 100px;
 	z-index: 999;
 	color: black;
 	border: 2px solid black;
+	fieldset {
+		label {
+			display: inline-block;
+			width: 50%;
+			text-align: right;
+			margin: 3px;
+			font-style: italic;
+		}
+		input[type='text'],
+		input[type='number'],
+		select {
+			box-sizing: border-box;
+			border: 1px solid black;
+			display: inline-block;
+			text-align: left;
+			border-radius: 4px;
+			width: 30%;
+		}
+	}
 }
+
+.masked-below {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	background-color: rgba(20, 20, 20, 0.4);
+}
+
+.sensor-container {
+	display: inline-block;
+	position: relative;
+	z-index: 20;
+	overflow: hidden;
+	border: solid black 1px;
+	padding: 0;
+	margin: 0;
+	gap: 0;
+	resize: none;
+	grid-column-start: 1;
+	grid-column-end: 10;
+	grid-row-start: 1;
+	grid-row-end: 20;
+	.sensor-legend {
+		border: 1px white solid;
+	}
+	.sensor {
+		display: inline-block;
+		background-color: cyan;
+		border: 1px white solid;
+		padding: 0;
+		margin: 0;
+		gap: 0;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		resize: none;
+	}
+}
+
