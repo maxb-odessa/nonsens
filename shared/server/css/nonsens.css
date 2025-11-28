@@ -80,8 +80,11 @@ body {
 	grid-row-end: 20;
 	.group-legend {
 		border: 1px white solid;
+		background-color: gray;;
+		opacity: 1.0;
 	}
 	.group {
+		opacity: 1.0;
 		display: inline-grid;
 		grid-template-columns: repeat(64, 1fr);
 		grid-template-rows: repeat(64, 1fr);
@@ -99,9 +102,10 @@ body {
 }
 
 .main-menu,
-.group-menu {
+.group-menu,
+.sensor-menu {
 	position: absolute;
-	z-index: 1000;
+	z-index: 100;
 	display: none;
 	border: 1px solid black;
 	background-color: lightgray;
@@ -124,7 +128,8 @@ body {
 	}
 }
 
-.group-editor {
+.group-editor,
+.sensor-editor {
 	background-color: yellow;
 	position: absolute;
 	left: 50%;
@@ -177,10 +182,13 @@ body {
 	grid-column-end: 10;
 	grid-row-start: 1;
 	grid-row-end: 20;
+	opacity: 1.0;
 	.sensor-legend {
 		border: 1px white solid;
+		opacity: 1.0;
 	}
 	.sensor {
+		opacity: 1.0;
 		display: inline-block;
 		background-color: cyan;
 		border: 1px white solid;

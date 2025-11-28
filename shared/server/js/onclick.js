@@ -12,6 +12,7 @@ function toggleMenu(e) {
 	// find the menu elem corresponding to target class (menu elem id == its class name)
 	var menu;
 	var classes = e.target.className.split(' ');
+
 	for (let i = 0; i < classes.length; i++) {
 		menu = document.getElementById(classes[i] + "-menu");
 		if (menu !== null) {
