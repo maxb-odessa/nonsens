@@ -37,6 +37,20 @@ function safeString(str, toSafe) {
 	return res;
 }
 
+// show/hide window mask to prevent interaction with lower elements
+function maskBelow(id, doMask) {
+	var elem = document.getElementById(id);
+	var mask = document.getElementById('masked-below');
+
+	var elemStyle = window.getComputedStyle(elem);
+
+	if (doMask) {
+		mask.style.zIndex = elemStyle.zIndex - 1;
+	} else {
+		mask.style.zIndex = -1;
+	}
+}
+
 var newGroupSeq = 0;
 
 // generate new group html code and insert it
@@ -46,8 +60,8 @@ function groupAdd(containerId) {
 	var uuid = createUUID();
 	const template = `
 		<fieldset id="gc-${uuid}" class="group-container">
-			<legend id="group-title-${uuid}" class="drag-handle group-legend">New Group #${newGroupSeq}</legend>
-			<div id="gr-${uuid}" title="Click for group menu" class="group" onclick="saveGroupId('${uuid}');"></div>
+			<legend id="gt-${uuid}" class="drag-handle group-legend">New Group #${newGroupSeq}</legend>
+			<div id="g-${uuid}" title="Click for group menu" class="group" onclick="saveGroupId('${uuid}');"></div>
 			<div class="resize-handle">&nbsp;</div>
 		</fieldset>
 	`;
@@ -84,16 +98,18 @@ function showEditor(editorId, show) {
 function groupEdit(editorId) {
 
 	var editor = document.getElementById(editorId);
-	var group = document.getElementById("gc-"+savedGroupId);
+	var groupC = document.getElementById("gc-"+savedGroupId); // group container
+	var groupT = groupC.querySelector("#gt-"+savedGroupId); // group title
+	var group = groupC.querySelector("#g-"+savedGroupId);  // group itself
 
 	// fill in editor with current group data
-	editor.querySelector("#group-edit-title").value = safeString(group.querySelector("#group-title-"+savedGroupId).innerHTML, false);
+	editor.querySelector("#group-edit-title").value = safeString(groupT.innerHTML, false);
 
-	var titleStyle = window.getComputedStyle(group.querySelector("#group-title-"+savedGroupId));
+	var titleStyle = window.getComputedStyle(groupT);
 	editor.querySelector("#group-edit-title-color").value = titleStyle.color;
 	editor.querySelector("#group-edit-title-bg-color").value = titleStyle.backgroundColor;
 
-	var groupStyle = window.getComputedStyle(group.querySelector("#gr-"+savedGroupId));
+	var groupStyle = window.getComputedStyle(group);
 	editor.querySelector("#group-edit-bg-color").value = groupStyle.backgroundColor;
 
 	// show editor
@@ -106,16 +122,29 @@ function groupEdit(editorId) {
 function groupApply(editorId) {
 
 	var editor = document.getElementById(editorId);
-	var group = document.getElementById("gc-"+savedGroupId);
+	var groupC = document.getElementById("gc-"+savedGroupId);
+	var groupT = groupC.querySelector("#gt-"+savedGroupId);
+	var group = groupC.querySelector("#g-"+savedGroupId);
 
 	// fill in editor with current group data
-	group.querySelector("#group-title-"+savedGroupId).innerHTML = safeString(editor.querySelector("#group-edit-title").value, true);
+	groupT.innerHTML = safeString(editor.querySelector("#group-edit-title").value, true);
 
-	group.querySelector("#group-title-"+savedGroupId).style.color = editor.querySelector("#group-edit-title-color").value;
-	group.querySelector("#group-title-"+savedGroupId).style.backgroundColor = editor.querySelector("#group-edit-title-bg-color").value;
-	group.querySelector("#gr-"+savedGroupId).style.backgroundColor = editor.querySelector("#group-edit-bg-color").value;
+	groupT.style.color = editor.querySelector("#group-edit-title-color").value;
+	groupT.style.backgroundColor = editor.querySelector("#group-edit-title-bg-color").value;
+
+	group.style.backgroundColor = editor.querySelector("#group-edit-bg-color").value;
 
 	return true;
+}
+
+// delete a group
+function groupDelete() {
+
+	// delete the group
+	if (confirm("You are going to DELETE the group and all its sensors!\nConfirm?")) {
+		// delete whole group container
+		document.getElementById("gc-"+savedGroupId).remove();
+	}
 }
 
 
@@ -134,8 +163,8 @@ function groupAddSensor() {
 	var uuid = createUUID();
 	const template = `
 		<fieldset id="sc-${uuid}" class="sensor-container">
-			<legend class="drag-handle sensor-legend">New Sensor #${newSensorSeq}</legend>
-			<div id="se-${uuid}" title="Click for sensor menu" class="sensor" onclick="saveSensorId('${uuid}');"></div>
+			<legend id="st-${uuid}" class="drag-handle sensor-legend">New Sensor #${newSensorSeq}</legend>
+			<div id="s-${uuid}" title="Click for sensor menu" class="sensor" onclick="saveSensorId('${uuid}');"></div>
 			<div class="resize-handle">&nbsp;</div>
 		</fieldset>
 	`;
@@ -153,38 +182,60 @@ function saveSensorId(id) {
 	savedSensorId = id;
 }
 
-// delete a group
-function groupDelete() {
-
-	// delete the group
-	if (confirm("You are going to DELETE the group and all its sensors!\nConfirm?")) {
-		// delete whole group container
-		document.getElementById("gc-"+savedGroupId).remove();
-	}
-}
-
-// show/hide window mask to prevent interaction with lower elements
-function maskBelow(id, doMask) {
-	var elem = document.getElementById(id);
-	var mask = document.getElementById('masked-below');
-
-	var elemStyle = window.getComputedStyle(elem);
-
-	if (doMask) {
-		mask.style.zIndex = elemStyle.zIndex - 1;
-	} else {
-		mask.style.zIndex = -1;
-	}
-}
-
 // edit the sensor
-function sensorEdit(sensorId) {
+function sensorEdit(editorId) {
+
+	var editor = document.getElementById(editorId);
+	var sensorC = document.getElementById("sc-"+savedSensorId);
+	var sensorT = sensorC.querySelector("#st-"+savedSensorId);
+	var sensor = sensorC.querySelector("#s-"+savedSensorId);
 
 	// fill in editor with current sensor data
-	var sensor = document.getElementById(sensorId);
+	editor.querySelector("#sensor-edit-title").value = safeString(sensorT.innerHTML, false);
+
+	var titleStyle = window.getComputedStyle(sensorT);
+	editor.querySelector("#sensor-edit-title-color").value = titleStyle.color;
+	editor.querySelector("#sensor-edit-title-bg-color").value = titleStyle.backgroundColor;
+
+	var sensorStyle = window.getComputedStyle(sensor);
+	editor.querySelector("#sensor-edit-bg-color").value = sensorStyle.backgroundColor;
+
+/*
+input file
+min, max values
+value divider
+show precision
+unit suffix
+poll interval
+
+widget colors, gradient, etc...
+
+select style?
+
+
+*/
 
 	// show editor
-	showEditor(sensorId, true);
+	showEditor(editorId, true);
+}
+
+// apply sensor params from editor
+function sensorApply(editorId) {
+
+	var editor = document.getElementById(editorId);
+	var sensorC = document.getElementById("sc-"+savedSensorId);
+	var sensorT = sensorC.querySelector("#st-"+savedSensorId);
+	var sensor = sensorC.querySelector("#s-"+savedSensorId);
+
+	// fill in editor with current sensor data
+	sensorT.innerHTML = safeString(editor.querySelector("#sensor-edit-title").value, true);
+	sensorT.style.color = editor.querySelector("#sensor-edit-title-color").value;
+	sensorT.style.backgroundColor = editor.querySelector("#sensor-edit-title-bg-color").value;
+
+
+	sensor.style.backgroundColor = editor.querySelector("#sensor-edit-bg-color").value;
+
+	return true;
 }
 
 // delete a sensor

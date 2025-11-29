@@ -49,7 +49,7 @@
 		<div id="group-editor" class="group-editor">
 			<form id="group-editor-form">
 			</fieldset>
-				<legend>Edit Group TBD</legend>
+				<legend>Group settings</legend>
 				<label for="group-edit-title">Group title:</label>
 				<input type="text" id="group-edit-title" minlength="0" maxlength="30">
 				<br>
@@ -72,12 +72,22 @@
 		<div id="sensor-editor" class="sensor-editor">
 			<form id="sensor-editor-form">
 			</fieldset>
-				<legend>Edit Sensor TBD</legend>
-				<label for="sensor-edit-name">Sensor name:</label>
-				<input type="text" id="sensor-edit-name" minlength="0" maxlength="30">
+				<legend>Sensor settings</legend>
+				<label for="sensor-edit-title">Sensor title:</label>
+				<input type="text" id="sensor-edit-title" minlength="0" maxlength="30">
+				<br>
+				<label for="sensor-edit-title-color">Title color:</label>
+				<input id="sensor-edit-title-color" type="color" class="color-picker">
+				<br>
+				<label for="sensor-edit-title-bg-color">Title bg color:</label>
+				<input id="sensor-edit-title-bg-color" type="color" class="color-picker">
+				<br>
+				<label for="sensor-edit-bg-color">Backgroud color:</label>
+				<input id="sensor-edit-bg-color" type="color" class="color-picker">
+				<br>
 			</fieldset>
 			<br>
-			<input type="button" value="Appy" onclick="showEditor('sensor-editor', false);">
+			<input type="button" value="Appy" onclick="sensorApply('sensor-editor'); showEditor('sensor-editor', false);">
 			<input type="button" value="Cancel" onclick="showEditor('sensor-editor', false);">
 			</form>
 		</div>
