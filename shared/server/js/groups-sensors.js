@@ -15,6 +15,28 @@ function createUUID() {
 	return uuid;
 }
 
+// primitive string (un)sanitizer
+function safeString(str, toSafe) {
+	var res = str;
+	if (toSafe) {
+		res = res.replace(`&`, `&amp;`); // must be the first
+		res = res.replace(`<`, `&lt;`);
+		res = res.replace(`>`, `&gt;`);
+		res = res.replace(` `, `&nbsp;`);
+		res = res.replace(`'`, `&apos;`);
+		res = res.replace(`"`, `&quot;`);
+	} else {
+		res = res.replace(`&lt;`, `<`);
+		res = res.replace(`&gt;`, `>`);
+		res = res.replace(`&nbsp;`, ` `);
+		res = res.replace(`&apos;`, `'`);
+		res = res.replace(`&quot;`, `"`);
+		res = res.replace(`&amp;`, `&` ); // must be the last
+	}
+
+	return res;
+}
+
 var newGroupSeq = 0;
 
 // generate new group html code and insert it
@@ -45,7 +67,7 @@ function saveGroupId(id) {
 }
 
 function showEditor(editorId, show) {
-	editor = document.getElementById(editorId);
+	var editor = document.getElementById(editorId);
 	if (show) {
 		editor.style.display = "inline-block";
 		maskBelow(editor.id, true);
@@ -61,17 +83,17 @@ function showEditor(editorId, show) {
 // edit the group
 function groupEdit(editorId) {
 
-	editor = document.getElementById(editorId);
-	group = document.getElementById("gc-"+savedGroupId);
+	var editor = document.getElementById(editorId);
+	var group = document.getElementById("gc-"+savedGroupId);
 
 	// fill in editor with current group data
-	editor.querySelector("#group-edit-title").value = group.querySelector("#group-title-"+savedGroupId).innerHTML;
-	titleStyle = window.getComputedStyle(group.querySelector("#group-title-"+savedGroupId));
+	editor.querySelector("#group-edit-title").value = safeString(group.querySelector("#group-title-"+savedGroupId).innerHTML, false);
+
+	var titleStyle = window.getComputedStyle(group.querySelector("#group-title-"+savedGroupId));
 	editor.querySelector("#group-edit-title-color").value = titleStyle.color;
 	editor.querySelector("#group-edit-title-bg-color").value = titleStyle.backgroundColor;
-// TODO del opacity, add background in rgba() shape. Parse bg-color, extract opacity. Combine whne saving
-	editor.querySelector("#group-edit-title-bg-color-opacity").value = titleStyle.opacity;
-	groupStyle = window.getComputedStyle(group.querySelector("#gr-"+savedGroupId));
+
+	var groupStyle = window.getComputedStyle(group.querySelector("#gr-"+savedGroupId));
 	editor.querySelector("#group-edit-bg-color").value = groupStyle.backgroundColor;
 
 	// show editor
@@ -83,18 +105,15 @@ function groupEdit(editorId) {
 // apply group params from editor
 function groupApply(editorId) {
 
-	editor = document.getElementById(editorId);
-	group = document.getElementById("gc-"+savedGroupId);
+	var editor = document.getElementById(editorId);
+	var group = document.getElementById("gc-"+savedGroupId);
 
 	// fill in editor with current group data
-	group.querySelector("#group-title-"+savedGroupId).innerHTML = editor.querySelector("#group-edit-title").value;
+	group.querySelector("#group-title-"+savedGroupId).innerHTML = safeString(editor.querySelector("#group-edit-title").value, true);
+
 	group.querySelector("#group-title-"+savedGroupId).style.color = editor.querySelector("#group-edit-title-color").value;
 	group.querySelector("#group-title-"+savedGroupId).style.backgroundColor = editor.querySelector("#group-edit-title-bg-color").value;
-	group.querySelector("#group-title-"+savedGroupId).style.opacity = editor.querySelector("#group-edit-title-bg-color-opacity").value;
 	group.querySelector("#gr-"+savedGroupId).style.backgroundColor = editor.querySelector("#group-edit-bg-color").value;
-
-	// show editor
-	showEditor(editorId, true);
 
 	return true;
 }
@@ -146,10 +165,10 @@ function groupDelete() {
 
 // show/hide window mask to prevent interaction with lower elements
 function maskBelow(id, doMask) {
-	elem = document.getElementById(id);
-	mask = document.getElementById('masked-below');
+	var elem = document.getElementById(id);
+	var mask = document.getElementById('masked-below');
 
-	elemStyle = window.getComputedStyle(elem);
+	var elemStyle = window.getComputedStyle(elem);
 
 	if (doMask) {
 		mask.style.zIndex = elemStyle.zIndex - 1;
@@ -162,7 +181,7 @@ function maskBelow(id, doMask) {
 function sensorEdit(sensorId) {
 
 	// fill in editor with current sensor data
-	sensor = document.getElementById(sensorId);
+	var sensor = document.getElementById(sensorId);
 
 	// show editor
 	showEditor(sensorId, true);
