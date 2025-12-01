@@ -129,32 +129,39 @@ body {
 
 .group-editor,
 .sensor-editor {
-	background-color: yellow;
 	position: absolute;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
 	display: none;
 	z-index: 999;
-	color: black;
-	border: 2px solid black;
 	fieldset {
+		border: 1px solid black;
+		color: black;
+		background-color: yellow;
+		width: 100%;
+		height: 100%;
+		legend {
+			background-color: inherit;
+			border: inherit;
+		}
 		label {
 			display: inline-block;
-			width: 50%;
 			text-align: right;
 			margin: 3px;
 			font-style: italic;
+			width: 45%;
 		}
-		input[type='text'],
-		input[type='number'],
+		input,
 		select {
 			box-sizing: border-box;
 			border: 1px solid black;
 			display: inline-block;
 			text-align: left;
 			border-radius: 4px;
-			width: 30%;
+			&[type='text'] {
+				width: 45%;
+			}
 		}
 	}
 }
@@ -178,7 +185,7 @@ body {
 	gap: 0;
 	resize: none;
 	grid-column-start: 1;
-	grid-column-end: 20;
+	grid-column-end: 40;
 	grid-row-start: 1;
 	grid-row-end: 35;
 	.sensor-legend {

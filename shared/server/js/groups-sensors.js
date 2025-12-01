@@ -22,12 +22,13 @@ function safeString(str, toSafe) {
 		res = res.replace(`&`, `&amp;`); // must be the first
 		res = res.replace(`<`, `&lt;`);
 		res = res.replace(`>`, `&gt;`);
-		res = res.replace(` `, `&nbsp;`);
+		res = res.replace(` `, `&#32;`);
 		res = res.replace(`'`, `&apos;`);
 		res = res.replace(`"`, `&quot;`);
 	} else {
 		res = res.replace(`&lt;`, `<`);
 		res = res.replace(`&gt;`, `>`);
+		res = res.replace(`&#32;`, ` `);
 		res = res.replace(`&nbsp;`, ` `);
 		res = res.replace(`&apos;`, `'`);
 		res = res.replace(`&quot;`, `"`);
@@ -38,6 +39,7 @@ function safeString(str, toSafe) {
 }
 
 // show/hide window mask to prevent interaction with lower elements
+// TODO make it 'stackable' - remember mask zIndex on subsequent calls
 function maskBelow(id, doMask) {
 	var elem = document.getElementById(id);
 	var mask = document.getElementById('masked-below');
@@ -145,6 +147,7 @@ function groupDelete() {
 		// delete whole group container
 		document.getElementById("gc-"+savedGroupId).remove();
 	}
+
 }
 
 
@@ -171,8 +174,21 @@ function groupAddSensor() {
 	newSensorSeq ++;
 
 	// add to group, not group container
-	document.getElementById("gr-"+savedGroupId).innerHTML += template;
+	document.getElementById("g-"+savedGroupId).innerHTML += template;
 
+	// add sensor data defaults to the sensor
+	newSensor = document.getElementById("s-" + uuid);
+	var data = JSON.stringify(
+		{
+			"source": "",
+			"min": 0,
+			"max": 100,
+			"precision": 1.2,
+			"suffix": "",
+			"poll": 1.0
+		}
+	);
+	newSensor.setAttribute("data-sensor", data);
 }
 
 var savedSensorId = "";
@@ -200,19 +216,18 @@ function sensorEdit(editorId) {
 	var sensorStyle = window.getComputedStyle(sensor);
 	editor.querySelector("#sensor-edit-bg-color").value = sensorStyle.backgroundColor;
 
+	// get sensor settings
+	var sensorData = JSON.parse(sensor.getAttribute("data-sensor"));
+	editor.querySelector("#sensor-edit-source").value = sensorData.source;
+	editor.querySelector("#sensor-edit-min").value = sensorData.min;
+	editor.querySelector("#sensor-edit-max").value = sensorData.max;
+	editor.querySelector("#sensor-edit-precision").value = sensorData.precision;
+	editor.querySelector("#sensor-edit-suffix").value = sensorData.suffix;
+	editor.querySelector("#sensor-edit-poll").value = sensorData.poll;
+
 /*
-input file
-min, max values
-value divider
-show precision
-unit suffix
-poll interval
-
 widget colors, gradient, etc...
-
 select style?
-
-
 */
 
 	// show editor
@@ -232,10 +247,19 @@ function sensorApply(editorId) {
 	sensorT.style.color = editor.querySelector("#sensor-edit-title-color").value;
 	sensorT.style.backgroundColor = editor.querySelector("#sensor-edit-title-bg-color").value;
 
-
 	sensor.style.backgroundColor = editor.querySelector("#sensor-edit-bg-color").value;
 
-	return true;
+	var sensorData = {
+		"source": editor.querySelector("#sensor-edit-source").value,
+		"min": editor.querySelector("#sensor-edit-min").value,
+		"max": editor.querySelector("#sensor-edit-max").value,
+		"precision": editor.querySelector("#sensor-edit-precision").value,
+		"suffix": editor.querySelector("#sensor-edit-suffix").value,
+		"poll": editor.querySelector("#sensor-edit-poll").value,
+	}
+
+	// store sensor data
+	sensor.setAttribute("data-sensor", JSON.stringify(sensorData));
 }
 
 // delete a sensor

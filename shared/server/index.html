@@ -48,46 +48,72 @@
 		<!-- editors -->
 		<div id="group-editor" class="group-editor">
 			<form id="group-editor-form">
-			</fieldset>
+			<fieldset>
 				<legend>Group settings</legend>
 				<label for="group-edit-title">Group title:</label>
 				<input type="text" id="group-edit-title" minlength="0" maxlength="30">
 				<br>
 				<label for="group-edit-title-color">Title color:</label>
-				<input id="group-edit-title-color" type="color" class="color-picker">
+				<input id="group-edit-title-color" type="color">
 				<br>
 				<label for="group-edit-title-bg-color">Title bg color:</label>
-				<input id="group-edit-title-bg-color" type="color" class="color-picker">
+				<input id="group-edit-title-bg-color" type="color">
 				<br>
 				<label for="group-edit-bg-color">Backgroud color:</label>
-				<input id="group-edit-bg-color" type="color" class="color-picker">
+				<input id="group-edit-bg-color" type="color">
 				<br>
 			</fieldset>
-			<br>
 			<input type="button" value="Appy" onclick="groupApply('group-editor'); showEditor('group-editor', false);">
 			<input type="button" value="Cancel" onclick="showEditor('group-editor', false);">
 			</form>
 		</div>
 
 		<div id="sensor-editor" class="sensor-editor">
-			<form id="sensor-editor-form">
-			</fieldset>
+			<form id="sensor-editor-form" onsubmit="sensorApply('sensor-editor'); showEditor('sensor-editor', false); return false;">
+			<fieldset>
 				<legend>Sensor settings</legend>
 				<label for="sensor-edit-title">Sensor title:</label>
 				<input type="text" id="sensor-edit-title" minlength="0" maxlength="30">
 				<br>
 				<label for="sensor-edit-title-color">Title color:</label>
-				<input id="sensor-edit-title-color" type="color" class="color-picker">
+				<input id="sensor-edit-title-color" type="color">
 				<br>
 				<label for="sensor-edit-title-bg-color">Title bg color:</label>
-				<input id="sensor-edit-title-bg-color" type="color" class="color-picker">
+				<input id="sensor-edit-title-bg-color" type="color">
 				<br>
 				<label for="sensor-edit-bg-color">Backgroud color:</label>
-				<input id="sensor-edit-bg-color" type="color" class="color-picker">
+				<input id="sensor-edit-bg-color" type="color">
+				<hr>
+				<label for="sensor-edit-source">Data Source:</label>
+				<input id="sensor-edit-source" type="text" required minlength="2" maxlength="1024">
+				<br>
+				<label for="sensor-edit-min">Min value:</label>
+				<input id="sensor-edit-min" type="number" step="any" required>
+				<label for="sensor-edit-max">Max value:</label>
+				<input id="sensor-edit-max" type="number" step="any" required>
+				<br>
+				<label for="sensor-edit-precision">Display value format:</label>
+            			<select id="sensor-edit-precision" required>
+					<option value="0">1</option>
+					<option value="1">1.2</option>
+					<option value="2">1.23</option>
+					<option value="3">1.234</option>
+					<option value="4">1.2345</option>
+					<option value="5">1.23456</option>
+					<option value="6">1.234567</option>
+					<option value="7">1.2345678</option>
+					<option value="8">1.23456789</option>
+					<option value="9">1.234567890</option>
+				</select>
+				<br>
+				<label for="sensor-edit-suffix">Display value suffix:</label>
+				<input id="sensor-edit-suffix" type="text" minlength="0" maxlength="30">
+				<br>
+				<label for="sensor-edit-poll">Poll interval:</label>
+				<input id="sensor-edit-poll" type="number" required min="0.1" max="3600" step="0.1" required>sec
 				<br>
 			</fieldset>
-			<br>
-			<input type="button" value="Appy" onclick="sensorApply('sensor-editor'); showEditor('sensor-editor', false);">
+			<input type="submit" value="Apply">
 			<input type="button" value="Cancel" onclick="showEditor('sensor-editor', false);">
 			</form>
 		</div>
