@@ -35,37 +35,16 @@ type Sensor struct {
 		Hint      string
 	} `json:"-"`
 
-	// configured params
+	// configured params (as defined in frontend)
 	Config struct {
 		InType       string  `json:"type"`      // input type: "file" or "cmd"
 		Path         string  `json:"path"`      // full path to file or command
 		KeepOpen     bool    `json:"keep_open"` // for files: keep it open for readings
+		PollInterval int     `json:"poll_ms"`   // milliseconds
 		Min          float64 `json:"min"`       // min input value, divider applied
 		Max          float64 `json:"max"`       // max input value, divider applied
 		Divider      float64 `json:"divider"`   // input value divider (can be negaive)
-		PollInterval int     `json:"poll_ms"`   // milliseconds
 	} `json:"config"`
-
-	// widget params
-	Widget struct {
-		Title        string  `json:"title"`      // visible sensor name
-		Units        string  `json:"units"`      // suffix shown value with units string
-		Fractions    int     `json:"fractions"`  // show only this number of value fractions, i.e. 2 = 1.23 for 1.23456 valuea
-		TextColor    string  `json:"text_color"` // text color
-		Color0       string  `json:"color0"`     // min value color (at 0%)
-		ColorN       string  `json:"colorn"`     // curr value color (at N%)
-		Color100     string  `json:"color100"`   // max value color (at 100%)
-		ColorNP      float64 `json:"colornp"`    // colorN percents position
-		ShowGradient bool    `json:"gradient"`   // use gradient or plain color?
-
-		GroupId   string `json:"group_id"` // the widget belongs to this group
-		GroupCol  int    `json:"col"`      // put the widget at this col in group
-		GroupRow  int    `json:"row"`      // put the widget at this row in group
-		GroupColN int    `json:"col_n"`    // the widget occupies N columns inside a group
-		GroupRowN int    `json:"row_n"`    // the widget occupies N rows inside a group
-
-		Style string `json:"style"` // css style name for this widget
-	} `json:"widget"`
 }
 
 func (s *Sensor) setup() error {

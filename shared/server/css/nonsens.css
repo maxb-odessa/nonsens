@@ -150,7 +150,7 @@ body {
 			text-align: right;
 			margin: 3px;
 			font-style: italic;
-			width: 45%;
+			width: 49%;
 		}
 		input,
 		select {
@@ -160,7 +160,7 @@ body {
 			text-align: left;
 			border-radius: 4px;
 			&[type='text'] {
-				width: 45%;
+				width: 49%;
 			}
 		}
 	}

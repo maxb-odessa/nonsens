@@ -5,7 +5,7 @@ function createUUID() {
 	var s = [];
 	var hexDigits = "0123456789abcdef";
 	for (var i = 0; i < 36; i++) {
-        	s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+		s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
 	}
 	s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
 	s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
@@ -177,15 +177,19 @@ function groupAddSensor() {
 	document.getElementById("g-"+savedGroupId).innerHTML += template;
 
 	// add sensor data defaults to the sensor
+	// (same as in backend)
 	newSensor = document.getElementById("s-" + uuid);
 	var data = JSON.stringify(
 		{
-			"source": "",
-			"min": 0,
-			"max": 100,
-			"precision": 1.2,
-			"suffix": "",
-			"poll": 1.0
+			"type":		"file",
+			"path":		"",
+			"keep_open":	true,
+			"poll_ms":	1.0,
+			"min":		0,
+			"max":		100,
+			"divider":	1.0,
+			"precision":	1,
+			"suffix":	""
 		}
 	);
 	newSensor.setAttribute("data-sensor", data);
@@ -218,16 +222,19 @@ function sensorEdit(editorId) {
 
 	// get sensor settings
 	var sensorData = JSON.parse(sensor.getAttribute("data-sensor"));
-	editor.querySelector("#sensor-edit-source").value = sensorData.source;
-	editor.querySelector("#sensor-edit-min").value = sensorData.min;
-	editor.querySelector("#sensor-edit-max").value = sensorData.max;
-	editor.querySelector("#sensor-edit-precision").value = sensorData.precision;
-	editor.querySelector("#sensor-edit-suffix").value = sensorData.suffix;
-	editor.querySelector("#sensor-edit-poll").value = sensorData.poll;
+	editor.querySelector("#sensor-edit-source-path").value = sensorData.path;
+	editor.querySelector("#sensor-edit-source-type").value = sensorData.type;
+	editor.querySelector("#sensor-edit-source-keepopen").checked = sensorData.keep_open;
+	editor.querySelector("#sensor-edit-source-poll").value = sensorData.poll_ms;
+	editor.querySelector("#sensor-edit-value-min").value = sensorData.min;
+	editor.querySelector("#sensor-edit-value-max").value = sensorData.max;
+	editor.querySelector("#sensor-edit-value-divider").value = sensorData.divider;
+	editor.querySelector("#sensor-edit-value-precision").value = sensorData.precision;
+	editor.querySelector("#sensor-edit-value-suffix").value = sensorData.suffix;
 
 /*
 widget colors, gradient, etc...
-select style?
+select css style?
 */
 
 	// show editor
@@ -250,13 +257,16 @@ function sensorApply(editorId) {
 	sensor.style.backgroundColor = editor.querySelector("#sensor-edit-bg-color").value;
 
 	var sensorData = {
-		"source": editor.querySelector("#sensor-edit-source").value,
-		"min": editor.querySelector("#sensor-edit-min").value,
-		"max": editor.querySelector("#sensor-edit-max").value,
-		"precision": editor.querySelector("#sensor-edit-precision").value,
-		"suffix": editor.querySelector("#sensor-edit-suffix").value,
-		"poll": editor.querySelector("#sensor-edit-poll").value,
-	}
+		"path":		editor.querySelector("#sensor-edit-source-path").value,
+		"type":		editor.querySelector("#sensor-edit-source-type").value,
+		"keep_open":	editor.querySelector("#sensor-edit-source-keepopen").checked,
+		"poll_ms":	editor.querySelector("#sensor-edit-source-poll").value,
+		"min":		editor.querySelector("#sensor-edit-value-min").value,
+		"max":		editor.querySelector("#sensor-edit-value-max").value,
+		"divider":	editor.querySelector("#sensor-edit-value-divider").value,
+		"precision":	editor.querySelector("#sensor-edit-value-precision").value,
+		"suffix":	editor.querySelector("#sensor-edit-value-suffix").value
+	};
 
 	// store sensor data
 	sensor.setAttribute("data-sensor", JSON.stringify(sensorData));
