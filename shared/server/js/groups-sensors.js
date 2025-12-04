@@ -173,8 +173,10 @@ function groupAddSensor() {
 	`;
 	newSensorSeq ++;
 
-	// add to group, not group container
+	// add to group, not to group container
 	document.getElementById("g-"+savedGroupId).innerHTML += template;
+
+	// TODO create sensor widget, put it inside sensor div (s-${uuid})
 
 	// add sensor data defaults to the sensor
 	// (same as in backend)
@@ -283,3 +285,8 @@ function sensorDelete() {
 }
 
 
+// make sensor widget (s = [sensor Obj], data = [new sensor values])
+// TODO
+function makeSensorWidget(s, data) {
+	s.innerHTML = `<b>1</b>`;
+}
