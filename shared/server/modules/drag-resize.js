@@ -272,7 +272,6 @@ console.log("=========");
 
 }
 
-// attach handlers
-document.onmousedown = dragResize;
-document.ontouchstart = dragResize;
+
+export { dragResize };
 

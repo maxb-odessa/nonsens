@@ -11,8 +11,6 @@ function loadCSS() {
 // establish websocket communication
 async function wsLoop() {
 
-	loadCSS();
-
 	const wsUrl = "ws://" + window.location.hostname + ":" + window.location.port + "/ws";
 
 	while (1) {
@@ -20,7 +18,7 @@ async function wsLoop() {
 		let reconnect = false;
 
 		// (re)create a websocket
-		wsocket = {};
+		let wsocket = {};
 		wsocket = new WebSocket(wsUrl);
 
 		wsocket.onopen = function() {
@@ -79,3 +77,5 @@ function updateSensor(data) {
 	// TODO redraw sensor widget according to new values
 
 }
+
+export { wsLoop, loadCSS };

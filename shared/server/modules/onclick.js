@@ -32,22 +32,22 @@ function toggleMenu(e) {
 	}
 
 	showMenu(e, menu.id, true);
-
-	clicking = false;
 }
 
 function showMenu(e, id, doShow) {
-	menu = document.getElementById(id);
+	var menu = document.getElementById(id);
 
 	if (! doShow) {
 		menu.style.display = "none";
 		return;
 	}
 
-	pos = getPointerPos(e);
+	let pos = getPointerPos(e);
 
 	// show the menu and position it next to the pointer
 	menu.style.top = (pos.pointerY - 20) * 1 + "px";
 	menu.style.left = (pos.pointerX - 20) * 1 + "px";
 	menu.style.display = "inline-block";
 }
+
+export { toggleMenu, showMenu };

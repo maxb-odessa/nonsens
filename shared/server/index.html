@@ -7,6 +7,8 @@
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
+
+		<script type="module" src="./nonsens.js"></script>
 	</head>
 
 	<body>
@@ -30,7 +32,7 @@
 		<div id="group-menu" class="group-menu" onmouseleave="showMenu(event, 'group-menu', false);">
 			<ul>
 				<li onclick="showMenu(event, 'group-menu', false); groupEdit('group-editor');">Edit group</li>
-				<li onclick="showMenu(event, 'group-menu', false); groupAddSensor();">Add new sensor</li>
+				<li onclick="showMenu(event, 'group-menu', false); sensorAdd();">Add new sensor</li>
 				<hr>
 				<li style="color: red;" onclick="showMenu(event, 'group-menu', false); groupDelete();">Delete group</li>
 			</ul>
@@ -149,23 +151,5 @@
 			</form>
 		</div>
 
-
-
-		<!-- load scripts -->
-		<script src="js/ws.js" defer></script>
-		<script src="js/drag-resize.js" defer></script>
-		<script src="js/onclick.js" defer></script>
-		<script src="js/groups-sensors.js" defer></script>
-
-		<!-- run scripts -->
-		<script>
-			document.addEventListener('readystatechange', event => {
-				if (event.target.readyState === "complete") {
-					wsLoop();
-				}
-			});
-		</script>
-
 	</body>
-
 </html>
