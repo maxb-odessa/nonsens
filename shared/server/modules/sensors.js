@@ -1,6 +1,6 @@
 
 import { createUUID, safeString, maskBelow, showEditor } from './utils.js';
-import { selecteGroupId } from './groups.js';
+import { selectedGroupId } from './groups.js';
 
 export var selectedSensorId = "";
 
@@ -28,7 +28,7 @@ function sensorAdd() {
 	newSensorSeq ++;
 
 	// add to group, not to group container
-	document.getElementById("g-"+selecteGroupId).innerHTML += template;
+	document.getElementById("g-"+selectedGroupId).innerHTML += template;
 
 	// TODO create sensor widget, put it inside sensor div (s-${uuid})
 

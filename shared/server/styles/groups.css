@@ -1,0 +1,57 @@
+
+.group-container {
+	display: inline;
+	position: relative;
+	z-index: 10;
+	overflow: hidden;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	gap: 0;
+	resize: none;
+	grid-column-start: 1;
+	grid-column-end: 20;
+	grid-row-start: 1;
+	grid-row-end: 35;
+	.group-legend {
+		color: white;
+	}
+	.group {
+		display: inline-grid;
+		grid-template-columns: repeat(64, 1fr);
+		grid-template-rows: repeat(64, 1fr);
+		padding: 0;
+		margin: 0;
+		gap: 0;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		resize: none;
+	}
+
+	/* default style, do not edit */
+	&.Default {
+		border: solid white 1px;
+		.group-legend {
+			background-color: cyan;
+		}
+		.group {
+			background-color: gray;
+		}
+	}
+
+	/* flat and transparent */
+	&.Flat {
+		border: solid black 1px;
+		.group-legend {
+			background-color: #00000000;
+			color: black;
+		}
+		.group {
+			background-color: #00000000;
+		}
+	}
+
+	/* add more styles */
+}

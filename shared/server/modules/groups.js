@@ -1,13 +1,13 @@
 
 import { createUUID, safeString, maskBelow, showEditor } from './utils.js';
 
-export var selecteGroupId = "";
+export var selectedGroupId = "";
 
 var newGroupSeq = 0;
 
 // save clicked (last used) group id (uhm...)
 function saveGroupId(id) {
-	selecteGroupId = id;
+	selectedGroupId = id;
 	return true;
 }
 
@@ -19,7 +19,7 @@ function groupAdd(containerId) {
 	// group template
 	var uuid = createUUID();
 	const template = `
-		<fieldset id="gc-${uuid}" class="group-container">
+		<fieldset id="gc-${uuid}" class="group-container Default">
 			<legend id="gt-${uuid}" class="drag-handle group-legend">New Group #${newGroupSeq}</legend>
 			<div id="g-${uuid}" title="Click for group menu" class="group" onclick="saveGroupId('${uuid}');"></div>
 			<div class="resize-handle">&nbsp;</div>
@@ -37,10 +37,10 @@ function groupAdd(containerId) {
 function groupEdit(editorId) {
 
 	var editor = document.getElementById(editorId);
-	var groupC = document.getElementById("gc-"+selecteGroupId); // group container
-	var groupT = groupC.querySelector("#gt-"+selecteGroupId); // group title
-	var group = groupC.querySelector("#g-"+selecteGroupId);  // group itself
-
+	var groupC = document.getElementById("gc-"+selectedGroupId); // group container
+	var groupT = groupC.querySelector("#gt-"+selectedGroupId); // group title
+	var group = groupC.querySelector("#g-"+selectedGroupId);  // group itself
+// TODO add class selector
 	// fill in editor with current group data
 	editor.querySelector("#group-edit-title").value = safeString(groupT.innerHTML, false);
 
@@ -61,9 +61,9 @@ function groupEdit(editorId) {
 function groupApply(editorId) {
 
 	var editor = document.getElementById(editorId);
-	var groupC = document.getElementById("gc-"+selecteGroupId);
-	var groupT = groupC.querySelector("#gt-"+selecteGroupId);
-	var group = groupC.querySelector("#g-"+selecteGroupId);
+	var groupC = document.getElementById("gc-"+selectedGroupId);
+	var groupT = groupC.querySelector("#gt-"+selectedGroupId);
+	var group = groupC.querySelector("#g-"+selectedGroupId);
 
 	// fill in editor with current group data
 	groupT.innerHTML = safeString(editor.querySelector("#group-edit-title").value, true);
@@ -82,7 +82,7 @@ function groupDelete() {
 	// delete the group
 	if (confirm("You are going to DELETE the group and all its sensors!\nConfirm?")) {
 		// delete whole group container
-		document.getElementById("gc-"+selecteGroupId).remove();
+		document.getElementById("gc-"+selectedGroupId).remove();
 	}
 
 }

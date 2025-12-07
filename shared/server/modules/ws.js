@@ -1,13 +1,4 @@
 
-function loadCSS() {
-	document.getElementsByTagName('head')[0].insertAdjacentHTML(
-		'beforeend',
-		// for debug purposes: prevent CSS file caching
-		'<link rel="stylesheet" type="text/css" href="css/nonsens.css?'+Date.now()+'" />'
-	);
-};
-
-
 // establish websocket communication
 async function wsLoop() {
 
@@ -78,4 +69,4 @@ function updateSensor(data) {
 
 }
 
-export { wsLoop, loadCSS };
+export { wsLoop };

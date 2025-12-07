@@ -1,0 +1,35 @@
+
+.sensor-container {
+	display: inline-block;
+	position: relative;
+	z-index: 20;
+	overflow: hidden;
+	border: solid black 1px;
+	padding: 0;
+	margin: 0;
+	gap: 0;
+	resize: none;
+	grid-column-start: 1;
+	grid-column-end: 40;
+	grid-row-start: 1;
+	grid-row-end: 35;
+	.sensor-legend {
+		border: 1px white solid;
+		background-color: #707070;
+		font-size: 0.8em;
+	}
+	.sensor {
+		display: inline-block;
+		background-color: #709070;
+		border: 0;
+		padding: 0;
+		margin: 0;
+		gap: 0;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		resize: none;
+	}
+}
+

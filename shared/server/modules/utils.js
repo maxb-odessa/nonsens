@@ -67,6 +67,13 @@ function showEditor(editorId, show) {
 	return true;
 }
 
+// get all available styles for main, groups or sensors
+// https://stackoverflow.com/questions/59162535/is-there-a-way-to-list-all-available-css-classes-for-a-web-page
+function getAllStyles(what) {
+	// TODO filter out by 'what'
+	return [...[...$$("[class]")].reduce((s, e) => (e.classList.forEach(c => s.add(c)), s), new Set())].sort()
+}
+
 window.showEditor = showEditor;
 
 export { createUUID, safeString, maskBelow, showEditor };
