@@ -40,8 +40,19 @@ function groupEdit(editorId) {
 	var groupC = document.getElementById("gc-"+selectedGroupId); // group container
 	var groupT = groupC.querySelector("#gt-"+selectedGroupId); // group title
 	var group = groupC.querySelector("#g-"+selectedGroupId);  // group itself
-// TODO add class selector
+
 	// fill in editor with current group data
+
+	var edStyles = editor.querySelector("#group-edit-style");
+	// populate with available styles
+	edStyles.innerHTML = "";
+	for (let i = 0; i < customGroupStyles.length; i ++) {
+		var style = customGroupStyles[i];
+		edStyles.innerHTML += `<option value="${style}">${style}</option>`;
+	}
+	// set current style
+	edStyles.value = groupC.className.split(" ")[1];
+
 	editor.querySelector("#group-edit-title").value = safeString(groupT.innerHTML, false);
 
 	var titleStyle = window.getComputedStyle(groupT);
@@ -65,7 +76,9 @@ function groupApply(editorId) {
 	var groupT = groupC.querySelector("#gt-"+selectedGroupId);
 	var group = groupC.querySelector("#g-"+selectedGroupId);
 
-	// fill in editor with current group data
+	var oldStyle = groupC.className.split(" ")[1];
+	groupC.classList.replace(oldStyle, editor.querySelector("#group-edit-style").value);
+
 	groupT.innerHTML = safeString(editor.querySelector("#group-edit-title").value, true);
 
 	groupT.style.color = editor.querySelector("#group-edit-title-color").value;
@@ -86,6 +99,28 @@ function groupDelete() {
 	}
 
 }
+
+// get all custom group styles names (classes) from loaded CSS file
+// see nonsens.css
+// and styles/groups.css
+function groupGetCustomStyles() {
+	// 0 - top css file (nonsens.css)
+	// 0 - second inluded file (styles/groups.css)
+	// 0 - first class selector inside groups.css file (.group-container)
+	// all custom classes are inside .group-container and start with '&.[A-Z]'
+	const rules = document.styleSheets[0].cssRules[0].styleSheet.cssRules[0].cssRules;
+	var styles = [];
+
+	for (let i = 0; i < rules.length; i ++) {
+		if (rules[i] && rules[i].selectorText.match(/^&\.[A-Z]/)) {
+			styles.push(rules[i].selectorText.split(".")[1]);
+		}
+	}
+
+	return styles;
+}
+
+var customGroupStyles = groupGetCustomStyles();
 
 export { groupAdd, groupEdit, groupDelete, groupApply };
 

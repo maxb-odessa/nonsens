@@ -19,7 +19,7 @@ function sensorAdd() {
 	// sensor template
 	var uuid = createUUID();
 	const template = `
-		<fieldset id="sc-${uuid}" class="sensor-container">
+		<fieldset id="sc-${uuid}" class="sensor-container Default">
 			<legend id="st-${uuid}" class="drag-handle sensor-legend">New Sensor #${newSensorSeq}</legend>
 			<div id="s-${uuid}" title="Click for sensor menu" class="sensor" onclick="saveSensorId('${uuid}');"></div>
 			<div class="resize-handle">&nbsp;</div>
@@ -121,6 +121,30 @@ function sensorApply(editorId) {
 	// store sensor data
 	sensor.setAttribute("data-sensor", JSON.stringify(sensorData));
 }
+
+
+// get all custom sensors styles names (classes) from loaded CSS file
+// see nonsens.css
+// and styles/sensors.css
+function sensorGetCustomStyles() {
+	// 0 - top css file (nonsens.css)
+	// 1 - second inluded file (styles/sensors.css)
+	// 0 - first class selector inside sensors.css file (.sensor-container)
+	// all custom classes are inside .sensor-container and start with '&.[A-Z]'
+	const rules = document.styleSheets[0].cssRules[1].styleSheet.cssRules[0].cssRules;
+	var styles = [];
+
+	for (let i = 0; i < rules.length; i ++) {
+		if (rules[i] && rules[i].selectorText.match(/^&\.[A-Z]/)) {
+			styles.push(rules[i].selectorText.split(".")[1]);
+		}
+	}
+
+	return styles;
+}
+
+var customSensorStyles = sensorGetCustomStyles();
+
 
 // delete a sensor
 function sensorDelete() {

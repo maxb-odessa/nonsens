@@ -1,17 +1,9 @@
+
 import { dragResize } from './modules/drag-resize.js';
 import { toggleMenu, showMenu } from './modules/onclick.js';
 import { groupAdd, groupEdit, groupDelete, groupApply } from './modules/groups.js';
 import { sensorAdd, sensorEdit, sensorDelete, sensorApply } from './modules/sensors.js';
 import { wsLoop } from './modules/ws.js';
-
-
-// for debug purposes: prevent CSS file caching
-function loadCSS() {
-	document.getElementsByTagName('head')[0].insertAdjacentHTML(
-		'beforeend',
-		'<link rel="stylesheet" type="text/css" href="nonsens.css?'+Date.now()+'" />'
-	);
-};
 
 
 document.addEventListener('readystatechange', event => {
@@ -32,8 +24,6 @@ document.addEventListener('readystatechange', event => {
 		window.sensorEdit = sensorEdit;
 		window.sensorDelete = sensorDelete;
 		window.sensorApply = sensorApply;
-
-		loadCSS();
 
 		wsLoop();
 	}

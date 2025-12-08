@@ -1,6 +1,7 @@
-@import "styles/editors.css";
+/* KEEP THE ORDER !!! groups -> sensors -> editors */
 @import "styles/groups.css";
 @import "styles/sensors.css";
+@import "styles/editors.css";
 
 
 :root {

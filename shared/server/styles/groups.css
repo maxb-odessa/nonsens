@@ -30,7 +30,9 @@
 		resize: none;
 	}
 
-	/* default style, do not edit */
+	/* NAME STYLES WITH CAPITAL LETTER ONLY! */
+
+	/* default style, must always be present */
 	&.Default {
 		border: solid white 1px;
 		.group-legend {
@@ -41,10 +43,11 @@
 		}
 	}
 
-	/* flat and transparent */
+	/* custom style: flat and transparent */
 	&.Flat {
 		border: solid black 1px;
 		.group-legend {
+			float: right;
 			background-color: #00000000;
 			color: black;
 		}

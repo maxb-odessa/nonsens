@@ -7,8 +7,7 @@
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
-
-		<script type="module" src="./nonsens.js"></script>
+		<link rel="stylesheet" type="text/css" href="nonsens.css" />
 	</head>
 
 	<body>
@@ -54,8 +53,6 @@
 				<legend>Group settings</legend>
 				<label for="group-edit-style">Style:</label>
 				<select id="group-edit-style" required>
-					<option value="default">default</option>
-					<option value="plain">plain</option>
 				</select>
 				<label for="group-edit-title">Group title:</label>
 				<input type="text" id="group-edit-title" minlength="0" maxlength="30">
@@ -79,6 +76,9 @@
 			<form id="sensor-editor-form" onsubmit="sensorApply('sensor-editor'); showEditor('sensor-editor', false); return false;">
 			<fieldset>
 				<legend>Sensor settings</legend>
+				<label for="sensor-edit-style">Style:</label>
+				<select id="sensor-edit-style" required>
+				</select>
 				<label for="sensor-edit-title">Sensor title:</label>
 				<input type="text" id="sensor-edit-title" minlength="0" maxlength="30">
 				<br>
@@ -157,4 +157,6 @@
 		</div>
 
 	</body>
+
+	<script type="module" src="./nonsens.js"></script>
 </html>
