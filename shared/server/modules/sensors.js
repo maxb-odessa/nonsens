@@ -13,6 +13,29 @@ function saveSensorId(id) {
 
 window.saveSensorId = saveSensorId;
 
+// get all custom sensors styles names (classes) from loaded CSS file
+// see nonsens.css
+// and styles/sensors.css
+function sensorGetCustomStyles() {
+	// 0 - top css file (nonsens.css)
+	// 1 - second inluded file (styles/sensors.css)
+	// 0 - first class selector inside sensors.css file (.sensor-container)
+	// all custom classes are inside .sensor-container and start with '&.[A-Z]'
+	const rules = document.styleSheets[0].cssRules[1].styleSheet.cssRules[0].cssRules;
+	var styles = [];
+
+	for (let i = 0; i < rules.length; i ++) {
+		if (rules[i] && rules[i].selectorText.match(/^&\.[A-Z]/)) {
+			styles.push(rules[i].selectorText.split(".")[1]);
+		}
+	}
+
+	return styles;
+}
+
+var customSensorStyles = sensorGetCustomStyles();
+
+
 // add new sensor
 function sensorAdd() {
 
@@ -61,6 +84,17 @@ function sensorEdit(editorId) {
 	var sensor = sensorC.querySelector("#s-"+selectedSensorId);
 
 	// fill in editor with current sensor data
+
+	var edStyles = editor.querySelector("#sensor-edit-style");
+	// populate with available styles
+	edStyles.innerHTML = "";
+	for (let i = 0; i < customSensorStyles.length; i ++) {
+		var style = customSensorStyles[i];
+		edStyles.innerHTML += `<option value="${style}">${style}</option>`;
+	}
+	// set current style
+	edStyles.value = sensorC.className.split(" ")[1];
+
 	editor.querySelector("#sensor-edit-title").value = safeString(sensorT.innerHTML, false);
 
 	var titleStyle = window.getComputedStyle(sensorT);
@@ -99,7 +133,9 @@ function sensorApply(editorId) {
 	var sensorT = sensorC.querySelector("#st-"+selectedSensorId);
 	var sensor = sensorC.querySelector("#s-"+selectedSensorId);
 
-	// fill in editor with current sensor data
+	var oldStyle = sensorC.className.split(" ")[1];
+	sensorC.classList.replace(oldStyle, editor.querySelector("#sensor-edit-style").value);
+
 	sensorT.innerHTML = safeString(editor.querySelector("#sensor-edit-title").value, true);
 	sensorT.style.color = editor.querySelector("#sensor-edit-title-color").value;
 	sensorT.style.backgroundColor = editor.querySelector("#sensor-edit-title-bg-color").value;
@@ -121,29 +157,6 @@ function sensorApply(editorId) {
 	// store sensor data
 	sensor.setAttribute("data-sensor", JSON.stringify(sensorData));
 }
-
-
-// get all custom sensors styles names (classes) from loaded CSS file
-// see nonsens.css
-// and styles/sensors.css
-function sensorGetCustomStyles() {
-	// 0 - top css file (nonsens.css)
-	// 1 - second inluded file (styles/sensors.css)
-	// 0 - first class selector inside sensors.css file (.sensor-container)
-	// all custom classes are inside .sensor-container and start with '&.[A-Z]'
-	const rules = document.styleSheets[0].cssRules[1].styleSheet.cssRules[0].cssRules;
-	var styles = [];
-
-	for (let i = 0; i < rules.length; i ++) {
-		if (rules[i] && rules[i].selectorText.match(/^&\.[A-Z]/)) {
-			styles.push(rules[i].selectorText.split(".")[1]);
-		}
-	}
-
-	return styles;
-}
-
-var customSensorStyles = sensorGetCustomStyles();
 
 
 // delete a sensor

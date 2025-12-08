@@ -1,27 +1,25 @@
 
 .sensor-container {
-	display: inline-block;
+	display: inline;
 	position: relative;
-	z-index: 20;
+	z-index: 10;
 	overflow: hidden;
-	border: solid black 1px;
+	border: 0;
 	padding: 0;
 	margin: 0;
 	gap: 0;
 	resize: none;
 	grid-column-start: 1;
-	grid-column-end: 40;
+	grid-column-end: 50;
 	grid-row-start: 1;
-	grid-row-end: 35;
+	grid-row-end: 20;
 	.sensor-legend {
-		border: 1px white solid;
-		background-color: #707070;
-		font-size: 0.8em;
+		color: white;
 	}
 	.sensor {
-		display: inline-block;
-		background-color: #709070;
-		border: 0;
+		display: inline-grid;
+		grid-template-columns: repeat(64, 1fr);
+		grid-template-rows: repeat(64, 1fr);
 		padding: 0;
 		margin: 0;
 		gap: 0;
@@ -31,5 +29,32 @@
 		height: 100%;
 		resize: none;
 	}
-}
 
+	/* NAME STYLES WITH CAPITAL LETTER ONLY! */
+
+	/* default style, must always be present */
+	&.Default {
+		border: solid white 1px;
+		.sensor-legend {
+			background-color: orange;
+		}
+		.sensor {
+			background-color: gray;
+		}
+	}
+
+	/* custom style: right-aligned title */
+	&.Right {
+		border: solid black 1px;
+		.sensor-legend {
+			float: right;
+			background-color: #00000000;
+			color: black;
+		}
+		.sensor {
+			background-color: #00000000;
+		}
+	}
+
+	/* add more styles */
+}

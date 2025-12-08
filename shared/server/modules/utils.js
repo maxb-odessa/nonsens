@@ -67,13 +67,15 @@ function showEditor(editorId, show) {
 	return true;
 }
 
-// get all available styles for main, groups or sensors
-// https://stackoverflow.com/questions/59162535/is-there-a-way-to-list-all-available-css-classes-for-a-web-page
-function getAllStyles(what) {
-	// TODO filter out by 'what'
-	return [...[...$$("[class]")].reduce((s, e) => (e.classList.forEach(c => s.add(c)), s), new Set())].sort()
+
+// load file content
+// https://stackoverflow.com/questions/196498/how-do-i-load-the-contents-of-a-text-file-into-a-javascript-variable
+function loadContent(uri) {
+	const response = await fetch(uri);
+	var data = await response.text();
+	return data;
 }
 
 window.showEditor = showEditor;
 
-export { createUUID, safeString, maskBelow, showEditor };
+export { createUUID, safeString, maskBelow, showEditor, loadContent };

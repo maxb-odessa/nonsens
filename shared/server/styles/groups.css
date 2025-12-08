@@ -47,7 +47,7 @@
 	&.Flat {
 		border: solid black 1px;
 		.group-legend {
-			float: right;
+			float: center;
 			background-color: #00000000;
 			color: black;
 		}

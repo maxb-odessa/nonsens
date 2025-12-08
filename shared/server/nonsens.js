@@ -3,6 +3,7 @@ import { dragResize } from './modules/drag-resize.js';
 import { toggleMenu, showMenu } from './modules/onclick.js';
 import { groupAdd, groupEdit, groupDelete, groupApply } from './modules/groups.js';
 import { sensorAdd, sensorEdit, sensorDelete, sensorApply } from './modules/sensors.js';
+//import { widgetShow } from './modules/widgets.js';
 import { wsLoop } from './modules/ws.js';
 
 

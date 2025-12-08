@@ -13,6 +13,29 @@ function saveGroupId(id) {
 
 window.saveGroupId = saveGroupId;
 
+// get all custom group styles names (classes) from loaded CSS file
+// see nonsens.css
+// and styles/groups.css
+function groupGetCustomStyles() {
+	// 0 - top css file (nonsens.css)
+	// 0 - second inluded file (styles/groups.css)
+	// 0 - first class selector inside groups.css file (.group-container)
+	// all custom classes are inside .group-container and start with '&.[A-Z]'
+	const rules = document.styleSheets[0].cssRules[0].styleSheet.cssRules[0].cssRules;
+	var styles = [];
+
+	for (let i = 0; i < rules.length; i ++) {
+		if (rules[i] && rules[i].selectorText.match(/^&\.[A-Z]/)) {
+			styles.push(rules[i].selectorText.split(".")[1]);
+		}
+	}
+
+	return styles;
+}
+
+var customGroupStyles = groupGetCustomStyles();
+
+
 // generate new group html code and insert it
 function groupAdd(containerId) {
 
@@ -99,28 +122,6 @@ function groupDelete() {
 	}
 
 }
-
-// get all custom group styles names (classes) from loaded CSS file
-// see nonsens.css
-// and styles/groups.css
-function groupGetCustomStyles() {
-	// 0 - top css file (nonsens.css)
-	// 0 - second inluded file (styles/groups.css)
-	// 0 - first class selector inside groups.css file (.group-container)
-	// all custom classes are inside .group-container and start with '&.[A-Z]'
-	const rules = document.styleSheets[0].cssRules[0].styleSheet.cssRules[0].cssRules;
-	var styles = [];
-
-	for (let i = 0; i < rules.length; i ++) {
-		if (rules[i] && rules[i].selectorText.match(/^&\.[A-Z]/)) {
-			styles.push(rules[i].selectorText.split(".")[1]);
-		}
-	}
-
-	return styles;
-}
-
-var customGroupStyles = groupGetCustomStyles();
 
 export { groupAdd, groupEdit, groupDelete, groupApply };
 
