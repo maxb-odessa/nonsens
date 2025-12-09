@@ -67,15 +67,6 @@ function showEditor(editorId, show) {
 	return true;
 }
 
-
-// load file content
-// https://stackoverflow.com/questions/196498/how-do-i-load-the-contents-of-a-text-file-into-a-javascript-variable
-function loadContent(uri) {
-	const response = await fetch(uri);
-	var data = await response.text();
-	return data;
-}
-
 window.showEditor = showEditor;
 
-export { createUUID, safeString, maskBelow, showEditor, loadContent };
+export { createUUID, safeString, maskBelow, showEditor };

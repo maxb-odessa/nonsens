@@ -1,6 +1,7 @@
 
 import { createUUID, safeString, maskBelow, showEditor } from './utils.js';
 import { selectedGroupId } from './groups.js';
+import { widgetsData } from './widgets.js';
 
 export var selectedSensorId = "";
 
@@ -38,7 +39,7 @@ var customSensorStyles = sensorGetCustomStyles();
 
 // add new sensor
 function sensorAdd() {
-
+console.log(widgetsData);
 	// sensor template
 	var uuid = createUUID();
 	const template = `

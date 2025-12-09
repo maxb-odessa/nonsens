@@ -3,13 +3,12 @@ import { dragResize } from './modules/drag-resize.js';
 import { toggleMenu, showMenu } from './modules/onclick.js';
 import { groupAdd, groupEdit, groupDelete, groupApply } from './modules/groups.js';
 import { sensorAdd, sensorEdit, sensorDelete, sensorApply } from './modules/sensors.js';
-//import { widgetShow } from './modules/widgets.js';
 import { wsLoop } from './modules/ws.js';
 
 
 document.addEventListener('readystatechange', event => {
 	if (event.target.readyState === "complete") {
-
+// TODO move those handlers inside modules?
 		document.onmousedown = dragResize;
 		document.ontouchstart = dragResize;
 
