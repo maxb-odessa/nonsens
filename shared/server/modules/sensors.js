@@ -2,6 +2,7 @@
 import { createUUID, safeString, maskBelow, showEditor } from './utils.js';
 import { selectedGroupId } from './groups.js';
 import { widgetsData } from './widgets.js';
+import { wsSaveSensor } from './ws.js';
 
 export var selectedSensorId = "";
 
@@ -39,7 +40,7 @@ var customSensorStyles = sensorGetCustomStyles();
 
 // add new sensor
 function sensorAdd() {
-console.log(widgetsData);
+
 	// sensor template
 	var uuid = createUUID();
 	const template = `
@@ -61,6 +62,7 @@ console.log(widgetsData);
 	var newSensor = document.getElementById("s-" + uuid);
 	var data = JSON.stringify(
 		{
+			"id":		newSensor.id,
 			"type":		"file",
 			"path":		"",
 			"keep_open":	true,
@@ -69,7 +71,8 @@ console.log(widgetsData);
 			"max":		100,
 			"divider":	1.0,
 			"precision":	1,
-			"suffix":	""
+			"suffix":	"",
+			"widget":	"Default"
 		}
 	);
 	newSensor.setAttribute("data-sensor", data);
@@ -117,10 +120,15 @@ function sensorEdit(editorId) {
 	editor.querySelector("#sensor-edit-value-precision").value = sensorData.precision;
 	editor.querySelector("#sensor-edit-value-suffix").value = sensorData.suffix;
 
-/*
-widget colors, gradient, etc...
-select css style?
-*/
+	var edWidget = editor.querySelector("#sensor-edit-widget");
+	// populate with available widgets
+	edWidget.innerHTML = "";
+	widgetsData.forEach(
+		function(v, k, m) {
+			edWidget.innerHTML += `<option value="${k}">${k}</option>`;
+		}
+	);
+	edWidget.value = sensorData.widget;
 
 	// show editor
 	showEditor(editorId, true);
@@ -144,6 +152,7 @@ function sensorApply(editorId) {
 	sensor.style.backgroundColor = editor.querySelector("#sensor-edit-bg-color").value;
 
 	var sensorData = {
+		"id":		sensor.id,
 		"path":		editor.querySelector("#sensor-edit-source-path").value,
 		"type":		editor.querySelector("#sensor-edit-source-type").value,
 		"keep_open":	editor.querySelector("#sensor-edit-source-keepopen").checked,
@@ -152,11 +161,15 @@ function sensorApply(editorId) {
 		"max":		editor.querySelector("#sensor-edit-value-max").value,
 		"divider":	editor.querySelector("#sensor-edit-value-divider").value,
 		"precision":	editor.querySelector("#sensor-edit-value-precision").value,
-		"suffix":	editor.querySelector("#sensor-edit-value-suffix").value
+		"suffix":	editor.querySelector("#sensor-edit-value-suffix").value,
+		"widget":	editor.querySelector("#sensor-edit-widget").value
 	};
 
 	// store sensor data
 	sensor.setAttribute("data-sensor", JSON.stringify(sensorData));
+
+	// send updated sensor to server via WS !
+	wsSaveSensor(sensorData, "update");
 }
 
 
@@ -165,16 +178,20 @@ function sensorDelete() {
 
 	// delete the sensor
 	if (confirm("You are going to DELETE the sensor!\nConfirm?")) {
+		let sensorC = document.getElementById("sc-"+selectedSensorId);
+		let sensorData = sensorC.querySelector("#s-"+selectedSensorId).getAttribute("data-sensor");
+		// stop and delete sensor on server side
+		wsSaveSensor(JSON.parse(sensorData), "delete");
 		// delete whole sensor container
-		document.getElementById("sc-"+selectedSensorId).remove();
+		sensorC.remove();
 	}
+
 }
 
 
-// make sensor widget (s = [sensor Obj], data = [new sensor values])
-// TODO
-function makeSensorWidget(s, data) {
-	s.innerHTML = `<b>1</b>`;
-}
+window.sensorAdd = sensorAdd;
+window.sensorEdit = sensorEdit;
+window.sensorDelete = sensorDelete;
+window.sensorApply = sensorApply;
 
-export { sensorAdd, sensorEdit, sensorDelete, sensorApply };
+

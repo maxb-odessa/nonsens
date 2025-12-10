@@ -1,15 +1,24 @@
 
+const wsUrl = "ws://" + window.location.hostname + ":" + window.location.port + "/ws";
+
+const WS_MSG_TARGET_LAYOUT = 0;
+const WS_MSG_TARGET_SENSOR = 1;
+const WS_MSG_ACTION_ADD    = 10;
+const WS_MSG_ACTION_DELETE = 11;
+const WS_MSG_ACTION_UPDATE = 12;
+
+var wsocket = {};
+
 // establish websocket communication
 async function wsLoop() {
 
-	const wsUrl = "ws://" + window.location.hostname + ":" + window.location.port + "/ws";
 
 	while (1) {
 
 		let reconnect = false;
 
 		// (re)create a websocket
-		let wsocket = {};
+		wsocket = {};
 		wsocket = new WebSocket(wsUrl);
 
 		wsocket.onopen = function() {
@@ -18,12 +27,12 @@ async function wsLoop() {
 
 		wsocket.onmessage = function(msg) {
 			const obj = JSON.parse(msg.data);
-			if (obj.target == 'L') {
-				// update whole layout
-				updateLayout(obj.payload);
-			} else if (obj.target == 'S') {
-				// update sensor data
-				updateSensor(obj.payload);
+			if (obj.target == WS_MSG_TARGET_LAYOUT) {
+				// update whole layout, ignore 'action'
+				wsUpdateLayout(obj.payload);
+			} else if (obj.target == WS_MSG_TARGET_SENSOR) {
+				// update sensor data, ignore 'action'
+				wsUpdateSensor(obj.payload);
 			}
 			// ignore everything else
 		};
@@ -50,23 +59,55 @@ async function wsLoop() {
 };
 
 
+// prepeare and send ws message
+function wsSend(obj) {
+	if (wsocket) {
+		wsocket.send(JSON.stringify(obj));
+	} else {
+		console.log("wsSend() faile: socket is unavailable");
+	}
+}
+
 // update whole groups/sensors layout
 // div 'main' always exists
-function updateLayout(content) {
+function wsUpdateLayout(content) {
 	document.getElementById('main').innerHTML = content;
 }
 
 // update sensor data
-function updateSensor(data) {
-	var sensor = document.getElementById(data.id);
+function wsUpdateSensor(data) {
+	// TODO
+}
 
-	// no such sensor? TODO do something!
-	if (! sensor) {
-		return;
+// save sensor
+function wsSaveSensor(data, action) {
+	var msg = {
+		target: WS_MSG_TARGET_SENSOR,
+		payload: data,
+	};
+
+	if (action === "update") {
+		msg.action = WS_MSG_ACTION_UPDATE;
+	} else if (action === "delete") {
+		msg.action = WS_MSG_ACTION_DELETE;
+	} else if (action === "add") {
+		msg.action = WS_MSG_ACTION_ADD;
 	}
 
-	// TODO redraw sensor widget according to new values
+	wsSend(msg);
 
 }
 
-export { wsLoop };
+function wsSaveLayout() {
+	wsSend(
+		{
+			target: WS_MSG_TARGET_LAYOUT,
+			action: WS_MSG_ACTION_UPDATE,
+			payload: document.getElementById("main").innerHTML
+		}
+	);
+}
+
+window.saveLayout = wsSaveLayout;
+
+export { wsLoop, wsSaveSensor };

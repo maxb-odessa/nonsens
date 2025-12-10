@@ -50,4 +50,6 @@ function showMenu(e, id, doShow) {
 	menu.style.display = "inline-block";
 }
 
-export { toggleMenu, showMenu };
+window.toggleMenu = toggleMenu;
+window.showMenu = showMenu;
+

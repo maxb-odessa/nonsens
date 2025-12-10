@@ -16,6 +16,7 @@ window.saveGroupId = saveGroupId;
 // get all custom group styles names (classes) from loaded CSS file
 // see nonsens.css
 // and styles/groups.css
+// TODO optimize: make function like getStylesForContainer('group-container'), use it for sensors too
 function groupGetCustomStyles() {
 	// 0 - top css file (nonsens.css)
 	// 0 - second inluded file (styles/groups.css)
@@ -123,5 +124,8 @@ function groupDelete() {
 
 }
 
-export { groupAdd, groupEdit, groupDelete, groupApply };
+window.groupAdd = groupAdd;
+window.groupEdit = groupEdit;
+window.groupDelete = groupDelete;
+window.groupApply = groupApply;
 

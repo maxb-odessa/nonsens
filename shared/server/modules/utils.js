@@ -52,8 +52,28 @@ function maskBelow(id, doMask) {
 	}
 }
 
+// show notice window popup
+const popupDelay = ms => new Promise(res => setTimeout(res, ms));
+
+async function showInfo(text, show, timeOut) {
+	let popup = document.getElementById("info-popup");
+	let textArea = popup.querySelector("#popup-text-area");
+	if (show) {
+		textArea.innerHTML = text;
+		popup.style.display = "block";
+		if (timeOut > 0) {
+			await popupDelay(timeOut);
+			popup.style.display = "none"
+		}
+	} else {
+		popup.style.display = "none";
+	}
+}
+
+window.showInfo = showInfo;
+
 // show/hide editor
-function showEditor(editorId, show) {
+function showEditor(editorId, show, noteAfter) {
 	var editor = document.getElementById(editorId);
 	if (show) {
 		editor.style.display = "inline-block";
@@ -62,6 +82,9 @@ function showEditor(editorId, show) {
 	} else {
 		editor.style.display = "none";
 		maskBelow(editor.id, false);
+		if (noteAfter) {
+			showInfo(noteAfter, true, 3000);
+		}
 	}
 
 	return true;

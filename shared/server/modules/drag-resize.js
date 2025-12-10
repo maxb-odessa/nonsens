@@ -273,5 +273,7 @@ console.log("=========");
 }
 
 
-export { dragResize };
+document.onmousedown = dragResize;
+document.ontouchstart = dragResize;
+
 

@@ -12,13 +12,11 @@
 
 	<body>
 	
-		<!-- main sensors viewport -->
+		<!-- MAIN GROUPS AND SENSORS WINDOW -->
 		<div title="Click for main menu" class="main" id="main" onclick="toggleMenu(event);"></div>
 
-		<!-- a div to mask everything below -->
-		<div id="masked-below" class="masked-below"></div>
 
-		<!-- menues and popups -->
+		<!-- MENUES AND POPUPS -->
 		<div id="main-menu" class="main-menu" onmouseleave="showMenu(event, 'main-menu', false);">
 			<ul>
 				<li onclick="showMenu(event, 'main-menu', false); groupAdd('main');">Add New group</li>
@@ -45,8 +43,14 @@
 			</ul>
 		</div>
 
+		<!-- informational window -->
+		<div class="info-popup" id="info-popup" onClick="return showInfo('', false);"><div id="popup-text-area"></div></div>
 
-		<!-- editors -->
+		<!-- a div to mask everything below -->
+		<div id="masked-below" class="masked-below"></div>
+
+
+		<!-- EDITORS -->
 		<div id="group-editor" class="group-editor">
 			<form id="group-editor-form">
 			<fieldset>
@@ -73,7 +77,7 @@
 		</div>
 
 		<div id="sensor-editor" class="sensor-editor">
-			<form id="sensor-editor-form" onsubmit="sensorApply('sensor-editor'); showEditor('sensor-editor', false); return false;">
+			<form id="sensor-editor-form" onsubmit="sensorApply('sensor-editor'); showEditor('sensor-editor', false, 'Do not forget to SAVE LAYOUT'); return false;">
 			<fieldset>
 				<legend>Sensor settings</legend>
 				<label for="sensor-edit-style">Style:</label>

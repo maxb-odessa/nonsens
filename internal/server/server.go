@@ -45,14 +45,21 @@ func Run() error {
 
 const (
 	// remote message target: sensor data or layout
-	REMOTE_MSG_TARGET_LAYOUT = 'L'
-	REMOTE_MSG_TARGET_SENSOR = 'S'
+	// no 'iota' here - use same value in web page JS files
+	REMOTE_MSG_TARGET_LAYOUT = 0
+	REMOTE_MSG_TARGET_SENSOR = 1
+
+	REMOTE_MSG_ACTION_ADD    = 10
+	REMOTE_MSG_ACTION_DELETE = 11
+	REMOTE_MSG_ACTION_UPDATE = 12
 )
 
 // message to send to remote via websocket
+// client<->server comm protcol
 type RemoteMsg struct {
-	Target  byte // message taget: sensor or layout
-	Payload any  // data to send/read
+	Target  int `json:"target"` // message taget: sensor or layout
+	Action  int `json:"action"`
+	Payload any `json:"payload"` // data to send/read
 }
 
 // the data read from sensors chan is always of "full" type, thus me should extract its "value"
@@ -134,7 +141,7 @@ func startServer() error {
 		go reader()
 
 		// send saved webpage layout upon browser connection
-		sendLayout() // TODO inject layout msg into wsChan?
+		//sendLayout() // TODO inject layout msg into wsChan?
 
 		// run websocket writer
 		for {

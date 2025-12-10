@@ -44,7 +44,7 @@
 	}
 
 	/* custom style: flat and transparent */
-	&.Flat {
+	&.Flat-Right {
 		border: solid black 1px;
 		.group-legend {
 			float: center;
