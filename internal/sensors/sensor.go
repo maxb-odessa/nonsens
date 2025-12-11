@@ -33,14 +33,14 @@ type Sensor struct {
 	pvt struct {
 		sync.Mutex
 		cancelFunc func()
-	}
+	} `json:"-"`
 
 	// runtimes
 	runtime struct {
 		input      input.Input          // sensor input interface
 		values     [2]*input.InputValue // store prev and curr value
 		maxMinDiff float64              // Max - Min, for faster percents calculations
-	}
+	} `json:"-"`
 
 	// uniq sensor id, will be generated if new
 	Uid string
@@ -49,7 +49,7 @@ type Sensor struct {
 	Config *Config
 
 	// calculated sensor value, will be sent to remote client
-	Value *Value
+	Value *Value `json:"-"`
 }
 
 func (s *Sensor) setup() error {
@@ -91,7 +91,7 @@ func (s *Sensor) start() error {
 		defer func() {
 			log.Debug(9, "sensor %s collected: %+v", s.Uid, s.Value)
 			select {
-			case sensorsChan <- s.Value: // send collected value to server
+			case toServerCh <- s: // send whole sensor to server, it will be parsed there
 			default:
 				log.Warn("Sensors data queue is full, discarding")
 			}

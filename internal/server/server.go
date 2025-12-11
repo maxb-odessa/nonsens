@@ -4,10 +4,8 @@ import (
 	"nonsens/internal/config"
 	"nonsens/internal/def"
 	log "nonsens/internal/logger"
+	"nonsens/internal/sensors"
 
-	//"nonsens/internal/sensors"
-
-	"encoding/json"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -33,13 +31,14 @@ type remoteMsg struct {
 	Target  int    `json:"target"`  // message taget: sensor or layout
 	Id      string `json:"id"`      // sensor id
 	Action  int    `json:"action"`  // what to do
-	Payload string `json:"payload"` // data to send/read
+	Payload any    `json:"payload"` // data to send/read
 }
 
 var (
 	webPageLayout     string
 	webPageLayoutFile string
 	toRemoteCh        chan *remoteMsg
+	fromSensorsCh     chan *sensors.Sensor
 )
 
 func Run() error {
@@ -47,9 +46,9 @@ func Run() error {
 	// load saved web page layout (if exists)
 	webPageLayoutFile, _ = filepath.Abs(os.ExpandEnv(def.DataDir + "/" + def.LayoutFile))
 	if layout, err := config.Load(webPageLayoutFile); err != nil {
-		webPageLayout = string(layout)
+		log.Err("Failed to load saved layout file: %s", err)
 	} else {
-		webPageLayout = ""
+		webPageLayout = string(layout)
 	}
 
 	// run websocket sender channel dispatcher
@@ -57,32 +56,30 @@ func Run() error {
 	toRemoteCh = make(chan *remoteMsg, 64)
 	go chanDispatcher(toRemoteCh)
 
-	// start reading sensors data
-	//go receiveSensorsValues(sensorsDataCh)
+	// run sensors data reader
+	fromSensorsCh = make(chan *sensors.Sensor, 128)
+	go receiveSensorsData(fromSensorsCh)
 
 	// run sensors poller
-	//if err := sensors.Start(sensorsDataCh); err != nil {
-	//	return err
-	//}
+	if err := sensors.Start(fromSensorsCh); err != nil {
+		return err
+	}
 
 	// run web server
 	return startServer()
 }
 
-/*
 // the data read from sensors chan is always of "full" type, thus me should extract its "value"
-func receiveSensorsValues(ch chan *sensors.Sensor) {
+func receiveSensorsData(ch chan *sensors.Sensor) {
 	for sens := range ch {
-		msg := &RemoteMsg{
+		sendToRemote(&remoteMsg{
 			Target:  MSG_TARGET_SENSOR,
-			Payload: sens.Value,
-		}
-		if jmsg, err := json.Marshal(msg); err == nil {
-			sendToRemote([]byte(jmsg))
-		}
+			Id:      sens.Uid,
+			Action:  MSG_ACTION_UPDATE,
+			Payload: *sens.Value, // make a COPY of values! TODO use s.Lock() ?
+		})
 	}
 }
-*/
 
 // send message to all remote clients
 func sendToRemote(msg *remoteMsg) {
@@ -93,15 +90,13 @@ func sendToRemote(msg *remoteMsg) {
 }
 
 // send stored web page layout to remote client
-func sendLayout() {
-	sendToRemote(
-		&remoteMsg{
-			Target:  MSG_TARGET_LAYOUT,
-			Action:  MSG_ACTION_UPDATE,
-			Id:      "",
-			Payload: webPageLayout,
-		},
-	)
+func sendWebPageLayout() {
+	sendToRemote(&remoteMsg{
+		Target:  MSG_TARGET_LAYOUT,
+		Action:  MSG_ACTION_UPDATE,
+		Id:      "",
+		Payload: webPageLayout,
+	})
 }
 
 // process remote message
@@ -112,12 +107,12 @@ func gotFromRemote(msg *remoteMsg) {
 		// the only supported action for now
 		if msg.Action == MSG_ACTION_UPDATE {
 			// update and store new layout
-			webPageLayout = msg.Payload
+			webPageLayout = msg.Payload.(string)
 			if err := config.Save(webPageLayoutFile, []byte(webPageLayout)); err != nil {
 				log.Err("Failed to save web page layout: %s", err)
 			}
 			// send new layout to every connected client
-			sendLayout()
+			sendWebPageLayout()
 		}
 
 	} else if msg.Target == MSG_TARGET_SENSOR {
@@ -164,25 +159,12 @@ func startServer() error {
 		reader := func() {
 			msg := new(remoteMsg)
 			for {
-				msgType, msgData, err := conn.ReadMessage()
-
-				if err != nil {
+				if err := conn.ReadJSON(msg); err != nil {
 					log.Err("Websocket error: %s", err)
 					return
-				}
+				} else {
+					gotFromRemote(msg)
 
-				switch msgType {
-				case ws.CloseMessage:
-					// remote client disconnected
-					log.Info("Websocket remote disconnected")
-					return
-				case ws.TextMessage:
-					log.Debug(5, "Got from remote: %q", string(msgData))
-					if err := json.Unmarshal(msgData, msg); err == nil {
-						gotFromRemote(msg)
-					} else {
-						log.Warn("Malformed remote message from %s", conn.RemoteAddr())
-					}
 				}
 			}
 		}
@@ -191,7 +173,7 @@ func startServer() error {
 		go reader()
 
 		// send saved webpage layout upon browser connection
-		sendLayout()
+		sendWebPageLayout()
 
 		// run websocket writer
 		for {
@@ -204,15 +186,11 @@ func startServer() error {
 
 				log.Debug(9, "will send to ws: %+v", msg)
 
-				if msgData, err := json.Marshal(msg); err != nil {
-					log.Err("Failed to marshal JSON: %s", err)
-				} else {
-					if err = conn.WriteMessage(ws.TextMessage, msgData); err != nil {
-						log.Err("Websocket send() failed: %s", err)
-						return
-					}
-					log.Debug(9, "ws sent: %q", string(msgData))
+				if err = conn.WriteJSON(msg); err != nil {
+					log.Err("Websocket send() failed: %s", err)
+					return
 				}
+
 			} // select
 		} // for
 	} // wshandler

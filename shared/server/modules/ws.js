@@ -3,6 +3,7 @@ const wsUrl = "ws://" + window.location.hostname + ":" + window.location.port + 
 
 const WS_MSG_TARGET_LAYOUT = 0;
 const WS_MSG_TARGET_SENSOR = 1;
+
 const WS_MSG_ACTION_ADD    = 10;
 const WS_MSG_ACTION_DELETE = 11;
 const WS_MSG_ACTION_UPDATE = 12;
@@ -22,7 +23,7 @@ async function wsLoop() {
 
 	while (1) {
 
-		let reconnect = false;
+		var reconnect = false;
 
 		// (re)create a websocket
 		wsocket = {};
@@ -68,10 +69,10 @@ async function wsLoop() {
 
 // prepeare and send ws message
 function wsSend(obj) {
-	if (wsocket) {
+	if (wsocket && wsocket.readyState === WebSocket.OPEN) {
 		wsocket.send(JSON.stringify(obj));
 	} else {
-		console.log("wsSend() faile: socket is unavailable");
+		console.log("wsSend() failed: socket is unavailable");
 	}
 }
 
