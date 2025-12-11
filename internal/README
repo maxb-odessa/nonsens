@@ -1,0 +1,59 @@
+server:
+
+	load layout
+
+	start sensors, get *Values channel
+
+	go read sensor channel, make remote msg, send to ws channels dispatcher
+
+	start websocket
+		on connect:
+			make new chan, add to dispatcher
+			send stored layout
+		on read:
+			parse JSON
+			if got layout:
+				send new layout to all clients except current
+				store new layout
+			if got sensor:
+				if delete:
+					call sensorDelete(id)
+				if update:
+					*Config = parse JSON(payload)
+					call sensorUpdate(id, *Config)
+				if add:
+					*Config = parse JSON(payload)
+					call sensorAdd(id, *Config)
+				send layout to all clients except current
+		on close:
+			unregister client chan
+		on write:
+			listen to chan for data:
+				make msg, payload = *Value
+				make JSON
+				send to remote
+
+sensors:
+
+	load sensors
+
+	make chan for *Values
+
+	start all sensors
+
+	sensorDelete():
+		find sensor
+		stop sensor
+		delete sensor
+
+	sensorUpdate():
+		find sensor
+		stop sensor
+		update sensor config
+		setup ensor
+		start sensor
+
+	sensorAdd():
+		update sensor config
+		setup ensor
+		start sensor

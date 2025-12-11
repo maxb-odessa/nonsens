@@ -16,7 +16,6 @@ func Start(ch chan *Sensor) error {
 	// prepare config storage
 	sensorsData = &configData{
 		Sensors: make(map[string]*Sensor),
-		Groups:  make(map[string]*Group),
 	}
 
 	// read config
@@ -24,7 +23,7 @@ func Start(ch chan *Sensor) error {
 	if err := configLoad(configPath, sensorsData); err != nil {
 		return err
 	}
-	//ttt()
+
 	sensorsChan = ch
 
 	// start all sensors
@@ -52,21 +51,4 @@ func UnlockAll() {
 
 func GetAllSensors() map[string]*Sensor {
 	return sensorsData.Sensors
-}
-
-func GetAllGroups() map[string]*Group {
-	return sensorsData.Groups
-}
-
-func ttt() {
-
-	s := new(Sensor)
-	s.Uid = "123"
-	g := new(Group)
-	g.Uid = "4321"
-
-	sensorsData.Sensors["123"] = s
-	sensorsData.Groups["4321"] = g
-
-	configSave(configPath, sensorsData)
 }

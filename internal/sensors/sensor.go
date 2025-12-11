@@ -7,12 +7,27 @@ import (
 	"nonsens/internal/sensors/input"
 	"sync"
 	"time"
-
-	"github.com/google/uuid"
 )
 
+type Value struct {
+	Val      float64 `json:"value"`    // current sensor value
+	Diff     float64 `json:"diff"`     // difference between current and previous values
+	Percents int     `json:"percents"` // current value in percents of min-max
+	Online   bool    `json:"online"`   // is sensor online?
+	Hint     string  `json:"hint"`     // hint string if sensor is offline
+}
+
+type Config struct {
+	InType       string  `json:"type"`      // input type: "file" or "cmd"
+	Path         string  `json:"path"`      // full path to file or command
+	KeepOpen     bool    `json:"keep_open"` // for files: keep it open for readings
+	PollInterval int     `json:"poll_ms"`   // milliseconds
+	Min          float64 `json:"min"`       // min input value, divider applied
+	Max          float64 `json:"max"`       // max input value, divider applied
+	Divider      float64 `json:"divider"`   // input value divider (can be negaive)
+}
+
 type Sensor struct {
-	Uid string `json:"uid"` // uniq sensor id, will be generated if new
 
 	// private data
 	pvt struct {
@@ -27,24 +42,14 @@ type Sensor struct {
 		maxMinDiff float64              // Max - Min, for faster percents calculations
 	}
 
-	// calculated, will be sent to remote client in 'V' type messages
-	Value struct {
-		Val, Diff float64
-		Percents  int
-		Online    bool
-		Hint      string
-	} `json:"-"`
+	// uniq sensor id, will be generated if new
+	Uid string
 
-	// configured params (as defined in frontend)
-	Config struct {
-		InType       string  `json:"type"`      // input type: "file" or "cmd"
-		Path         string  `json:"path"`      // full path to file or command
-		KeepOpen     bool    `json:"keep_open"` // for files: keep it open for readings
-		PollInterval int     `json:"poll_ms"`   // milliseconds
-		Min          float64 `json:"min"`       // min input value, divider applied
-		Max          float64 `json:"max"`       // max input value, divider applied
-		Divider      float64 `json:"divider"`   // input value divider (can be negaive)
-	} `json:"config"`
+	// configured params, set by remote client
+	Config *Config
+
+	// calculated sensor value, will be sent to remote client
+	Value *Value
 }
 
 func (s *Sensor) setup() error {
@@ -57,11 +62,6 @@ func (s *Sensor) setup() error {
 	// invalid divider
 	if s.Config.Divider == 0.0 {
 		return fmt.Errorf("Divider can not be zero")
-	}
-
-	// generate new uid if not set
-	if s.Uid == "" {
-		s.Uid = uuid.New().String()
 	}
 
 	s.runtime.values = [2]*input.InputValue{{}, {}}
@@ -91,7 +91,7 @@ func (s *Sensor) start() error {
 		defer func() {
 			log.Debug(9, "sensor %s collected: %+v", s.Uid, s.Value)
 			select {
-			case sensorsChan <- s: // yes, send out a pointer at ourselves
+			case sensorsChan <- s.Value: // send collected value to server
 			default:
 				log.Warn("Sensors data queue is full, discarding")
 			}

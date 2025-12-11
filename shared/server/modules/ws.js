@@ -9,6 +9,13 @@ const WS_MSG_ACTION_UPDATE = 12;
 
 var wsocket = {};
 
+/* msg structure:
+	target: layout or sensor (int)
+	id: target id (for sensors) (string)
+	action: what to do: update, delete, etc. (int)
+	payload: target specific data (JSON format)
+*/
+
 // establish websocket communication
 async function wsLoop() {
 
@@ -31,8 +38,8 @@ async function wsLoop() {
 				// update whole layout, ignore 'action'
 				wsUpdateLayout(obj.payload);
 			} else if (obj.target == WS_MSG_TARGET_SENSOR) {
-				// update sensor data, ignore 'action'
-				wsUpdateSensor(obj.payload);
+				// update sensor data, server can send us only 'update' actions
+				wsUpdateSensor(obj.id, obj.payload);
 			}
 			// ignore everything else
 		};
@@ -80,9 +87,10 @@ function wsUpdateSensor(data) {
 }
 
 // save sensor
-function wsSaveSensor(data, action) {
+function wsSaveSensor(id, data, action) {
 	var msg = {
 		target: WS_MSG_TARGET_SENSOR,
+		id: id,
 		payload: data,
 	};
 
@@ -101,6 +109,7 @@ function wsSaveSensor(data, action) {
 function wsSaveLayout() {
 	wsSend(
 		{
+			id: "",
 			target: WS_MSG_TARGET_LAYOUT,
 			action: WS_MSG_ACTION_UPDATE,
 			payload: document.getElementById("main").innerHTML

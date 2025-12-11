@@ -62,7 +62,6 @@ function sensorAdd() {
 	var newSensor = document.getElementById("s-" + uuid);
 	var data = JSON.stringify(
 		{
-			"id":		newSensor.id,
 			"type":		"file",
 			"path":		"",
 			"keep_open":	true,
@@ -152,7 +151,6 @@ function sensorApply(editorId) {
 	sensor.style.backgroundColor = editor.querySelector("#sensor-edit-bg-color").value;
 
 	var sensorData = {
-		"id":		sensor.id,
 		"path":		editor.querySelector("#sensor-edit-source-path").value,
 		"type":		editor.querySelector("#sensor-edit-source-type").value,
 		"keep_open":	editor.querySelector("#sensor-edit-source-keepopen").checked,
@@ -165,11 +163,13 @@ function sensorApply(editorId) {
 		"widget":	editor.querySelector("#sensor-edit-widget").value
 	};
 
-	// store sensor data
-	sensor.setAttribute("data-sensor", JSON.stringify(sensorData));
+	var sDataJson = JSON.stringify(sensorData);
 
-	// send updated sensor to server via WS !
-	wsSaveSensor(sensorData, "update");
+	// store sensor data
+	sensor.setAttribute("data-sensor", sDataJson);
+
+	// send updated sensor to server via WS
+	wsSaveSensor(sensor.id, sDataJson, "update");
 }
 
 
@@ -181,7 +181,7 @@ function sensorDelete() {
 		let sensorC = document.getElementById("sc-"+selectedSensorId);
 		let sensorData = sensorC.querySelector("#s-"+selectedSensorId).getAttribute("data-sensor");
 		// stop and delete sensor on server side
-		wsSaveSensor(JSON.parse(sensorData), "delete");
+		wsSaveSensor("s-"+selectedSensorId, JSON.parse(sensorData), "delete");
 		// delete whole sensor container
 		sensorC.remove();
 	}

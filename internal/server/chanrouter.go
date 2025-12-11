@@ -6,11 +6,11 @@ import (
 )
 
 var (
-	wsChans map[uint64]chan []byte
+	wsChans map[uint64]chan *remoteMsg
 	mutex   sync.Mutex
 )
 
-func registerChan(ch chan []byte, id uint64) {
+func registerChan(ch chan *remoteMsg, id uint64) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -29,9 +29,9 @@ func unregisterChan(id uint64) {
 	}
 }
 
-func chanDispatcher(ch chan []byte) {
+func chanDispatcher(ch chan *remoteMsg) {
 
-	wsChans = make(map[uint64]chan []byte)
+	wsChans = make(map[uint64]chan *remoteMsg)
 
 	for {
 		select {

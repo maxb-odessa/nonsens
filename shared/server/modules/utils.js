@@ -83,7 +83,7 @@ function showEditor(editorId, show, noteAfter) {
 		editor.style.display = "none";
 		maskBelow(editor.id, false);
 		if (noteAfter) {
-			showInfo(noteAfter, true, 3000);
+			showInfo(noteAfter, true, 1500);
 		}
 	}
 

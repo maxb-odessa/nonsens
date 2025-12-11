@@ -1,11 +1,14 @@
 package server
 
 import (
-	"encoding/json"
-	"net/http"
+	"nonsens/internal/config"
 	"nonsens/internal/def"
 	log "nonsens/internal/logger"
-	"nonsens/internal/sensors"
+
+	//"nonsens/internal/sensors"
+
+	"encoding/json"
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -13,60 +16,65 @@ import (
 	ws "github.com/gorilla/websocket"
 )
 
+const (
+	// remote message target: sensor data or layout
+	// no 'iota' here - use same value in web page JS files
+	MSG_TARGET_LAYOUT = 0
+	MSG_TARGET_SENSOR = 1
+
+	MSG_ACTION_ADD    = 10
+	MSG_ACTION_DELETE = 11
+	MSG_ACTION_UPDATE = 12
+)
+
+// message to send to remote via websocket
+// client<->server comm protcol
+type remoteMsg struct {
+	Target  int    `json:"target"`  // message taget: sensor or layout
+	Id      string `json:"id"`      // sensor id
+	Action  int    `json:"action"`  // what to do
+	Payload string `json:"payload"` // data to send/read
+}
+
 var (
-	toRemoteCh    chan []byte
-	sensorsDataCh chan *sensors.Sensor
+	webPageLayout     string
+	webPageLayoutFile string
+	toRemoteCh        chan *remoteMsg
 )
 
 func Run() error {
 
-	// prepare websocket sender channel
-	toRemoteCh = make(chan []byte, 64)
+	// load saved web page layout (if exists)
+	webPageLayoutFile, _ = filepath.Abs(os.ExpandEnv(def.DataDir + "/" + def.LayoutFile))
+	if layout, err := config.Load(webPageLayoutFile); err != nil {
+		webPageLayout = string(layout)
+	} else {
+		webPageLayout = ""
+	}
 
 	// run websocket sender channel dispatcher
 	// (to send the same sensor data to all connected clients)
+	toRemoteCh = make(chan *remoteMsg, 64)
 	go chanDispatcher(toRemoteCh)
 
-	// prepare sensors communication channel
-	// (read sensors values from this channel)
-	sensorsDataCh := make(chan *sensors.Sensor, 64)
-
 	// start reading sensors data
-	go receiveSensorsValues(sensorsDataCh)
+	//go receiveSensorsValues(sensorsDataCh)
 
 	// run sensors poller
-	if err := sensors.Start(sensorsDataCh); err != nil {
-		return err
-	}
+	//if err := sensors.Start(sensorsDataCh); err != nil {
+	//	return err
+	//}
 
 	// run web server
 	return startServer()
 }
 
-const (
-	// remote message target: sensor data or layout
-	// no 'iota' here - use same value in web page JS files
-	REMOTE_MSG_TARGET_LAYOUT = 0
-	REMOTE_MSG_TARGET_SENSOR = 1
-
-	REMOTE_MSG_ACTION_ADD    = 10
-	REMOTE_MSG_ACTION_DELETE = 11
-	REMOTE_MSG_ACTION_UPDATE = 12
-)
-
-// message to send to remote via websocket
-// client<->server comm protcol
-type RemoteMsg struct {
-	Target  int `json:"target"` // message taget: sensor or layout
-	Action  int `json:"action"`
-	Payload any `json:"payload"` // data to send/read
-}
-
+/*
 // the data read from sensors chan is always of "full" type, thus me should extract its "value"
 func receiveSensorsValues(ch chan *sensors.Sensor) {
 	for sens := range ch {
 		msg := &RemoteMsg{
-			Target:  REMOTE_MSG_TARGET_SENSOR,
+			Target:  MSG_TARGET_SENSOR,
 			Payload: sens.Value,
 		}
 		if jmsg, err := json.Marshal(msg); err == nil {
@@ -74,14 +82,49 @@ func receiveSensorsValues(ch chan *sensors.Sensor) {
 		}
 	}
 }
+*/
 
-// send fully prepared json data to remote client
-func sendToRemote(data []byte) {
+// send message to all remote clients
+func sendToRemote(msg *remoteMsg) {
 	select {
-	case toRemoteCh <- data:
+	case toRemoteCh <- msg:
 	default:
-		log.Warn("toRemoteCh is full, dropping data")
 	}
+}
+
+// send stored web page layout to remote client
+func sendLayout() {
+	sendToRemote(
+		&remoteMsg{
+			Target:  MSG_TARGET_LAYOUT,
+			Action:  MSG_ACTION_UPDATE,
+			Id:      "",
+			Payload: webPageLayout,
+		},
+	)
+}
+
+// process remote message
+func gotFromRemote(msg *remoteMsg) {
+
+	if msg.Target == MSG_TARGET_LAYOUT {
+
+		// the only supported action for now
+		if msg.Action == MSG_ACTION_UPDATE {
+			// update and store new layout
+			webPageLayout = msg.Payload
+			if err := config.Save(webPageLayoutFile, []byte(webPageLayout)); err != nil {
+				log.Err("Failed to save web page layout: %s", err)
+			}
+			// send new layout to every connected client
+			sendLayout()
+		}
+
+	} else if msg.Target == MSG_TARGET_SENSOR {
+
+		// see action: add, del, upd, etc...
+	}
+
 }
 
 // serve web requests
@@ -105,10 +148,10 @@ func startServer() error {
 
 		log.Info("Websocket connected: %s", conn.RemoteAddr())
 
-		wsChan := make(chan []byte, 64)
+		wsChan := make(chan *remoteMsg, 64)
 		wsChanId := wsChanSerial
-		wsChanSerial++
 		registerChan(wsChan, wsChanId)
+		wsChanSerial++
 
 		defer func() {
 			log.Info("Websocket connection closed: %s", conn.RemoteAddr())
@@ -119,6 +162,7 @@ func startServer() error {
 
 		// setup websocket reader
 		reader := func() {
+			msg := new(remoteMsg)
 			for {
 				msgType, msgData, err := conn.ReadMessage()
 
@@ -129,10 +173,16 @@ func startServer() error {
 
 				switch msgType {
 				case ws.CloseMessage:
+					// remote client disconnected
+					log.Info("Websocket remote disconnected")
 					return
 				case ws.TextMessage:
-					log.Debug(5, "Got from remote: %+v", string(msgData))
-					processFeedback(msgData)
+					log.Debug(5, "Got from remote: %q", string(msgData))
+					if err := json.Unmarshal(msgData, msg); err == nil {
+						gotFromRemote(msg)
+					} else {
+						log.Warn("Malformed remote message from %s", conn.RemoteAddr())
+					}
 				}
 			}
 		}
@@ -141,25 +191,31 @@ func startServer() error {
 		go reader()
 
 		// send saved webpage layout upon browser connection
-		//sendLayout() // TODO inject layout msg into wsChan?
+		sendLayout()
 
 		// run websocket writer
 		for {
 			select {
 			case msg, ok := <-wsChan:
+
 				if !ok {
 					return
 				}
-				log.Debug(9, "will send to ws: %q", string(msg))
-				if err = conn.WriteMessage(ws.TextMessage, msg); err != nil {
-					log.Err("Websocket send() failed: %s", err)
-					return
+
+				log.Debug(9, "will send to ws: %+v", msg)
+
+				if msgData, err := json.Marshal(msg); err != nil {
+					log.Err("Failed to marshal JSON: %s", err)
 				} else {
-					log.Debug(9, "ws sent: %q", string(msg))
+					if err = conn.WriteMessage(ws.TextMessage, msgData); err != nil {
+						log.Err("Websocket send() failed: %s", err)
+						return
+					}
+					log.Debug(9, "ws sent: %q", string(msgData))
 				}
-			}
-		}
-	}
+			} // select
+		} // for
+	} // wshandler
 
 	// websocket request handler
 	router.HandleFunc("/ws", wsHandler)
