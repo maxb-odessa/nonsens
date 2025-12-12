@@ -1,4 +1,6 @@
 
+import { widgetsData } from './widgets.js';
+
 const wsUrl = "ws://" + window.location.hostname + ":" + window.location.port + "/ws";
 
 const WS_MSG_TARGET_LAYOUT = 0;
@@ -83,8 +85,26 @@ function wsUpdateLayout(content) {
 }
 
 // update sensor data
-function wsUpdateSensor(data) {
-	// TODO
+function wsUpdateSensor(id, data) {
+
+	var s = document.getElementById(id);
+	if (! s) {
+		console.log("wsUpdateSensor(" + id + "): not found");
+		return;
+	}
+
+	var widgetTemplate = widgetsData.get(s.getAttribute("data-widget"));
+
+function getFunc() {
+	var widgetTemplate = "`"+widgetsData.get(s.getAttribute("data-widget"))+"`";
+
+let func = new Function(`${widgetTemplate}`);
+
+return func;
+}
+
+console.log(getFunc()());
+	//s.innerHTML = eval("`"+widgetTemplate+"`");
 }
 
 // save sensor

@@ -71,10 +71,10 @@ function sensorAdd() {
 			"divider":	1.0*1,
 			"precision":	1*1,
 			"suffix":	"",
-			"widget":	"Default"
 		}
 	);
 	newSensor.setAttribute("data-sensor", sDataJson);
+	newSensor.setAttribute("data-widget", "Default");
 
 	// send new sensor to server via WS
 	wsSaveSensor("s-"+uuid, sDataJson, "add");
@@ -114,8 +114,8 @@ function sensorEdit(editorId) {
 	// get sensor settings
 	var sensorData = JSON.parse(sensor.getAttribute("data-sensor"));
 
-	editor.querySelector("#sensor-edit-source-path").value = sensorData.path;
 	editor.querySelector("#sensor-edit-source-type").value = sensorData.type;
+	editor.querySelector("#sensor-edit-source-path").value = sensorData.path;
 	editor.querySelector("#sensor-edit-source-keepopen").checked = sensorData.keep_open;
 	editor.querySelector("#sensor-edit-source-poll").value = sensorData.poll_ms;
 	editor.querySelector("#sensor-edit-value-min").value = sensorData.min;
@@ -132,7 +132,7 @@ function sensorEdit(editorId) {
 			edWidget.innerHTML += `<option value="${k}">${k}</option>`;
 		}
 	);
-	edWidget.value = sensorData.widget;
+	edWidget.value = sensor.getAttribute("data-widget");
 
 	// show editor
 	showEditor(editorId, true);
@@ -165,13 +165,13 @@ function sensorApply(editorId) {
 		"divider":	editor.querySelector("#sensor-edit-value-divider").value*1,
 		"precision":	editor.querySelector("#sensor-edit-value-precision").value,
 		"suffix":	editor.querySelector("#sensor-edit-value-suffix").value,
-		"widget":	editor.querySelector("#sensor-edit-widget").value
 	};
 
 	var sDataJson = JSON.stringify(sensorData);
 
 	// store sensor data
 	sensor.setAttribute("data-sensor", sDataJson);
+	sensor.setAttribute("data-widget", editor.querySelector("#sensor-edit-widget").value);
 
 	// send updated sensor to server via WS
 	wsSaveSensor(sensor.id, sDataJson, "update");
