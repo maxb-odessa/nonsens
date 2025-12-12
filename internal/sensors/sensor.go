@@ -46,10 +46,10 @@ type Sensor struct {
 	Uid string
 
 	// configured params, set by remote client
-	Config *Config
+	Config Config
 
 	// calculated sensor value, will be sent to remote client
-	Value *Value `json:"-"`
+	Value Value `json:"-"`
 }
 
 func (s *Sensor) setup() error {
@@ -173,10 +173,4 @@ func (s *Sensor) stop() {
 
 	// release it for other operations
 	s.pvt.Unlock()
-}
-
-func (s *Sensor) update() {
-	// stop
-	// update
-	// start
 }

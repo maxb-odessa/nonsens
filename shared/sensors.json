@@ -1,0 +1,1 @@
+{"s-1c80bb7fe85ae24b38898426e1547924c8ab":{"Uid":"s-1c80bb7fe85ae24b38898426e1547924c8ab","Config":{"type":"file","path":"0:0:/sys/class/hwmon/hwmon6/power1_input","keep_open":true,"poll_ms":1000,"min":0,"max":100,"divider":100000}}}

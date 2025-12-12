@@ -102,10 +102,10 @@
 				</select>
 				<br>
 				<label for="sensor-edit-source-path">Value source path:</label>
-				<input id="sensor-edit-source-path" type="text" required minlength="2" maxlength="1024" placeholder="/proc/sys/kernel/shmall">
+				<input id="sensor-edit-source-path" type="text" required minlength="2" maxlength="1024" placeholder="0:0:/path/to/file" pattern="^\d+:\d+:\/.+" title="The format is: 'LINE:COL:/abs/path', where LINE and POS are file data positions">
 				<br>
 				<label for="sensor-edit-source-poll">Source poll interval:</label>
-				<input id="sensor-edit-source-poll" type="number" required min="0.1" max="3600" step="0.1" required>sec
+				<input id="sensor-edit-source-poll" type="number" required min="100" max="360000" step="10" required>mSec
 				<br>
 				<label for="sensor-edit-source-keepopen">Keep source open:</label>
 				<input id="sensor-edit-source-keepopen" type="checkbox">

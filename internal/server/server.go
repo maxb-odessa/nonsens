@@ -76,7 +76,7 @@ func receiveSensorsData(ch chan *sensors.Sensor) {
 			Target:  MSG_TARGET_SENSOR,
 			Id:      sens.Uid,
 			Action:  MSG_ACTION_UPDATE,
-			Payload: *sens.Value, // make a COPY of values! TODO use s.Lock() ?
+			Payload: sens.Value, // TODO make a COPY of values! TODO use s.Lock() ?
 		})
 	}
 }
@@ -107,6 +107,7 @@ func gotFromRemote(msg *remoteMsg) {
 		// the only supported action for now
 		if msg.Action == MSG_ACTION_UPDATE {
 			// update and store new layout
+			// we expect plain html string as a payload
 			webPageLayout = msg.Payload.(string)
 			if err := config.Save(webPageLayoutFile, []byte(webPageLayout)); err != nil {
 				log.Err("Failed to save web page layout: %s", err)
@@ -118,6 +119,16 @@ func gotFromRemote(msg *remoteMsg) {
 	} else if msg.Target == MSG_TARGET_SENSOR {
 
 		// see action: add, del, upd, etc...
+		switch msg.Action {
+		case MSG_ACTION_ADD:
+			sensors.Add(msg.Id, msg.Payload.(string))
+		case MSG_ACTION_DELETE:
+			sensors.Delete(msg.Id)
+		case MSG_ACTION_UPDATE:
+			sensors.Update(msg.Id, msg.Payload.(string))
+		default:
+			log.Warn("Undefined 'action' from remote: %d", msg.Action)
+		}
 	}
 
 }
@@ -163,6 +174,7 @@ func startServer() error {
 					log.Err("Websocket error: %s", err)
 					return
 				} else {
+					log.Debug(9, "Got from remote: %+v", msg)
 					gotFromRemote(msg)
 
 				}

@@ -60,21 +60,25 @@ function sensorAdd() {
 	// add sensor data defaults to the sensor
 	// (same as in backend)
 	var newSensor = document.getElementById("s-" + uuid);
-	var data = JSON.stringify(
+	var sDataJson = JSON.stringify(
 		{
 			"type":		"file",
-			"path":		"",
+			"path":		"0:0:/path/to/file",
 			"keep_open":	true,
-			"poll_ms":	1.0,
-			"min":		0,
-			"max":		100,
-			"divider":	1.0,
-			"precision":	1,
+			"poll_ms":	1000*1,
+			"min":		0*1,
+			"max":		100*1,
+			"divider":	1.0*1,
+			"precision":	1*1,
 			"suffix":	"",
 			"widget":	"Default"
 		}
 	);
-	newSensor.setAttribute("data-sensor", data);
+	newSensor.setAttribute("data-sensor", sDataJson);
+
+	// send new sensor to server via WS
+	wsSaveSensor("s-"+uuid, sDataJson, "add");
+
 }
 
 
@@ -109,6 +113,7 @@ function sensorEdit(editorId) {
 
 	// get sensor settings
 	var sensorData = JSON.parse(sensor.getAttribute("data-sensor"));
+
 	editor.querySelector("#sensor-edit-source-path").value = sensorData.path;
 	editor.querySelector("#sensor-edit-source-type").value = sensorData.type;
 	editor.querySelector("#sensor-edit-source-keepopen").checked = sensorData.keep_open;
@@ -154,10 +159,10 @@ function sensorApply(editorId) {
 		"path":		editor.querySelector("#sensor-edit-source-path").value,
 		"type":		editor.querySelector("#sensor-edit-source-type").value,
 		"keep_open":	editor.querySelector("#sensor-edit-source-keepopen").checked,
-		"poll_ms":	editor.querySelector("#sensor-edit-source-poll").value,
-		"min":		editor.querySelector("#sensor-edit-value-min").value,
-		"max":		editor.querySelector("#sensor-edit-value-max").value,
-		"divider":	editor.querySelector("#sensor-edit-value-divider").value,
+		"poll_ms":	editor.querySelector("#sensor-edit-source-poll").value*1,
+		"min":		editor.querySelector("#sensor-edit-value-min").value*1,
+		"max":		editor.querySelector("#sensor-edit-value-max").value*1,
+		"divider":	editor.querySelector("#sensor-edit-value-divider").value*1,
 		"precision":	editor.querySelector("#sensor-edit-value-precision").value,
 		"suffix":	editor.querySelector("#sensor-edit-value-suffix").value,
 		"widget":	editor.querySelector("#sensor-edit-widget").value
@@ -179,9 +184,8 @@ function sensorDelete() {
 	// delete the sensor
 	if (confirm("You are going to DELETE the sensor!\nConfirm?")) {
 		let sensorC = document.getElementById("sc-"+selectedSensorId);
-		let sensorData = sensorC.querySelector("#s-"+selectedSensorId).getAttribute("data-sensor");
 		// stop and delete sensor on server side
-		wsSaveSensor("s-"+selectedSensorId, JSON.parse(sensorData), "delete");
+		wsSaveSensor("s-"+selectedSensorId, "", "delete");
 		// delete whole sensor container
 		sensorC.remove();
 	}
