@@ -87,24 +87,30 @@ function wsUpdateLayout(content) {
 // update sensor data
 function wsUpdateSensor(id, data) {
 
+	// get sensor object
 	var s = document.getElementById(id);
 	if (! s) {
 		console.log("wsUpdateSensor(" + id + "): not found");
 		return;
 	}
 
-	var widgetTemplate = widgetsData.get(s.getAttribute("data-widget"));
+	// find sensor widget template func
+	var widgetTemplateFunc = widgetsData.get(s.getAttribute("data-widget"));
+	if (! widgetTemplateFunc) {
+		console.log('widgetTemplateFunc(' + s.getAttribute("data-widget") + ') is not defined');
+		return;
+	}
 
-function getFunc() {
-	var widgetTemplate = "`"+widgetsData.get(s.getAttribute("data-widget"))+"`";
+	// get SOME sensor object options
+	var options = {
+		min: s.getAttribute("data-min"),
+		max: s.getAttribute("data-max"),
+		precision: s.getAttribute("data-precision"),
+		suffix: s.getAttribute("data-suffix")
+	};
 
-let func = new Function(`${widgetTemplate}`);
-
-return func;
-}
-
-console.log(getFunc()());
-	//s.innerHTML = eval("`"+widgetTemplate+"`");
+	// apply values and options to template + inject new html code into sensor container
+	s.innerHTML = widgetTemplateFunc(data, options);
 }
 
 // save sensor
@@ -140,4 +146,4 @@ function wsSaveLayout() {
 
 window.saveLayout = wsSaveLayout;
 
-export { wsLoop, wsSaveSensor };
+export { wsLoop, wsSaveSensor, wsSaveLayout };

@@ -16,7 +16,13 @@ function createUUID() {
 
 // primitive string (un)sanitizer
 function safeString(str, toSafe) {
+
+	if (! str) {
+		return "";
+	}
+
 	var res = str;
+
 	if (toSafe) {
 		res = res.replace(`&`, `&amp;`); // must be the first
 		res = res.replace(`<`, `&lt;`);
@@ -73,7 +79,7 @@ async function showInfo(text, show, timeOut) {
 window.showInfo = showInfo;
 
 // show/hide editor
-function showEditor(editorId, show, noteAfter) {
+function showEditor(editorId, show, noteAfter, noteDelayMs) {
 	var editor = document.getElementById(editorId);
 	if (show) {
 		editor.style.display = "inline-block";
@@ -83,7 +89,7 @@ function showEditor(editorId, show, noteAfter) {
 		editor.style.display = "none";
 		maskBelow(editor.id, false);
 		if (noteAfter) {
-			showInfo(noteAfter, true, 1500);
+			showInfo(noteAfter, true, noteDelayMs);
 		}
 	}
 

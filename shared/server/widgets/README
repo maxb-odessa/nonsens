@@ -1,1 +1,12 @@
-"Default" widget MUST always be present
+- "Default" widget MUST always be present
+- data:
+	value float
+	diff float
+	percents int
+	online bool
+	hint string
+- options:
+	min float
+	max float
+	precision int
+	suffix string

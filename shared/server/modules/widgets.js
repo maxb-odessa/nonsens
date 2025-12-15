@@ -19,7 +19,7 @@ export const widgetsData = new Map();
 
   widgetsData entry:
 	name = visible name, from the list
-	template = widget template body (html, loadef from file)
+	templateFunc = widget template body (html, loadef from file) function
 */
 
 async function loadWidgets() {
@@ -30,9 +30,15 @@ async function loadWidgets() {
 
 	// fetch all widgest data from the list
 	for (let i = 0; i < wList.length; i ++) {
+
 		var wObj = await fetch("./widgets/" + wList[i].file);
-		wList[i].template = await wObj.text();
-		widgetsData.set(wList[i].name, wList[i].template);
+
+		var template = await wObj.text();
+
+		var templateFunc = new Function('data', 'options', 'return ' + "`" + template + "`");
+
+		widgetsData.set(wList[i].name, templateFunc);
+
 	}
 }
 
