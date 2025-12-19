@@ -1,0 +1,5 @@
+
+- can not click on sensor - covered by widget; make title clickable to edit?
+- resize handle could be hidden by sensor widget
+- if sensor title if set to empty string - can not drag and click it
+- thus: dunno what to do

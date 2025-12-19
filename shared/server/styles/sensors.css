@@ -47,6 +47,7 @@
 	/* custom style: right-aligned title */
 	&.Right {
 		display: inline-block;
+		width: 100%;
 		border: solid black 1px;
 		.sensor-legend {
 			float: right;
