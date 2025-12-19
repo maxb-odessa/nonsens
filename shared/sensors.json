@@ -1,1 +1,14 @@
-{"s-84a3fe1d78c8644bb99a0f0f28f1568c26be":{"Uid":"s-84a3fe1d78c8644bb99a0f0f28f1568c26be","Config":{"type":"file","path":"0:0://sys/class/hwmon/hwmon6/power1_input","keep_open":true,"poll_ms":1000,"min":0,"max":100,"divider":1000000}},"s-a9356b6a77674f44706b058f5245d90d6b21":{"Uid":"s-a9356b6a77674f44706b058f5245d90d6b21","Config":{"type":"file","path":"0:0://sys/class/hwmon/hwmon6/power1_input","keep_open":true,"poll_ms":1000,"min":20,"max":100,"divider":100000}},"s-b2a7cf597f330b402199e5913fc8b19507e6":{"Uid":"s-b2a7cf597f330b402199e5913fc8b19507e6","Config":{"type":"file","path":"0:0:/path/to/file","keep_open":true,"poll_ms":1000,"min":0,"max":100,"divider":1}},"s-bad4e65d24068c47a37843cddda00a50a041":{"Uid":"s-bad4e65d24068c47a37843cddda00a50a041","Config":{"type":"file","path":"0:0://sys/class/hwmon/hwmon6/in0_input","keep_open":true,"poll_ms":1200,"min":0,"max":100,"divider":10}}}
+{
+		"s-7836EE736B156933": {
+			"Uid": "s-7836EE736B156933",
+			"Config": {
+				"type": "file",
+				"path": "0:0:/sys/class/hwmon/hwmon6/power1_input",
+				"keep_open": true,
+				"poll_ms": 1000,
+				"min": 0,
+				"max": 100,
+				"divider": 1000000
+			}
+		}
+	}

@@ -1,5 +1,6 @@
 
 import { createUUID, safeString, maskBelow, showEditor } from './utils.js';
+import { wsSaveSensor } from './ws.js'
 
 export var selectedGroupId = "";
 
@@ -42,18 +43,18 @@ function groupAdd(containerId) {
 
 	// group template
 	var uuid = createUUID();
-	const template = `
-		<fieldset id="gc-${uuid}" class="group-container Default">
+	const template = 
+		`<fieldset id="gc-${uuid}" class="group-container Default">
 			<legend id="gt-${uuid}" class="drag-handle group-legend">New Group #${newGroupSeq}</legend>
 			<div id="g-${uuid}" title="Click for group menu" class="group" onclick="saveGroupId('${uuid}');"></div>
 			<div class="resize-handle">&nbsp;</div>
-		</fieldset>
-	`;
+		</fieldset>`;
 	newGroupSeq ++;
 
 	document.getElementById(containerId).innerHTML += template;
 
-	return true;
+	// save layout
+	saveLayout();
 }
 
 
@@ -88,8 +89,6 @@ function groupEdit(editorId) {
 
 	// show editor
 	showEditor(editorId, true);
-
-	return true;
 }
 
 // apply group params from editor
@@ -110,17 +109,33 @@ function groupApply(editorId) {
 
 	group.style.backgroundColor = editor.querySelector("#group-edit-bg-color").value;
 
-	return true;
+	// save layout
+	saveLayout();
 }
 
 // delete a group
 function groupDelete() {
 
-	// delete the group
-	if (confirm("You are going to DELETE the group and all its sensors!\nConfirm?")) {
-		// delete whole group container
-		document.getElementById("gc-"+selectedGroupId).remove();
+	var groupC = document.getElementById("gc-"+selectedGroupId);
+	var group = groupC.querySelector("#g-"+selectedGroupId);
+
+	// delete the group and all its sensors?
+	if (! confirm("You are going to DELETE the group and all its sensors!\nConfirm?")) {
+		return;
 	}
+
+	// delete all groups sensors (serverside)
+	var sensors = group.children;
+	for (let i = 0; i < sensors.length; i ++) {
+		// here 'children' are sensor containers; we should 'compose' real sensor ids out of them
+		wsSaveSensor(sensors[i].id.replace(/^sc-/, "s-"), "", "delete");
+	}
+
+	// delete whole group container
+	document.getElementById("gc-"+selectedGroupId).remove();
+
+	// save layout
+	saveLayout();
 
 }
 

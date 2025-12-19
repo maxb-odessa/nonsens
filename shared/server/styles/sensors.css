@@ -34,6 +34,7 @@
 
 	/* default style, must always be present */
 	&.Default {
+		display: inline-block;
 		border: solid white 1px;
 		.sensor-legend {
 			background-color: orange;
@@ -45,6 +46,7 @@
 
 	/* custom style: right-aligned title */
 	&.Right {
+		display: inline-block;
 		border: solid black 1px;
 		.sensor-legend {
 			float: right;

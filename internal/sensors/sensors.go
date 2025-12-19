@@ -35,24 +35,32 @@ func Start(ch chan *Sensor) error {
 	log.Info("Loaded %d stored sensors", len(sensorsMap))
 
 	// start all sensors
-	startAllSensors()
+	startAll()
 
 	return nil
 }
 
 // start all configured sensors
-func startAllSensors() {
+func startAll() {
 	for uid, s := range sensorsMap {
-		log.Debug(5, "going to start sensor %s", uid)
+		log.Debug(5, "going to start sensor '%s'", uid)
 		if err := s.start(); err != nil {
 			log.Warn("Sensor '%s' start failed: %s", uid, err)
 		}
 	}
 }
 
+// stop all running sensors
+func stopAll() {
+	for uid, s := range sensorsMap {
+		log.Debug(5, "going to stop sensor '%s'", uid)
+		s.stop()
+	}
+}
+
 // save all configured sensors
-func saveAllSensors() {
-	if jsens, err := json.Marshal(sensorsMap); err != nil {
+func saveAll() {
+	if jsens, err := json.MarshalIndent(sensorsMap, "\t", "\t"); err != nil {
 		log.Err("sensorsMap[] to JSON failed: %s", err)
 	} else {
 		config.Save(sensorsFile, jsens)
@@ -89,8 +97,10 @@ func Add(id string, data string) {
 		log.Warn("Sensor '%s' start failed: %s", id, err)
 	}
 
+	log.Info("Added sensor '%s'", id)
+
 	// save configured sensors
-	saveAllSensors()
+	saveAll()
 }
 
 // stop and delete the sensors
@@ -106,10 +116,15 @@ func Delete(id string) {
 
 		// stop the sensor
 		sens.stop()
+
 		// delete it
 		delete(sensorsMap, id)
+
+		log.Info("Deleted sensor '%s'", id)
+
 		// save all sensors
-		saveAllSensors()
+		saveAll()
+
 	}
 }
 
@@ -140,6 +155,8 @@ func Update(id string, data string) {
 		log.Warn("Sensor '%s' start failed: %s", id, err)
 	}
 
+	log.Info("Updated sensor '%s'", id)
+
 	// save configured sensors
-	saveAllSensors()
+	saveAll()
 }

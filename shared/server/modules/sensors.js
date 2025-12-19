@@ -2,7 +2,7 @@
 import { createUUID, safeString, maskBelow, showEditor } from './utils.js';
 import { selectedGroupId } from './groups.js';
 import { widgetsData } from './widgets.js';
-import { wsSaveLayout, wsSaveSensor } from './ws.js';
+import { wsSaveSensor } from './ws.js';
 
 export var selectedSensorId = "";
 
@@ -43,13 +43,12 @@ function sensorAdd() {
 
 	// sensor template
 	var uuid = createUUID();
-	const template = `
-		<fieldset id="sc-${uuid}" class="sensor-container Default">
+	const template =
+		`<fieldset id="sc-${uuid}" class="sensor-container Default">
 			<legend id="st-${uuid}" class="drag-handle sensor-legend">New Sensor #${newSensorSeq}</legend>
 			<div id="s-${uuid}" title="Click for sensor menu" class="sensor" onclick="saveSensorId('${uuid}');"></div>
 			<div class="resize-handle">&nbsp;</div>
-		</fieldset>
-	`;
+		</fieldset>`;
 	newSensorSeq ++;
 
 	// add to group, not to group container
@@ -65,19 +64,18 @@ function sensorAdd() {
 	newSensor.setAttribute("data-path", "0:0:/path/to/file");
 	newSensor.setAttribute("data-keep_open", true);
 	newSensor.setAttribute("data-poll_ms", 1000*1);
-	newSensor.setAttribute("data-min", 0*1);
-	newSensor.setAttribute("data-max", 100*1);
-	newSensor.setAttribute("data-divider", 1.0*1);
-	newSensor.setAttribute("data-precision", 1*1);
+	newSensor.setAttribute("data-min", 0.0);
+	newSensor.setAttribute("data-max", 100.0);
+	newSensor.setAttribute("data-divider", 1.0);
+	newSensor.setAttribute("data-precision", 1.0);
 	newSensor.setAttribute("data-suffix", "");
 	newSensor.setAttribute("data-widget", "Default");
-
-	// save whole layout!
-	wsSaveLayout();
 
 	// send new sensor to server via WS
 	wsSaveSensor("s-"+uuid, sensorDataToJson(newSensor), "add");
 
+	// save whole layout!
+	saveLayout();
 }
 
 
@@ -157,15 +155,18 @@ function sensorApply(editorId) {
 	sensor.setAttribute("data-type", editor.querySelector("#sensor-edit-source-type").value);
 	sensor.setAttribute("data-keep_open", editor.querySelector("#sensor-edit-source-keepopen").checked);
 	sensor.setAttribute("data-poll_ms", editor.querySelector("#sensor-edit-source-poll").value*1);
-	sensor.setAttribute("data-min", editor.querySelector("#sensor-edit-value-min").value*1);
-	sensor.setAttribute("data-max", editor.querySelector("#sensor-edit-value-max").value*1);
-	sensor.setAttribute("data-divider", editor.querySelector("#sensor-edit-value-divider").value*1);
-	sensor.setAttribute("data-precision", editor.querySelector("#sensor-edit-value-precision").value);
+	sensor.setAttribute("data-min", editor.querySelector("#sensor-edit-value-min").value*1.0);
+	sensor.setAttribute("data-max", editor.querySelector("#sensor-edit-value-max").value*1.0);
+	sensor.setAttribute("data-divider", editor.querySelector("#sensor-edit-value-divider").value*1.0);
+	sensor.setAttribute("data-precision", editor.querySelector("#sensor-edit-value-precision").value*1);
 	sensor.setAttribute("data-suffix", safeString(editor.querySelector("#sensor-edit-value-suffix").value, true));
 	sensor.setAttribute("data-widget", editor.querySelector("#sensor-edit-widget").value);
 
 	// send updated sensor to server via WS
 	wsSaveSensor(sensor.id, sensorDataToJson(sensor), "update");
+
+	// save layout
+	saveLayout();
 }
 
 
@@ -181,6 +182,9 @@ function sensorDelete() {
 		sensorC.remove();
 	}
 
+	// save layout
+	saveLayout();
+
 }
 
 // compose all sensor data into JSON string
@@ -190,9 +194,9 @@ function sensorDataToJson(s) {
 		"path": s.getAttribute("data-path"),
 		"keep_open": s.getAttribute("data-keep_open") && true,
 		"poll_ms": s.getAttribute("data-poll_ms") * 1,
-		"min": s.getAttribute("data-min") * 1,
-		"max": s.getAttribute("data-max") * 1,
-		"divider": s.getAttribute("data-divider") * 1,
+		"min": s.getAttribute("data-min") * 1.0,
+		"max": s.getAttribute("data-max") * 1.0,
+		"divider": s.getAttribute("data-divider") * 1.0,
 	});
 }
 

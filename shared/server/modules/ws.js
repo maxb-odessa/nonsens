@@ -146,4 +146,4 @@ function wsSaveLayout() {
 
 window.saveLayout = wsSaveLayout;
 
-export { wsLoop, wsSaveSensor, wsSaveLayout };
+export { wsLoop, wsSaveSensor };
