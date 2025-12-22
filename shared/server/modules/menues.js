@@ -7,25 +7,21 @@ function getPointerPos(e) {
 }
 
 // show/hide main menu
+// get menu id from 'data-menu' attribute if present
 function toggleMenu(e) {
 
-	// find the menu elem corresponding to target class (menu elem id == its class name)
-	var menu;
-	var classes = e.target.className.split(' ');
+	var menuId = e.target.getAttribute("data-menu");
 
-	for (let i = 0; i < classes.length; i++) {
-		menu = document.getElementById(classes[i] + "-menu");
-		if (menu !== null) {
-			break;
-		}
-	}
-
-	if (menu === null) {
+	if (! menuId) {
 		return;
 	}
 
+	var menu = document.getElementById(menuId);
+	if (! menu) {
+		return;
+	}
 
-	// hide the menu
+	// hide the menu?
 	if (menu.style.display && menu.style.display !== "none") {
 		showMenu(e, menu.id, false);
 		return;

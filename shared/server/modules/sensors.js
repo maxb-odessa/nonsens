@@ -18,6 +18,7 @@ window.saveSensorId = saveSensorId;
 // get all custom sensors styles names (classes) from loaded CSS file
 // see nonsens.css
 // and styles/sensors.css
+// NB: ugly solution :(
 function sensorGetCustomStyles() {
 	// 0 - top css file (nonsens.css)
 	// 1 - second inluded file (styles/sensors.css)
@@ -45,8 +46,8 @@ function sensorAdd() {
 	var uuid = createUUID();
 	const template =
 		`<fieldset id="sc-${uuid}" class="sensor-container Default">
-			<legend id="st-${uuid}" class="drag-handle sensor-legend">New Sensor #${newSensorSeq}</legend>
-			<div id="s-${uuid}" title="Click for sensor menu" class="sensor" onclick="saveSensorId('${uuid}');"></div>
+			<legend id="st-${uuid}" data-menu="sensor-menu" class="drag-handle sensor-legend" onclick="saveSensorId('${uuid}');">New Sensor #${newSensorSeq}</legend>
+			<div id="s-${uuid}" class="sensor"></div>
 			<div class="resize-handle">&nbsp;</div>
 		</fieldset>`;
 	newSensorSeq ++;

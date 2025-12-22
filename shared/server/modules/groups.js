@@ -45,8 +45,8 @@ function groupAdd(containerId) {
 	var uuid = createUUID();
 	const template = 
 		`<fieldset id="gc-${uuid}" class="group-container Default">
-			<legend id="gt-${uuid}" class="drag-handle group-legend">New Group #${newGroupSeq}</legend>
-			<div id="g-${uuid}" title="Click for group menu" class="group" onclick="saveGroupId('${uuid}');"></div>
+			<legend id="gt-${uuid}" data-menu="group-menu" class="drag-handle group-legend" onclick="saveGroupId('${uuid}');">New Group #${newGroupSeq}</legend>
+			<div id="g-${uuid}" class="group"></div>
 			<div class="resize-handle">&nbsp;</div>
 		</fieldset>`;
 	newGroupSeq ++;

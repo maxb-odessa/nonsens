@@ -17,9 +17,7 @@
 		color: white;
 	}
 	.sensor {
-		display: inline-grid;
-		grid-template-columns: repeat(64, 1fr);
-		grid-template-rows: repeat(64, 1fr);
+		display: inline-block;
 		padding: 0;
 		margin: 0;
 		gap: 0;
@@ -34,21 +32,18 @@
 
 	/* default style, must always be present */
 	&.Default {
-		display: inline-block;
 		border: solid white 1px;
 		.sensor-legend {
 			background-color: orange;
 		}
 		.sensor {
-			background-color: gray;
+			background-color: cyan;
 		}
 	}
 
 	/* custom style: right-aligned title */
 	&.Right {
-		display: inline-block;
-		width: 100%;
-		border: solid black 1px;
+		border: 0;
 		.sensor-legend {
 			float: right;
 			background-color: #00000000;
