@@ -50,7 +50,7 @@ body {
 
 .drag-handle {
 	cursor: move;
-	z-index: 20;
+	z-index: 30;
 }
 
 .resize-handle {
@@ -61,7 +61,7 @@ body {
 	margin: 0;
 	gap: 0;
 	cursor: se-resize;
-	z-index: 20;
+	z-index: 30;
 	resize: none;
 	font-size: 0.7ch;
 	&:hover {

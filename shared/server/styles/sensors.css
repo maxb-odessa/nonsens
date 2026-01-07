@@ -2,7 +2,7 @@
 .sensor-container {
 	display: inline;
 	position: relative;
-	z-index: 10;
+	z-index: 20;
 	overflow: hidden;
 	border: 0;
 	padding: 0;

@@ -83,29 +83,26 @@
 				<label for="sensor-edit-style">Style:</label>
 				<select id="sensor-edit-style" required>
 				</select>
-				<label for="sensor-edit-title">Sensor title:</label>
+				<br>
+				<label for="sensor-edit-bg-color">Bg color:</label>
+				<input id="sensor-edit-bg-color" type="color">
+				<br>
+				<label for="sensor-edit-title">Title:</label>
 				<input type="text" id="sensor-edit-title" minlength="0" maxlength="30">
 				<br>
-				<label for="sensor-edit-title-color">Title color:</label>
+				<label for="sensor-edit-title-color">Title fg/bg colors:</label>
 				<input id="sensor-edit-title-color" type="color">
-				<br>
-				<label for="sensor-edit-title-bg-color">Title bg color:</label>
 				<input id="sensor-edit-title-bg-color" type="color">
-				<br>
-				<label for="sensor-edit-bg-color">Backgroud color:</label>
-				<input id="sensor-edit-bg-color" type="color">
 				<hr>
-				<label for="sensor-edit-source-type">Value source type:</label>
-				<select id="sensor-edit-source-type" required>
+				<label for="sensor-edit-source-type">Source type/path:</label>
+				<select id="sensor-edit-source-type" style="width: 10%;" required>
 					<option value="file">file</option>
 					<option value="cmd">exec</option>
 				</select>
+				<input id="sensor-edit-source-path" style="width: 55%;" type="text" required minlength="2" maxlength="1024" placeholder="0:0:/path/to/file" pattern="^\d+:\d+:\/.+" title="The format is: 'LINE:COL:/abs/path', where LINE and POS are file data positions">
 				<br>
-				<label for="sensor-edit-source-path">Value source path:</label>
-				<input id="sensor-edit-source-path" type="text" required minlength="2" maxlength="1024" placeholder="0:0:/path/to/file" pattern="^\d+:\d+:\/.+" title="The format is: 'LINE:COL:/abs/path', where LINE and POS are file data positions">
-				<br>
-				<label for="sensor-edit-source-poll">Source poll interval:</label>
-				<input id="sensor-edit-source-poll" type="number" required min="100" max="360000" step="10" required>mSec
+				<label for="sensor-edit-source-poll">Source poll interval (ms):</label>
+				<input id="sensor-edit-source-poll" type="number" required min="100" max="360000" step="10" required>
 				<br>
 				<label for="sensor-edit-source-keepopen">Keep source open:</label>
 				<input id="sensor-edit-source-keepopen" type="checkbox">
@@ -120,13 +117,6 @@
 							what.setAttribute("max", t.value);
 						}
 					}
-				</script>
-				<label for="sensor-edit-value-min">Min value:</label>
-				<input id="sensor-edit-value-min" type="number" step="any" onchange="setMinMax(this, 'sensor-edit-value-max', true);" required>
-				<label for="sensor-edit-value-max">Max value:</label>
-				<input id="sensor-edit-value-max" type="number" step="any" onchange="setMinMax(this, 'sensor-edit-value-min', false);" required>
-				<br>
-				<script>
 					// do not allow zero values
 					function forbidZero(t){
 						if (! parseFloat(t.value)) {
@@ -134,7 +124,9 @@
 						}
 					}
 				</script>
-				<label for="sensor-edit-value-divider">Value divider:</label>
+				<label for="sensor-edit-value-min">Min/Max/Divider:</label>
+				<input id="sensor-edit-value-min" type="number" step="any" onchange="setMinMax(this, 'sensor-edit-value-max', true);" required>
+				<input id="sensor-edit-value-max" type="number" step="any" onchange="setMinMax(this, 'sensor-edit-value-min', false);" required>
 				<input id="sensor-edit-value-divider" type="number" step="any" onchange="forbidZero(this)" required>
 				<hr>
 				<label for="sensor-edit-value-precision">Display value format:</label>
@@ -153,6 +145,7 @@
 				<br>
 				<label for="sensor-edit-value-suffix">Display value suffix:</label>
 				<input id="sensor-edit-value-suffix" type="text" minlength="0" maxlength="30" placeholder="ex: MHz, Volts, %, &deg;C">
+				<hr>
 				<label for="sensor-edit-widget">Widget:</label>
 				<select id="sensor-edit-widget" required>
 				</select>
