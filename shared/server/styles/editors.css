@@ -36,10 +36,22 @@
 			display: inline-block;
 			text-align: left;
 			&[type='text'] {
+				display: inline-block;
+				vertical-align: middle;
 				width: 65%;
 			}
 			&[type='number'] {
+				display: inline-block;
+				vertical-align: middle;
 				width: 21%;
+			}
+			&[type='color'] {
+				display: inline-block;
+				vertical-align: middle;
+				border: 0;
+				align: center;
+				background-color: #00000000;
+				background: #00000000;
 			}
 		}
 	}

@@ -79,6 +79,30 @@
 		<div id="sensor-editor" class="sensor-editor">
 			<form id="sensor-editor-form" onsubmit="sensorApply('sensor-editor'); showEditor('sensor-editor', false);">
 			<fieldset>
+				<script>
+					// adjust source file path: add default '0:0:' if missed
+					function adjustSourcePath(t) {
+						if (t.value.charAt(0) === "/") {
+							t.value = "0:0:" + t.value;
+						}
+							
+					}
+					// ensure that MIN always <= than MAX 
+					function setMinMax(t, w, min) {
+						var what = document.getElementById(w);
+						if (min) {
+							what.setAttribute("min", t.value);
+						} else {
+							what.setAttribute("max", t.value);
+						}
+					}
+					// do not allow zero values
+					function forbidZero(t){
+						if (! parseFloat(t.value)) {
+							t.value = 1;
+						}
+					}
+				</script>
 				<legend>Sensor settings</legend>
 				<label for="sensor-edit-style">Style:</label>
 				<select id="sensor-edit-style" required>
@@ -99,31 +123,14 @@
 					<option value="file">file</option>
 					<option value="cmd">exec</option>
 				</select>
-				<input id="sensor-edit-source-path" style="width: 55%;" type="text" required minlength="2" maxlength="1024" placeholder="0:0:/path/to/file" pattern="^\d+:\d+:\/.+" title="The format is: 'LINE:COL:/abs/path', where LINE and POS are file data positions">
+				<input id="sensor-edit-source-path" style="width: 55%;" type="text" onchange="adjustSourcePath(this);" required minlength="2" maxlength="1024" placeholder="0:0:/path/to/file" pattern="^(\d+:\d+:)?\/.+" title="The format is: 'LINE:COL:/abs/path', where LINE and POS are optional file data positions">
 				<br>
-				<label for="sensor-edit-source-poll">Source poll interval (ms):</label>
-				<input id="sensor-edit-source-poll" type="number" required min="100" max="360000" step="10" required>
+				<label for="sensor-edit-source-pollms">Source poll interval (ms):</label>
+				<input id="sensor-edit-source-pollms" type="number" required min="100" max="360000" step="10" required>
 				<br>
 				<label for="sensor-edit-source-keepopen">Keep source open:</label>
 				<input id="sensor-edit-source-keepopen" type="checkbox">
 				<br>
-				<script>
-					// ensure that MIN always <= than MAX 
-					function setMinMax(t, w, min) {
-						var what = document.getElementById(w);
-						if (min) {
-							what.setAttribute("min", t.value);
-						} else {
-							what.setAttribute("max", t.value);
-						}
-					}
-					// do not allow zero values
-					function forbidZero(t){
-						if (! parseFloat(t.value)) {
-							t.value = 1;
-						}
-					}
-				</script>
 				<label for="sensor-edit-value-min">Min/Max/Divider:</label>
 				<input id="sensor-edit-value-min" type="number" step="any" onchange="setMinMax(this, 'sensor-edit-value-max', true);" required>
 				<input id="sensor-edit-value-max" type="number" step="any" onchange="setMinMax(this, 'sensor-edit-value-min', false);" required>
@@ -144,12 +151,39 @@
 				</select>
 				<br>
 				<label for="sensor-edit-value-suffix">Display value suffix:</label>
-				<input id="sensor-edit-value-suffix" type="text" minlength="0" maxlength="30" placeholder="ex: MHz, Volts, %, &deg;C">
+				<input id="sensor-edit-value-suffix" type="text" minlength="0" maxlength="30" list="suffix-list" placeholder="click for some variants">
+				<datalist id="suffix-list">
+					<option>&deg;C</option>
+					<option>GHz</option>
+					<option>MHz</option>
+					<option>GBytes</option>
+					<option>MBytes</option>
+					<option>V</option>
+					<option>A</option>
+					<option>W</option>
+				</datalist>
 				<hr>
 				<label for="sensor-edit-widget">Widget:</label>
 				<select id="sensor-edit-widget" required>
 				</select>
 				<br>
+				<label for="sensor-edit-widget-bar-color1">Bar colors:</label>
+				<input id="sensor-edit-widget-bar-color1" type="color">
+				<input id="sensor-edit-widget-bar-color2" type="color">@
+				<select id="sensor-edit-widget-bar-color2-percents">
+					<option value="10">10%</option>
+					<option value="20">20%</option>
+					<option value="30">30%</option>
+					<option value="40">40%</option>
+					<option value="50">50%</option>
+					<option value="60">60%</option>
+					<option value="70">70%</option>
+					<option value="80">80%</option>
+					<option value="90">90%</option>
+				</select>
+				<input id="sensor-edit-widget-bar-color3" type="color">
+				<label for="sensor-edit-widget-bar-gradient">Use bar gradient:</label>
+				<input id="sensor-edit-widget-bar-gradient" type="checkbox">
 			</fieldset>
 			<input type="submit" value="Apply">
 			<input type="button" value="Cancel" onclick="showEditor('sensor-editor', false);">

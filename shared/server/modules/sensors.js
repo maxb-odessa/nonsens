@@ -63,14 +63,19 @@ function sensorAdd() {
 
 	newSensor.setAttribute("data-type", "file");
 	newSensor.setAttribute("data-path", "0:0:/path/to/file");
-	newSensor.setAttribute("data-keep_open", true);
-	newSensor.setAttribute("data-poll_ms", 1000*1);
+	newSensor.setAttribute("data-keepopen", true);
+	newSensor.setAttribute("data-pollms", 1000*1);
 	newSensor.setAttribute("data-min", 0.0);
 	newSensor.setAttribute("data-max", 100.0);
 	newSensor.setAttribute("data-divider", 1.0);
 	newSensor.setAttribute("data-precision", 1.0);
 	newSensor.setAttribute("data-suffix", "");
 	newSensor.setAttribute("data-widget", "Default");
+	newSensor.setAttribute("data-widget-bar-color1", "green");
+	newSensor.setAttribute("data-widget-bar-color2", "yellow");
+	newSensor.setAttribute("data-widget-bar-color2-percents", "50");
+	newSensor.setAttribute("data-widget-bar-color3", "red");
+	newSensor.setAttribute("data-widget-bar-gradient", true);
 
 	// send new sensor to server via WS
 	wsSaveSensor("s-"+uuid, sensorDataToJson(newSensor), "add");
@@ -112,8 +117,8 @@ function sensorEdit(editorId) {
 	// get sensor settings
 	editor.querySelector("#sensor-edit-source-type").value = sensor.getAttribute("data-type");
 	editor.querySelector("#sensor-edit-source-path").value = sensor.getAttribute("data-path");
-	editor.querySelector("#sensor-edit-source-keepopen").checked = sensor.getAttribute("data-keep_open");
-	editor.querySelector("#sensor-edit-source-poll").value = sensor.getAttribute("data-poll_ms");
+	editor.querySelector("#sensor-edit-source-keepopen").checked = sensor.getAttribute("data-keepopen");
+	editor.querySelector("#sensor-edit-source-pollms").value = sensor.getAttribute("data-pollms");
 	editor.querySelector("#sensor-edit-value-min").value = sensor.getAttribute("data-min");
 	editor.querySelector("#sensor-edit-value-max").value = sensor.getAttribute("data-max");;
 	editor.querySelector("#sensor-edit-value-divider").value = sensor.getAttribute("data-divider");
@@ -129,6 +134,12 @@ function sensorEdit(editorId) {
 		}
 	);
 	edWidget.value = sensor.getAttribute("data-widget");
+
+	editor.querySelector("#sensor-edit-widget-bar-color1").value = safeString(sensor.getAttribute("data-widget-bar-color1"), false);
+	editor.querySelector("#sensor-edit-widget-bar-color2").value = safeString(sensor.getAttribute("data-widget-bar-color2"), false);
+	editor.querySelector("#sensor-edit-widget-bar-color2-percents").value = safeString(sensor.getAttribute("data-widget-bar-color2-percents"), false);
+	editor.querySelector("#sensor-edit-widget-bar-color3").value = safeString(sensor.getAttribute("data-widget-bar-color3"), false);
+	editor.querySelector("#sensor-edit-widget-bar-gradient").checked = safeString(sensor.getAttribute("data-widget-bar-gradient"), false);
 
 	// show editor
 	showEditor(editorId, true);
@@ -154,14 +165,19 @@ function sensorApply(editorId) {
 	// store sensor data
 	sensor.setAttribute("data-path", editor.querySelector("#sensor-edit-source-path").value);
 	sensor.setAttribute("data-type", editor.querySelector("#sensor-edit-source-type").value);
-	sensor.setAttribute("data-keep_open", editor.querySelector("#sensor-edit-source-keepopen").checked);
-	sensor.setAttribute("data-poll_ms", editor.querySelector("#sensor-edit-source-poll").value*1);
+	sensor.setAttribute("data-keepopen", editor.querySelector("#sensor-edit-source-keepopen").checked);
+	sensor.setAttribute("data-pollms", editor.querySelector("#sensor-edit-source-pollms").value*1);
 	sensor.setAttribute("data-min", editor.querySelector("#sensor-edit-value-min").value*1.0);
 	sensor.setAttribute("data-max", editor.querySelector("#sensor-edit-value-max").value*1.0);
 	sensor.setAttribute("data-divider", editor.querySelector("#sensor-edit-value-divider").value*1.0);
 	sensor.setAttribute("data-precision", editor.querySelector("#sensor-edit-value-precision").value*1);
 	sensor.setAttribute("data-suffix", safeString(editor.querySelector("#sensor-edit-value-suffix").value, true));
 	sensor.setAttribute("data-widget", editor.querySelector("#sensor-edit-widget").value);
+	sensor.setAttribute("data-widget-bar-color1", editor.querySelector("#sensor-edit-widget-bar-color1").value);
+	sensor.setAttribute("data-widget-bar-color2", editor.querySelector("#sensor-edit-widget-bar-color2").value);
+	sensor.setAttribute("data-widget-bar-color2-percents", editor.querySelector("#sensor-edit-widget-bar-color2-percents").value);
+	sensor.setAttribute("data-widget-bar-color3", editor.querySelector("#sensor-edit-widget-bar-color3").value);
+	sensor.setAttribute("data-widget-bar-gradient", editor.querySelector("#sensor-edit-widget-bar-gradient").value);
 
 	// send updated sensor to server via WS
 	wsSaveSensor(sensor.id, sensorDataToJson(sensor), "update");
@@ -193,8 +209,8 @@ function sensorDataToJson(s) {
 	return JSON.stringify({
 		"type": s.getAttribute("data-type"),
 		"path": s.getAttribute("data-path"),
-		"keep_open": s.getAttribute("data-keep_open") && true,
-		"poll_ms": s.getAttribute("data-poll_ms") * 1,
+		"keep_open": s.getAttribute("data-keepopen") && true,
+		"poll_ms": s.getAttribute("data-pollms") * 1,
 		"min": s.getAttribute("data-min") * 1.0,
 		"max": s.getAttribute("data-max") * 1.0,
 		"divider": s.getAttribute("data-divider") * 1.0,

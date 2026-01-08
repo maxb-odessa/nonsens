@@ -103,10 +103,16 @@ function wsUpdateSensor(id, data) {
 
 	// get SOME sensor object options
 	var options = {
+		id: s.getAttribute("id"),
 		min: s.getAttribute("data-min"),
 		max: s.getAttribute("data-max"),
 		precision: s.getAttribute("data-precision"),
-		suffix: s.getAttribute("data-suffix")
+		suffix: s.getAttribute("data-suffix"),
+		color1: s.getAttribute("data-widget-bar-color1"),
+		color2: s.getAttribute("data-widget-bar-color2"),
+		color2P: s.getAttribute("data-widget-bar-color2-percents"),
+		color3: s.getAttribute("data-widget-bar-color3"),
+		gradient: s.getAttribute("data-widget-bar-gradient"),
 	};
 
 	// apply values and options to template + inject new html code into sensor container
