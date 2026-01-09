@@ -141,6 +141,9 @@ function sensorEdit(editorId) {
 	editor.querySelector("#sensor-edit-widget-bar-color3").value = safeString(sensor.getAttribute("data-widget-bar-color3"), false);
 	editor.querySelector("#sensor-edit-widget-bar-gradient").checked = safeString(sensor.getAttribute("data-widget-bar-gradient"), false);
 
+	// ugly, the func is defined in index.html but is called within this module (and within index.html too)
+	editor.querySelector("#widget-bar-color-picker").style.background = makeGradient();
+
 	// show editor
 	showEditor(editorId, true);
 }
