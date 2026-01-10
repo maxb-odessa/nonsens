@@ -13,7 +13,7 @@
 	<body>
 	
 		<!-- MAIN GROUPS AND SENSORS WINDOW -->
-		<div title="Click for main menu" class="main" id="main" data-menu="main-menu" onclick="toggleMenu(event);"></div>
+		<div class="main" id="main" data-menu="main-menu" onclick="toggleMenu(event);"></div>
 
 
 		<!-- MENUES AND POPUPS -->
@@ -52,19 +52,17 @@
 
 		<!-- EDITORS -->
 		<div id="group-editor" class="group-editor">
-			<form id="group-editor-form">
 			<fieldset>
 				<legend>Group settings</legend>
 				<label for="group-edit-style">Style:</label>
 				<select id="group-edit-style" required>
 				</select>
+				<br>
 				<label for="group-edit-title">Group title:</label>
 				<input type="text" id="group-edit-title" minlength="0" maxlength="30">
 				<br>
-				<label for="group-edit-title-color">Title color:</label>
+				<label for="group-edit-title-color">Title fg/bg colors:</label>
 				<input id="group-edit-title-color" type="color">
-				<br>
-				<label for="group-edit-title-bg-color">Title bg color:</label>
 				<input id="group-edit-title-bg-color" type="color">
 				<br>
 				<label for="group-edit-bg-color">Backgroud color:</label>
@@ -73,11 +71,10 @@
 			</fieldset>
 			<input type="button" value="Appy" onclick="groupApply('group-editor'); showEditor('group-editor', false);">
 			<input type="button" value="Cancel" onclick="showEditor('group-editor', false);">
-			</form>
 		</div>
 
+
 		<div id="sensor-editor" class="sensor-editor">
-			<form id="sensor-editor-form" onsubmit="sensorApply('sensor-editor'); showEditor('sensor-editor', false);">
 			<fieldset>
 				<script>
 					// adjust source file path: add default '0:0:' if missed
@@ -201,9 +198,8 @@
 				<label for="sensor-edit-widget-bar-gradient">Use bar gradient:</label>
 				<input id="sensor-edit-widget-bar-gradient" type="checkbox">
 			</fieldset>
-			<input type="submit" value="Apply">
+			<input type="button" value="Apply" onclick="sensorApply('sensor-editor'); showEditor('sensor-editor', false);">
 			<input type="button" value="Cancel" onclick="showEditor('sensor-editor', false);">
-			</form>
 		</div>
 
 	</body>

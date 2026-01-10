@@ -85,7 +85,7 @@ function groupEdit(editorId) {
 	editor.querySelector("#group-edit-title-bg-color").value = titleStyle.backgroundColor;
 
 	var groupStyle = window.getComputedStyle(group);
-	editor.querySelector("#group-edit-bg-color").value = groupStyle.backgroundColor;
+	editor.querySelector("#group-edit-bg-color").value = groupC.style.backgroundColor;
 
 	// show editor
 	showEditor(editorId, true);
@@ -107,7 +107,7 @@ function groupApply(editorId) {
 	groupT.style.color = editor.querySelector("#group-edit-title-color").value;
 	groupT.style.backgroundColor = editor.querySelector("#group-edit-title-bg-color").value;
 
-	group.style.backgroundColor = editor.querySelector("#group-edit-bg-color").value;
+	groupC.style.backgroundColor = editor.querySelector("#group-edit-bg-color").value;
 
 	// save layout
 	saveLayout();

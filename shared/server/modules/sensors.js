@@ -1,5 +1,5 @@
 
-import { createUUID, safeString, maskBelow, showEditor } from './utils.js';
+import { createUUID, safeString, maskBelow, showEditor, convertColorFormat } from './utils.js';
 import { selectedGroupId } from './groups.js';
 import { widgetsData } from './widgets.js';
 import { wsSaveSensor } from './ws.js';
@@ -112,7 +112,7 @@ function sensorEdit(editorId) {
 	editor.querySelector("#sensor-edit-title-bg-color").value = titleStyle.backgroundColor;
 
 	var sensorStyle = window.getComputedStyle(sensor);
-	editor.querySelector("#sensor-edit-bg-color").value = sensorStyle.backgroundColor;
+	editor.querySelector("#sensor-edit-bg-color").value = sensorC.style.backgroundColor;
 
 	// get sensor settings
 	editor.querySelector("#sensor-edit-source-type").value = sensor.getAttribute("data-type");
@@ -163,7 +163,7 @@ function sensorApply(editorId) {
 	sensorT.style.color = editor.querySelector("#sensor-edit-title-color").value;
 	sensorT.style.backgroundColor = editor.querySelector("#sensor-edit-title-bg-color").value;
 
-	sensor.style.backgroundColor = editor.querySelector("#sensor-edit-bg-color").value;
+	sensorC.style.backgroundColor = editor.querySelector("#sensor-edit-bg-color").value;
 
 	// store sensor data
 	sensor.setAttribute("data-path", editor.querySelector("#sensor-edit-source-path").value);

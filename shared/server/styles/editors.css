@@ -7,6 +7,7 @@
 	transform: translate(-50%, -50%);
 	display: none;
 	z-index: 999;
+	width: 60%;
 	fieldset {
 		box-sizing: border-box;
 		border: 1px solid black;

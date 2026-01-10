@@ -28,6 +28,7 @@
 		width: 100%;
 		height: 100%;
 		resize: none;
+		background-color: transparent;
 	}
 
 	/* NAME STYLES WITH CAPITAL LETTER ONLY! */
@@ -35,11 +36,16 @@
 	/* default style, must always be present */
 	&.Default {
 		border: solid white 1px;
+		border-radius: 4px;
+		box-shadow: 5px 3px 10px black;
 		.group-legend {
-			background-color: cyan;
+			border: solid white 1px;
+			margin-left: 4px;
+			border-radius: 4px;
+			background-color: transparent;
 		}
 		.group {
-			background-color: gray;
+			background-color: transparent;
 		}
 	}
 
