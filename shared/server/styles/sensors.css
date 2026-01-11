@@ -50,6 +50,22 @@
 		}
 	}
 
+	/* custom style: no border */
+	&.Flat {
+		border: 0;
+		.sensor-legend {
+			border-radius: 4px;
+			margin: 0 0.5em 0 0.5em;
+			padding: 0 0.5em 0 0.5em;
+			font-size: 0.8em;
+			font-style: italic;
+			background-color: #00000000;
+		}
+		.sensor {
+			background-color: #00000000;
+		}
+	}
+
 	/* custom style: right-aligned title */
 	&.Right {
 		border: 0;
@@ -62,6 +78,7 @@
 			background-color: #00000000;
 		}
 	}
+
 
 	/* add more styles */
 }

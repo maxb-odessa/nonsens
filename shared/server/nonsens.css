@@ -8,17 +8,16 @@
 	user-select: none;
 	touch-action: pan-x pan-y;
 	height: 100% 
-	/* put it here? overscroll-behavior: contain; */ 
+	/* put it here? overscroll-behavior: contain; */
 }
 
 body {
+	font-family: 'Courier New', 'Monaco', 'Lucida Console', 'Consolas', monospace;
 	overscroll-behavior: contain; /* or none */
 	background: black;
-	/*
-	background-image: url('background.jpg');
+	background-image: url('bg/bg-gray.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
-	*/
 	/*background-attachment: fixed;*/
 	height: 100vh; /* Fallback for browsers that do not support Custom Properties */
 	height: calc(var(--vh, 1vh) * 100);
@@ -43,7 +42,7 @@ body {
 	padding: 0;
 	margin: 0;
 	gap: 0;
-	background-color: blue;
+	background: transparent;
 	grid-template-columns: repeat(64, 1fr);
 	grid-template-rows: repeat(64, 1fr);
 }
@@ -87,7 +86,6 @@ body {
 		text-align: left;
 		li {
 			color: black;
-			font-family: monospace;
 			&:hover {
 				color: white;
 				background-color: gray;

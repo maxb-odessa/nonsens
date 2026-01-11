@@ -42,23 +42,22 @@
 			border: solid white 1px;
 			margin-left: 4px;
 			border-radius: 4px;
-			background-color: transparent;
+			background: transparent;
 		}
 		.group {
-			background-color: transparent;
+			background: transparent;
 		}
 	}
 
 	/* custom style: flat and transparent */
 	&.Flat-Right {
-		border: solid black 1px;
+		border: 0;
 		.group-legend {
-			float: center;
-			background-color: #00000000;
-			color: black;
+			float: right;
+			background: transparent;
 		}
 		.group {
-			background-color: #00000000;
+			background: transparent;
 		}
 	}
 
