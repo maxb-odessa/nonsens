@@ -37,7 +37,7 @@
 	&.Default {
 		border: solid white 1px;
 		border-radius: 4px;
-		box-shadow: 5px 3px 10px black;
+		box-shadow: 5px 3px 4px black;
 		.group-legend {
 			border: solid white 1px;
 			margin-left: 4px;

@@ -103,7 +103,6 @@ function wsUpdateSensor(id, data) {
 
 	// get SOME sensor object options
 	var options = {
-		id: s.getAttribute("id"),
 		min: s.getAttribute("data-min"),
 		max: s.getAttribute("data-max"),
 		precision: s.getAttribute("data-precision"),

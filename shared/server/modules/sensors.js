@@ -47,7 +47,7 @@ function sensorAdd() {
 	const template =
 		`<fieldset id="sc-${uuid}" class="sensor-container Default">
 			<legend id="st-${uuid}" data-menu="sensor-menu" class="drag-handle sensor-legend" onclick="saveSensorId('${uuid}');">New Sensor #${newSensorSeq}</legend>
-			<div id="s-${uuid}" class="sensor"></div>
+			<span id="s-${uuid}"></span>
 			<div class="resize-handle">&nbsp;</div>
 		</fieldset>`;
 	newSensorSeq ++;
@@ -112,7 +112,6 @@ function sensorEdit(editorId) {
 	editor.querySelector("#sensor-edit-title-bg-color").value = titleStyle.backgroundColor;
 
 	var sensorStyle = window.getComputedStyle(sensor);
-	editor.querySelector("#sensor-edit-bg-color").value = sensorC.style.backgroundColor;
 
 	// get sensor settings
 	editor.querySelector("#sensor-edit-source-type").value = sensor.getAttribute("data-type");
@@ -162,8 +161,6 @@ function sensorApply(editorId) {
 	sensorT.innerHTML = safeString(editor.querySelector("#sensor-edit-title").value, true);
 	sensorT.style.color = editor.querySelector("#sensor-edit-title-color").value;
 	sensorT.style.backgroundColor = editor.querySelector("#sensor-edit-title-bg-color").value;
-
-	sensorC.style.backgroundColor = editor.querySelector("#sensor-edit-bg-color").value;
 
 	// store sensor data
 	sensor.setAttribute("data-path", editor.querySelector("#sensor-edit-source-path").value);
