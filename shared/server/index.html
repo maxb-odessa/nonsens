@@ -108,9 +108,27 @@
 				<label for="sensor-edit-title">Title:</label>
 				<input type="text" id="sensor-edit-title" minlength="0" maxlength="30">
 				<br>
-				<label for="sensor-edit-title-color">Title fg/bg colors:</label>
+				<label for="sensor-edit-title-color">Title color:</label>
 				<input id="sensor-edit-title-color" type="color">
+				<br>
+				<label for="sensor-edit-title-color">Title background color:</label>
 				<input id="sensor-edit-title-bg-color" type="color">
+				transparency,&percnt;:
+				<input id="sensor-edit-title-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="100" step="5" list="STBGAlphaList">
+				<datalist id="STBGAlphaList">
+					<option>0</option>
+					<option>10</option>
+					<option>20</option>
+					<option>30</option>
+					<option>40</option>
+					<option>50</option>
+					<option>60</option>
+					<option>70</option>
+					<option>80</option>
+					<option>90</option>
+					<option>100</option>
+				</datalist>
+
 				<hr>
 				<label for="sensor-edit-source-type">Source type/path:</label>
 				<select id="sensor-edit-source-type" style="width: 10%;" required>
@@ -192,7 +210,7 @@
 					<option>90</option>
 				</datalist>
 				</div>
-				<label for="sensor-edit-widget-bar-gradient">Use bar gradient:</label>
+				<label for="sensor-edit-widget-bar-gradient">Show bar as gradient:</label>
 				<input id="sensor-edit-widget-bar-gradient" type="checkbox">
 			</fieldset>
 			<input type="button" value="Apply" onclick="sensorApply('sensor-editor'); showEditor('sensor-editor', false);">

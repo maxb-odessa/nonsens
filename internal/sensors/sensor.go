@@ -64,6 +64,11 @@ func (s *Sensor) setup() error {
 		return fmt.Errorf("Divider can not be zero")
 	}
 
+	// invalid poll interval
+	if s.Config.PollInterval <= 0 {
+		return fmt.Errorf("Poll interval must be > 0")
+	}
+
 	s.runtime.values = [2]*input.InputValue{{}, {}}
 
 	s.runtime.maxMinDiff = (s.Config.Max - s.Config.Min) / 100.0

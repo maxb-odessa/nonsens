@@ -101,21 +101,8 @@ function wsUpdateSensor(id, data) {
 		return;
 	}
 
-	// get SOME sensor object options
-	var options = {
-		min: s.getAttribute("data-min"),
-		max: s.getAttribute("data-max"),
-		precision: s.getAttribute("data-precision"),
-		suffix: s.getAttribute("data-suffix"),
-		color1: s.getAttribute("data-widget-bar-color1"),
-		color2: s.getAttribute("data-widget-bar-color2"),
-		color2P: s.getAttribute("data-widget-bar-color2-percents"),
-		color3: s.getAttribute("data-widget-bar-color3"),
-		gradient: s.getAttribute("data-widget-bar-gradient"),
-	};
-
 	// apply values and options to template + inject new html code into sensor container
-	s.innerHTML = widgetTemplateFunc(data, options);
+	s.innerHTML = widgetTemplateFunc(data, s.dataset);
 }
 
 // save sensor

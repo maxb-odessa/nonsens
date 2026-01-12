@@ -19,20 +19,22 @@ function safeString(str, toSafe) {
 	var res = str;
 
 	if (toSafe) {
-		res = res.replace(`&`, `&amp;`); // must be the first
-		res = res.replace(`<`, `&lt;`);
-		res = res.replace(`>`, `&gt;`);
-		res = res.replace(` `, `&#32;`);
-		res = res.replace(`'`, `&apos;`);
-		res = res.replace(`"`, `&quot;`);
+		//res = res.replace('&', '&amp;'); // must be the first
+		res = res.replaceAll('$', '&#37;');
+		res = res.replaceAll('<', '&lt;');
+		res = res.replaceAll('>', '&gt;');
+		res = res.replaceAll(' ', '&#32;');
+		res = res.replaceAll("'", '&apos;');
+		res = res.replaceAll('"', '&quot;');
 	} else {
-		res = res.replace(`&lt;`, `<`);
-		res = res.replace(`&gt;`, `>`);
-		res = res.replace(`&#32;`, ` `);
-		res = res.replace(`&nbsp;`, ` `);
-		res = res.replace(`&apos;`, `'`);
-		res = res.replace(`&quot;`, `"`);
-		res = res.replace(`&amp;`, `&` ); // must be the last
+		res = res.replaceAll('&lt;', '<');
+		res = res.replaceAll('&gt;', '>');
+		res = res.replaceAll('&#32;', ' ');
+		res = res.replaceAll('&nbsp;', ' ');
+		res = res.replaceAll('&apos;', "'");
+		res = res.replaceAll('&quot;', '"');
+		res = res.replaceAll('&#37;', '$');
+		//res = res.replace('&amp;', '&' ); // must be the last
 	}
 
 	return res;

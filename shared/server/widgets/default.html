@@ -1,3 +1,8 @@
+<!-- if sensor is offline: dim it -->
+${data.online ? "" :
+	"<div style='display: flex; justify-content: center; align-items: center; position:absolute; z-index: 100; background: #00000070; width: 100%; height: 100%;'>OFFLINE</div>"
+}
+
 <!-- sensor bar -->
 <div
 	style="
@@ -7,13 +12,14 @@
 		border: 0;
 		border-radius: 8px;
 		box-sizing: border-box;
-		background: linear-gradient(to right, ${options.color1}, ${options.color2} ${options.color2P}%, ${options.color3});
+		background: linear-gradient(to right, ${options.widgetColor1}, ${options.widgetColor2} ${options.widgetColor2Percents}%, ${options.widgetColor3});
 		clip-path: inset(0% ${100 - data.percents}% 0% 0% round 0% 8px 8px 0%);
 		z-index: 50;
 	">
 </div>
+
 <!-- sensor value text over the bar -->
-<div id="value-${options.id}" title="${data.hint}"
+<div title="${data.hint}"
 	style="
 		border: 0;
 		width: 100%;
@@ -34,12 +40,7 @@
 			0 0 2px black,0 0 1px black,
 			0 0 2px black,0 0 1px black;
 ">
-${data.online ? data.value.toFixed(options.precision) + 
-	"<span style='font-weight: normal; margin-top: -1em; font-size: 0.6em;'>" +
-	(Math.sign(data.diff) == 1 ? "+" : "") +
-	data.diff.toFixed(options.precision) +
-	"</span>" +
-	options.suffix : "offline"
-}
+${data.value.toFixed(options.precision)}
+<span style='margin-top: -0.8em; font-size: 0.7em;'>${Math.sign(data.diff) == 1 ? "+" : ""}${data.diff.toFixed(options.precision)}</span><span style='white-space: preserve;'>${options.suffix}</span>
 </div>
 
