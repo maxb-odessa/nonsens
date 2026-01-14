@@ -38,6 +38,7 @@
 		<div id="sensor-menu" class="sensor-menu" onmouseleave="showMenu(event, 'sensor-menu', false);">
 			<ul>
 				<li onclick="showMenu(event, 'sensor-menu', false); sensorEdit('sensor-editor');">Edit sensor</li>
+				<li onclick="showMenu(event, 'sensor-menu', false); sensorClone('sensor-editor');">Clone sensor (TBD)</li>
 				<hr>
 				<li style="color: red;" onclick="showMenu(event, 'sensor-menu', false); sensorDelete();">Delete sensor</li>
 			</ul>
@@ -114,19 +115,14 @@
 				<label for="sensor-edit-title-color">Title background color:</label>
 				<input id="sensor-edit-title-bg-color" type="color">
 				transparency,&percnt;:
-				<input id="sensor-edit-title-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="100" step="5" list="STBGAlphaList">
+				<input id="sensor-edit-title-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="STBGAlphaList">
 				<datalist id="STBGAlphaList">
 					<option>0</option>
-					<option>10</option>
-					<option>20</option>
-					<option>30</option>
-					<option>40</option>
-					<option>50</option>
-					<option>60</option>
-					<option>70</option>
-					<option>80</option>
-					<option>90</option>
+					<option>55</option>
 					<option>100</option>
+					<option>150</option>
+					<option>200</option>
+					<option>255</option>
 				</datalist>
 
 				<hr>

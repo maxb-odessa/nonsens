@@ -1,5 +1,5 @@
 
-import { createUUID, safeString, maskBelow, showEditor, convertColorFormat } from './utils.js';
+import { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor } from './utils.js';
 import { selectedGroupId } from './groups.js';
 import { widgetsData } from './widgets.js';
 import { wsSaveSensor } from './ws.js';
@@ -107,7 +107,9 @@ function sensorEdit(editorId) {
 
 	var titleStyle = window.getComputedStyle(sensorT);
 	editor.querySelector("#sensor-edit-title-color").value = titleStyle.color;
-	editor.querySelector("#sensor-edit-title-bg-color").value = titleStyle.backgroundColor;
+	var titleBgColor = parseColor(titleStyle.backgroundColor);
+	editor.querySelector("#sensor-edit-title-bg-color").value = titleBgColor.hex;
+	editor.querySelector("#sensor-edit-title-bg-color-alpha").value = titleBgColor.a;
 
 	var sensorStyle = window.getComputedStyle(sensor);
 
@@ -158,7 +160,9 @@ function sensorApply(editorId) {
 
 	sensorT.innerHTML = safeString(editor.querySelector("#sensor-edit-title").value, true);
 	sensorT.style.color = editor.querySelector("#sensor-edit-title-color").value;
-	sensorT.style.backgroundColor = editor.querySelector("#sensor-edit-title-bg-color").value;
+	var titleBgColor = parseColor(editor.querySelector("#sensor-edit-title-bg-color").value);
+	titleBgColor.a = editor.querySelector("#sensor-edit-title-bg-color-alpha").value;
+	sensorT.style.backgroundColor = makeColor(titleBgColor).rgba;
 
 	// store sensor data
 	sensor.dataset.path = editor.querySelector("#sensor-edit-source-path").value;

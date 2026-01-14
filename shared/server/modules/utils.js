@@ -42,7 +42,14 @@ function safeString(str, toSafe) {
 
 // convert any color format into any (rgb, rgba, hex, hexa)
 // note: not validating color range values
-function convertColorFormat(what) {
+// result:
+// src - original color string
+// r, g, b, a - parsed color values (a = 255 if missed)
+// rgb - rgb() formar
+// rgba - rgba() format
+// hex - #hex format
+// hexa - #hexa format
+function parseColor(what) {
 
 	var result = {};
 	result.src = what;
@@ -52,20 +59,24 @@ function convertColorFormat(what) {
 	// hex: #AABBCCDD, DD is optional, short version #ABC is not supported
 	if (what.substring(0, 1) === "#" && what.length >= 7) {
 		var colors = what.split(/([0-9A-F]{2})/i);
-		result.r = parseInt(colors[1], 16) * 1;;
-		result.g = parseInt(colors[3], 16) * 1;
-		result.b = parseInt(colors[5], 16) * 1;
-		if (colors[7]) {
-			result.a = parseInt(colors[7], 16) * 1;
+		if (colors.length > 5) {
+			result.r = parseInt(colors[1], 16) * 1;;
+			result.g = parseInt(colors[3], 16) * 1;
+			result.b = parseInt(colors[5], 16) * 1;
+			if (colors[7]) {
+				result.a = parseInt(colors[7], 16) * 1;
+			}
 		}
 	// rgba: rgba(1,2,3,0.4), a is optional
 	} else if (what.substring(0, 3) === "rgb") {
-		var colors = what.split(/([0-9.]{1,3})/);
-		result.r = colors[1] * 1;
-		result.g = colors[3] * 1;
-		result.b = colors[5] * 1;
-		if (colors[7]) {
-			result.a = Math.floor(colors[7] * 255.0);
+		var colors = what.split(/([0-9.]{1,5})/);
+		if (colors.length > 5) {
+			result.r = colors[1] * 1;
+			result.g = colors[3] * 1;
+			result.b = colors[5] * 1;
+			if (colors[7]) {
+				result.a = Math.floor(colors[7] * 255.0);
+			}
 		}
 	}
 
@@ -74,27 +85,29 @@ function convertColorFormat(what) {
 		return result;
 	}
 
+	// make new color formats and return them
+	return makeColor(result);
+}
+
+// compose color strings from r,g and b (plus optional a) values (see above)
+function makeColor(what) {
+
+	// opacity is missing, make in FF
+	if (what.a === undefined) {
+		what.a = 255 * 1;
+	}
+
 	// compose all possible color formats
-	result.hex = "#" +
-			result.r.toString(16).padStart(2, 0) +
-			result.g.toString(16).padStart(2, 0) +
-			result.b.toString(16).padStart(2, 0);
+	what.hex = "#" +
+			what.r.toString(16).padStart(2, 0) +
+			what.g.toString(16).padStart(2, 0) +
+			what.b.toString(16).padStart(2, 0);
+	what.hexa = what.hex + what.a.toString(16).padStart(2, 0);
 
-	result.rgb = `rgb(${result.r}, ${result.g}, ${result.b})`;
+	what.rgb = `rgb(${what.r}, ${what.g}, ${what.b})`;
+	what.rgba = `rgba(${what.r}, ${what.g}, ${what.b}, ${(what.a / 255.0).toFixed(2)})`;
 
-	if (result.a) {
-		result.hex += result.a.toString(16).padStart(2, 0);
-		result.rgba = `rgba(${result.r}, ${result.g}, ${result.b}, ${(result.a / 255.0).toFixed(2)})`;
-	} else {
-		result.rgba = `rgba(${result.r}, ${result.g}, ${result.b}, 1.0)`;
-	}
-
-	// opacity is missing, make in 1.0
-	if (!result.a) {
-		result.a = 1.0;
-	}
-
-	return result;
+	return what;
 }
 
 // show/hide window mask to prevent interaction with lower elements
@@ -152,4 +165,4 @@ function showEditor(editorId, show, noteAfter, noteDelayMs) {
 
 window.showEditor = showEditor;
 
-export { createUUID, safeString, maskBelow, showEditor, convertColorFormat };
+export { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor };
