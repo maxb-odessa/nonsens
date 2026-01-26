@@ -1,1 +1,48 @@
-<div style="color: blue;">${data.value.toFixed(options.precision)}${options.suffix}</div>
+<!-- if sensor is offline: dim it -->
+${data.online ? "" :
+	"<div style='display: flex; justify-content: center; align-items: center; position:absolute; z-index: 100; background: #00000070; width: 100%; height: 100%;'>OFFLINE</div>"
+}
+
+<!-- sensor bar -->
+<div
+	style="
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		border: 0;
+		border-radius: 0px;
+		box-sizing: border-box;
+		background: linear-gradient(to top, ${options.widgetColor1}, ${options.widgetColor2} ${options.widgetColor2Percents}%, ${options.widgetColor3});
+		${options.widgetGradient == 'true' ? '' : 'background-size: 100% 10000%; background-position: 0% -' + data.percents + '%;'
+		}
+		clip-path: inset(${100 - data.percents}% 0% 0% 0% round 4px 4px 0% 0%);
+		z-index: 50;
+	">
+</div>
+
+<!-- sensor value text over the bar -->
+<div title="${data.hint}"
+	style="
+		border: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 1px;
+		display: flex;
+		position: absolute;
+		z-index: 60;
+		background: #00000000;
+		justify-content: center;
+		align-items: center;
+		vertical-align: middle;
+		flex-flow: row nowrap;
+		box-sizing: border-box;
+		text-shadow: 0 0 2px black,0 0 1px black,
+			0 0 2px black,0 0 1px black,
+			0 0 2px black,0 0 1px black,
+			0 0 2px black,0 0 1px black;
+">
+${data.value.toFixed(options.precision)}
+<span style='margin-top: -0.8em; font-size: 0.7em;'>${Math.sign(data.diff) == 1 ? "+" : ""}${data.diff.toFixed(options.precision)}</span>
+<div style='position: absolute; bottom: 0; white-space: preserve;'>${options.suffix}</div>
+</div>

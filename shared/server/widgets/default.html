@@ -10,10 +10,12 @@ ${data.online ? "" :
 		height: 100%;
 		position: absolute;
 		border: 0;
-		border-radius: 8px;
+		border-radius: 0px;
 		box-sizing: border-box;
 		background: linear-gradient(to right, ${options.widgetColor1}, ${options.widgetColor2} ${options.widgetColor2Percents}%, ${options.widgetColor3});
-		clip-path: inset(0% ${100 - data.percents}% 0% 0% round 0% 8px 8px 0%);
+		${options.widgetGradient == 'true' ? '' : 'background-size: 10000% auto; background-position: ' + data.percents + '% 0%;'
+		}
+		clip-path: inset(0% ${100 - data.percents}% 0% 0% round 0% 4px 4px 0%);
 		z-index: 50;
 	">
 </div>

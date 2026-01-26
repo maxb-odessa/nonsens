@@ -165,4 +165,5 @@ function showEditor(editorId, show, noteAfter, noteDelayMs) {
 
 window.showEditor = showEditor;
 
+
 export { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor };

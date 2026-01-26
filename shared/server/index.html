@@ -62,12 +62,34 @@
 				<label for="group-edit-title">Group title:</label>
 				<input type="text" id="group-edit-title" minlength="0" maxlength="30">
 				<br>
-				<label for="group-edit-title-color">Title fg/bg colors:</label>
+				<label for="group-edit-title-color">Title color:</label>
 				<input id="group-edit-title-color" type="color">
+				<br>
+				<label for="group-edit-title-bg-color">Title bg color:</label>
 				<input id="group-edit-title-bg-color" type="color">
+				opacity,&percnt;:
+				<input id="group-edit-title-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="STBGAlphaList">
+				<datalist id="GTBGAlphaList">
+					<option>0</option>
+					<option>55</option>
+					<option>100</option>
+					<option>150</option>
+					<option>200</option>
+					<option>255</option>
+				</datalist>
 				<br>
 				<label for="group-edit-bg-color">Backgroud color:</label>
 				<input id="group-edit-bg-color" type="color">
+				opacity,&percnt;:
+				<input id="group-edit-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="STBGAlphaList">
+				<datalist id="GABGAlphaList">
+					<option>0</option>
+					<option>55</option>
+					<option>100</option>
+					<option>150</option>
+					<option>200</option>
+					<option>255</option>
+				</datalist>
 				<br>
 			</fieldset>
 			<input type="button" value="Appy" onclick="groupApply('group-editor'); showEditor('group-editor', false);">
@@ -114,7 +136,7 @@
 				<br>
 				<label for="sensor-edit-title-color">Title background color:</label>
 				<input id="sensor-edit-title-bg-color" type="color">
-				transparency,&percnt;:
+				opacity,&percnt;:
 				<input id="sensor-edit-title-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="STBGAlphaList">
 				<datalist id="STBGAlphaList">
 					<option>0</option>
@@ -124,7 +146,6 @@
 					<option>200</option>
 					<option>255</option>
 				</datalist>
-
 				<hr>
 				<label for="sensor-edit-source-type">Source type/path:</label>
 				<select id="sensor-edit-source-type" style="width: 10%;" required>

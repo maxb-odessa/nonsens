@@ -13,8 +13,10 @@
 	grid-column-end: 20;
 	grid-row-start: 1;
 	grid-row-end: 35;
+	background-color: transparent;
 	.group-legend {
 		color: white;
+		background-color: transparent;
 	}
 	.group {
 		display: inline-grid;
@@ -42,10 +44,8 @@
 			border: solid white 1px;
 			margin-left: 4px;
 			border-radius: 4px;
-			background: transparent;
 		}
 		.group {
-			background: transparent;
 		}
 	}
 
@@ -54,10 +54,8 @@
 		border: 0;
 		.group-legend {
 			float: right;
-			background: transparent;
 		}
 		.group {
-			background: transparent;
 		}
 	}
 

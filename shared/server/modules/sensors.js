@@ -138,7 +138,7 @@ function sensorEdit(editorId) {
 	editor.querySelector("#sensor-edit-widget-bar-color2").value = sensor.dataset.widgetColor2;
 	editor.querySelector("#sensor-edit-widget-bar-color2-percents").value = sensor.dataset.widgetColor2Percents;
 	editor.querySelector("#sensor-edit-widget-bar-color3").value = sensor.dataset.widgetColor3;
-	editor.querySelector("#sensor-edit-widget-bar-gradient").checked = sensor.dataset.widgetGradient;
+	editor.querySelector("#sensor-edit-widget-bar-gradient").checked = (sensor.dataset.widgetGradient == "true");
 
 	// ugly, the func is defined in index.html but is called within this module (and within index.html too)
 	editor.querySelector("#widget-bar-color-picker").style.background = makeGradient();
@@ -179,7 +179,7 @@ function sensorApply(editorId) {
 	sensor.dataset.widgetColor2 = editor.querySelector("#sensor-edit-widget-bar-color2").value;
 	sensor.dataset.widgetColor2Percents = editor.querySelector("#sensor-edit-widget-bar-color2-percents").value;
 	sensor.dataset.widgetColor3 = editor.querySelector("#sensor-edit-widget-bar-color3").value;
-	sensor.dataset.widgetGradient = editor.querySelector("#sensor-edit-widget-bar-gradient").value;
+	sensor.dataset.widgetGradient = editor.querySelector("#sensor-edit-widget-bar-gradient").checked;
 
 	// send updated sensor to server via WS
 	wsSaveSensor(sensor.id, sensorDataToJson(sensor), "update");

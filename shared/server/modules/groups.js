@@ -1,5 +1,5 @@
 
-import { createUUID, safeString, maskBelow, showEditor } from './utils.js';
+import { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor } from './utils.js';
 import { wsSaveSensor } from './ws.js'
 
 export var selectedGroupId = "";
@@ -82,10 +82,14 @@ function groupEdit(editorId) {
 
 	var titleStyle = window.getComputedStyle(groupT);
 	editor.querySelector("#group-edit-title-color").value = titleStyle.color;
-	editor.querySelector("#group-edit-title-bg-color").value = titleStyle.backgroundColor;
+	var titleBgColor = parseColor(titleStyle.backgroundColor);
+	editor.querySelector("#group-edit-title-bg-color").value = titleBgColor.hex;
+	editor.querySelector("#group-edit-title-bg-color-alpha").value = titleBgColor.a;
 
-	var groupStyle = window.getComputedStyle(group);
-	editor.querySelector("#group-edit-bg-color").value = groupC.style.backgroundColor;
+	var groupStyle = window.getComputedStyle(groupC);
+	var groupBgColor = parseColor(groupC.style.backgroundColor);
+	editor.querySelector("#group-edit-bg-color").value = groupBgColor.hex;
+	editor.querySelector("#group-edit-bg-color-alpha").value = groupBgColor.a;
 
 	// show editor
 	showEditor(editorId, true);
@@ -105,9 +109,14 @@ function groupApply(editorId) {
 	groupT.innerHTML = safeString(editor.querySelector("#group-edit-title").value, true);
 
 	groupT.style.color = editor.querySelector("#group-edit-title-color").value;
-	groupT.style.backgroundColor = editor.querySelector("#group-edit-title-bg-color").value;
 
-	groupC.style.backgroundColor = editor.querySelector("#group-edit-bg-color").value;
+	var titleBgColor = parseColor(editor.querySelector("#group-edit-title-bg-color").value);
+	titleBgColor.a = editor.querySelector("#group-edit-title-bg-color-alpha").value;
+	groupT.style.backgroundColor = makeColor(titleBgColor).rgba;
+
+	var bgColor = parseColor(editor.querySelector("#group-edit-bg-color").value);
+	bgColor.a = editor.querySelector("#group-edit-bg-color-alpha").value;
+	groupC.style.backgroundColor = makeColor(bgColor).rgba;
 
 	// save layout
 	saveLayout();
