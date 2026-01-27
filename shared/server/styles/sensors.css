@@ -68,7 +68,7 @@
 	&.Right {
 		border: 0;
 		.sensor-legend {
-			float: right;
+			/*float: right;*/
 			color: black;
 		}
 		.sensor {

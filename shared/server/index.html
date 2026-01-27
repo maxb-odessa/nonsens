@@ -38,7 +38,8 @@
 		<div id="sensor-menu" class="sensor-menu" onmouseleave="showMenu(event, 'sensor-menu', false);">
 			<ul>
 				<li onclick="showMenu(event, 'sensor-menu', false); sensorEdit('sensor-editor');">Edit sensor</li>
-				<li onclick="showMenu(event, 'sensor-menu', false); sensorClone('sensor-editor');">Clone sensor (TBD)</li>
+				<li onclick="showMenu(event, 'sensor-menu', false); sensorClone();">Clone sensor</li>
+				<li onclick="showMenu(event, 'sensor-menu', false); alert('TBD');">Move to group</li>
 				<hr>
 				<li style="color: red;" onclick="showMenu(event, 'sensor-menu', false); sensorDelete();">Delete sensor</li>
 			</ul>

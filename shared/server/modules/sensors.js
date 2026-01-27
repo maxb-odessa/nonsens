@@ -82,6 +82,38 @@ function sensorAdd() {
 	saveLayout();
 }
 
+// clone a sensor
+function sensorClone() {
+
+	// get sensor object
+	var oldSensor = document.getElementById("sc-" + selectedSensorId);
+	var oldSensorHTML = oldSensor.outerHTML;
+
+	// create new uuid for cloned sensor
+	var uuid = createUUID();
+
+	// replace all old uuids with new one
+	var clonedSensorHTML = oldSensorHTML.replaceAll(selectedSensorId, uuid);
+
+	// add cloned sensor
+	oldSensor.parentNode.insertAdjacentHTML('beforeend', clonedSensorHTML);
+
+	// get newly cloned sensor
+	var clonedSensor = document.getElementById("sc-" + uuid);
+
+	// preserve old sensor dataset (keep replacing old uuid with new one)
+	var oldSensorDataset = document.getElementById("s-" + selectedSensorId).dataset;
+	for (var d in oldSensorDataset) {
+		clonedSensor.dataset[d] = oldSensorDataset[d].replaceAll(selectedSensorId, uuid);
+	}
+
+	// send new sensor to server via WS
+	wsSaveSensor("s-"+uuid, sensorDataToJson(clonedSensor), "add");
+
+	// save whole layout!
+	saveLayout();
+}
+
 
 // edit the sensor
 function sensorEdit(editorId) {
@@ -221,6 +253,7 @@ function sensorDataToJson(s) {
 
 
 window.sensorAdd = sensorAdd;
+window.sensorClone = sensorClone;
 window.sensorEdit = sensorEdit;
 window.sensorDelete = sensorDelete;
 window.sensorApply = sensorApply;
