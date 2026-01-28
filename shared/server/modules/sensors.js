@@ -75,6 +75,13 @@ function sensorAdd() {
 	newSensor.dataset.widgetColor3 = "red";
 	newSensor.dataset.widgetGradient = true;
 
+	// indicate this is a "new" sensor
+	var newSensorC = document.getElementById("sc-" + uuid);
+	var newSensorT = document.getElementById("st-" + uuid);
+	var randColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+	newSensorC.style.backgroundColor = randColor;
+	newSensorT.style.backgroundColor = randColor;
+
 	// send new sensor to server via WS
 	wsSaveSensor("s-"+uuid, sensorDataToJson(newSensor), "add");
 

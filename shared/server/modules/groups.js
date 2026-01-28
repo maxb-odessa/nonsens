@@ -53,6 +53,15 @@ function groupAdd(containerId) {
 
 	document.getElementById(containerId).innerHTML += template;
 
+	// get new group
+	var newGroupC = document.getElementById("gc-" + uuid);
+	var newGroupT = document.getElementById("gt-" + uuid);
+
+	// indicate this group as "new"
+	var randColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+	newGroupC.style.backgroundColor = randColor;
+	newGroupT.style.backgroundColor = randColor;
+
 	// save layout
 	saveLayout();
 }

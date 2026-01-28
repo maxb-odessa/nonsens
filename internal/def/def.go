@@ -13,7 +13,7 @@ const (
 	SensorsFile = "sensors.json"
 	LayoutFile  = "layout.html"
 	ServerDir   = "server"
-	ExecDir     = "exec"
+	CmdDir      = "cmd"
 )
 
 // defaults and limits

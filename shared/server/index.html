@@ -99,11 +99,12 @@
 
 
 		<div id="sensor-editor" class="sensor-editor">
+			<form value="Apply" onsubmit="sensorApply('sensor-editor'); showEditor('sensor-editor', false); return false;">
 			<fieldset>
 				<script>
 					// adjust source file path: add default '0:0:' if missed
 					function adjustSourcePath(t) {
-						if (t.value.charAt(0) === "/") {
+						if (! t.value.match(/^\d+:\d+:/)) {
 							t.value = "0:0:" + t.value;
 						}
 							
@@ -151,9 +152,9 @@
 				<label for="sensor-edit-source-type">Source type/path:</label>
 				<select id="sensor-edit-source-type" style="width: 10%;" required>
 					<option value="file">file</option>
-					<option value="cmd">exec</option>
+					<option value="cmd">cmd</option>
 				</select>
-				<input id="sensor-edit-source-path" style="width: 55%;" type="text" onchange="adjustSourcePath(this);" required minlength="2" maxlength="1024" placeholder="0:0:/path/to/file" pattern="^(\d+:\d+:)?\/.+" title="The format is: 'LINE:COL:/abs/path', where LINE and POS are optional file data positions">
+				<input id="sensor-edit-source-path" style="width: 55%;" type="text" onchange="adjustSourcePath(this);" required minlength="2" maxlength="1024" placeholder="0:0:/path/to/file" pattern="^(\d+:\d+:)?\/?.+" title="The format is: 'LINE:COL:/abs/path', where LINE and POS are optional file data positions">
 				<br>
 				<label for="sensor-edit-source-pollms">Source poll interval (ms):</label>
 				<input id="sensor-edit-source-pollms" type="number" required min="100" max="360000" step="10" required>
@@ -231,8 +232,9 @@
 				<label for="sensor-edit-widget-bar-gradient">Show bar as gradient:</label>
 				<input id="sensor-edit-widget-bar-gradient" type="checkbox">
 			</fieldset>
-			<input type="button" value="Apply" onclick="sensorApply('sensor-editor'); showEditor('sensor-editor', false);">
+			<input type="submit" value="Apply">
 			<input type="button" value="Cancel" onclick="showEditor('sensor-editor', false);">
+			</form>
 		</div>
 
 	</body>

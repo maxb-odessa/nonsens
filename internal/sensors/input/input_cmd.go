@@ -40,10 +40,6 @@ func (f *feederCmd) setup(path string, _ bool, timeout time.Duration) error {
 		return errors.New("path already set")
 	}
 
-	if path[0] != '/' {
-		return errors.New("path must be absolute")
-	}
-
 	f.path = path
 
 	f.timeout = timeout

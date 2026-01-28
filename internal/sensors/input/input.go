@@ -35,14 +35,14 @@ const (
 	inTypeCmd  = "cmd"
 )
 
-// path should be in form "line:pos:/full/path"
-// or for cmd: 1:2:cmdfile.sh
+// FILE path should be in form "line:pos:/full/path"
+// or for cmd: 1:2:cmdfile.sh (RELATIVE ONLY)
 // where line = line starting from 0, pos = field position starting with 0, \s+ is a delimiter
 // ex: 10:2:/proc/meminfo
 func (in *Input) Setup(path string, inType string, keepOpen bool, timeout time.Duration) error {
 
-	if err := in.parsePath(path); err != nil {
-		return fmt.Errorf("invalid path format, expected 'line:pos:/full/path': %v", err)
+	if err := in.parsePath(path, inType); err != nil {
+		return fmt.Errorf("invalid path format, expected 'line:pos:path': %v", err)
 	}
 
 	if timeout < def.SensorMinPollInterval {
@@ -55,8 +55,6 @@ func (in *Input) Setup(path string, inType string, keepOpen bool, timeout time.D
 	case inTypeFile:
 		in.feeder = new(feederFile)
 	case inTypeCmd:
-		// adjust cmd path
-		//in.path = def.DataDir + def.CmdDir + "/" + in.path
 		in.feeder = new(feederCmd)
 	default:
 		return fmt.Errorf("sensor type '%s' is not implemented", inType)
@@ -133,7 +131,7 @@ func (in *Input) Close() {
 	in.feeder.close()
 }
 
-func (in *Input) parsePath(path string) error {
+func (in *Input) parsePath(path string, inType string) error {
 
 	parts := strings.SplitN(path, ":", 3)
 	if len(parts) != 3 {
@@ -152,7 +150,23 @@ func (in *Input) parsePath(path string) error {
 		in.pos = uint32(pos)
 	}
 
+	if inType == inTypeFile {
+		if parts[2][0] != '/' {
+			return fmt.Errorf("file path must be absolute")
+		}
+	} else if inType == inTypeCmd {
+		if parts[2][0] == '/' {
+			return fmt.Errorf("exec path must not be absolute")
+		}
+	} else {
+		return fmt.Errorf("invalid input type")
+	}
+
 	in.path = parts[2]
+
+	if inType == inTypeCmd {
+		in.path = def.DataDir + "/" + def.CmdDir + "/" + in.path
+	}
 
 	return nil
 }
