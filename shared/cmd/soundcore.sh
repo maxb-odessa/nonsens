@@ -1,4 +1,5 @@
 #! /bin/bash
+exec 2>/dev/null
 export PATH=$HOME/.local/bin:$PATH:
 dbus-send --print-reply=literal \
 	--system --dest=org.bluez \

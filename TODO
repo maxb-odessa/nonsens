@@ -1,1 +1,2 @@
 - move sensor to another group
+- deal with long polling sensors: restart them after update?

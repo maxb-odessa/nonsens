@@ -106,13 +106,19 @@ function sensorClone() {
 	oldSensor.parentNode.insertAdjacentHTML('beforeend', clonedSensorHTML);
 
 	// get newly cloned sensor
-	var clonedSensor = document.getElementById("sc-" + uuid);
+	var clonedSensorC = document.getElementById("sc-" + uuid);
 
 	// preserve old sensor dataset (keep replacing old uuid with new one)
 	var oldSensorDataset = document.getElementById("s-" + selectedSensorId).dataset;
 	for (var d in oldSensorDataset) {
-		clonedSensor.dataset[d] = oldSensorDataset[d].replaceAll(selectedSensorId, uuid);
+		clonedSensorC.dataset[d] = oldSensorDataset[d].replaceAll(selectedSensorId, uuid);
 	}
+
+	// indicate this is a "new" sensor
+	var clonedSensorT = document.getElementById("st-" + uuid);
+	var randColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+	clonedSensorC.style.backgroundColor = randColor;
+	clonedSensorT.style.backgroundColor = randColor;
 
 	// send new sensor to server via WS
 	wsSaveSensor("s-"+uuid, sensorDataToJson(clonedSensor), "add");

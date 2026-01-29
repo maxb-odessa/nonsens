@@ -12,7 +12,7 @@
 }
 
 body {
-	font-family: 'Courier New', 'Monaco', 'Lucida Console', 'Consolas', monospace;
+	font-family: 'Lucida Console', 'Monaco', 'Courier New', 'Consolas', monospace;
 	overscroll-behavior: contain; /* or none */
 	background: black;
 	background-image: url('bg/bg-gray.jpg');
@@ -37,8 +37,8 @@ body {
 	z-index: 0;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	border: 0;
 	padding: 0;
 	margin: 0;

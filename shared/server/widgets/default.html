@@ -1,8 +1,3 @@
-<!-- if sensor is offline: dim it -->
-${data.online ? "" :
-	"<div style='display: flex; justify-content: center; align-items: center; position:absolute; z-index: 100; background: #00000090; width: 100%; height: 100%; font-stretch: expanded;'>OFFLINE</div>"
-}
-
 <!-- sensor bar -->
 <div
 	style="
@@ -42,7 +37,10 @@ ${data.online ? "" :
 			0 0 2px black,0 0 1px black,
 			0 0 2px black,0 0 1px black;
 ">
-${data.value.toFixed(options.precision)}
-<span style='margin-top: -0.8em; font-size: 0.7em;'>${Math.sign(data.diff) == 1 ? "+" : ""}${data.diff ? data.diff.toFixed(options.precision) : ""}</span><span style='white-space: preserve;'>${options.suffix}</span>
+${data.online
+?
+data.value.toFixed(options.precision) + "<span style='margin-top: -0.8em; font-size: 0.7em;'>" + (Math.sign(data.diff) == 1 ? "+" : "") + (data.diff ? data.diff.toFixed(options.precision) : "") + "</span><span style='white-space: preserve;'>" + options.suffix + "</span>"
+:
+"<div style='display: flex; justify-content: center; align-items: center; position:absolute; z-index: 100; background: #00000090; width: 100%; height: 100%;'>OFFLINE</div>"
+}
 </div>
-

@@ -39,12 +39,16 @@
 		border-radius: 4px;
 		/*box-shadow: 5px 3px 4px black;*/
 		.sensor-legend {
-			margin: 0 0.1em 0 0.1em;
+			/*margin: 0 0.1em 0 0.1em;
 			padding: 0 0.1em 0 0.1em;
 			border: inherit;
-			border-radius: inherit;
-			font-size: 0.8em;
+			border-radius: inherit;*/
+			font-size: 0.7em;
+			border: 0;
 			font-style: italic;
+			margin-left: 2px;
+			margin-bottom: 0;
+			padding-bottom: 0;
 		}
 		.sensor {
 		}

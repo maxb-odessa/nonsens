@@ -37,13 +37,14 @@
 
 	/* default style, must always be present */
 	&.Default {
-		border: solid white 1px;
+		border: solid black 1px;
 		border-radius: 4px;
-		box-shadow: 5px 3px 4px black;
+		/*box-shadow: 5px 3px 4px black;*/
 		.group-legend {
-			border: solid white 1px;
-			margin-left: 4px;
+			font-size: 0.9em;
+			border: solid white 0px; /* disable for now */
 			border-radius: 4px;
+			margin-left: 4px;
 		}
 		.group {
 		}
