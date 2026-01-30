@@ -119,9 +119,11 @@ function maskBelow(id, doMask) {
 	var elemStyle = window.getComputedStyle(elem);
 
 	if (doMask) {
+		mask.style.display = "block";
 		mask.style.zIndex = elemStyle.zIndex - 1;
 	} else {
-		mask.style.zIndex = -1;
+		mask.style.display = "none";
+		mask.style.zIndex = -1000;
 	}
 }
 

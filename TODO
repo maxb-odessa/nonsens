@@ -1,2 +1,7 @@
 - move sensor to another group
-- deal with long polling sensors: restart them after update?
++ deal with long polling sensors: no init data upon client connection
+- "not connected" message
+- sensors device ids shifted after each boot (i.e. hwmon4 became hwmon5 and so on)
+- add hostname to index page title
+- add ram, swap, la sensors
++ responsive sensor fonts

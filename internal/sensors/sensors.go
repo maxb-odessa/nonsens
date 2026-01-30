@@ -68,6 +68,14 @@ func saveAll() {
 	}
 }
 
+// force all running sensors to read values right now
+func ForceReadAll() {
+	for uid, s := range sensorsMap {
+		log.Info("Waiking up sensor '%s'", uid)
+		s.forceRead()
+	}
+}
+
 // add new sensor and start it
 func Add(id string, data string) {
 	mutex.Lock()

@@ -14,7 +14,7 @@ type Value struct {
 	Diff     float64 `json:"diff"`     // difference between current and previous values
 	Percents int     `json:"percents"` // current value in percents of min-max
 	Online   bool    `json:"online"`   // is sensor online?
-	Hint     string  `json:"hint"`     // hint string if sensor is offline
+	Hint     string  `json:"hint"`     // sensor status hint string
 }
 
 type Config struct {
@@ -33,6 +33,7 @@ type Sensor struct {
 	pvt struct {
 		sync.Mutex
 		cancelFunc func()
+		readNowCh  chan bool
 	} `json:"-"`
 
 	// runtimes
@@ -67,6 +68,10 @@ func (s *Sensor) setup() error {
 	// invalid poll interval
 	if s.Config.PollInterval <= 0 {
 		return fmt.Errorf("Poll interval must be > 0")
+	}
+
+	if s.pvt.readNowCh == nil {
+		s.pvt.readNowCh = make(chan bool, 0)
 	}
 
 	s.runtime.values = [2]*input.InputValue{{}, {}}
@@ -113,10 +118,10 @@ func (s *Sensor) start() error {
 
 		// sensor if offline - we're done here
 		if !s.Value.Online {
-			s.Value.Hint = s.runtime.values[0].Err.Error()
+			s.Value.Hint = "Failed: " + s.runtime.values[0].Err.Error()
 			return
 		} else {
-			s.Value.Hint = ""
+			s.Value.Hint = "Healthy"
 		}
 
 		// if no errors: store new value and calc diff
@@ -152,6 +157,7 @@ func (s *Sensor) start() error {
 				loop = false
 				break
 			case <-ticker.C:
+			case <-s.pvt.readNowCh: // read values right now, do not wait for the timer
 			}
 		}
 
@@ -178,4 +184,9 @@ func (s *Sensor) stop() {
 
 	// release it for other operations
 	s.pvt.Unlock()
+}
+
+// force sensor to read values right now
+func (s *Sensor) forceRead() {
+	s.pvt.readNowCh <- true // BUG: sometimes stuck here
 }

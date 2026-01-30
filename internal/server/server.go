@@ -53,11 +53,11 @@ func Run() error {
 
 	// run websocket sender channel dispatcher
 	// (to send the same sensor data to all connected clients)
-	toRemoteCh = make(chan *remoteMsg, 64)
+	toRemoteCh = make(chan *remoteMsg, 256)
 	go chanDispatcher(toRemoteCh)
 
 	// run sensors data reader
-	fromSensorsCh = make(chan *sensors.Sensor, 128)
+	fromSensorsCh = make(chan *sensors.Sensor, 256)
 	go receiveSensorsData(fromSensorsCh)
 
 	// run sensors poller
@@ -154,7 +154,7 @@ func startServer() error {
 
 		log.Info("Websocket connected: %s", conn.RemoteAddr())
 
-		wsChan := make(chan *remoteMsg, 64)
+		wsChan := make(chan *remoteMsg, 256)
 		wsChanId := wsChanSerial
 		registerChan(wsChan, wsChanId)
 		wsChanSerial++
@@ -186,6 +186,11 @@ func startServer() error {
 
 		// send saved webpage layout upon browser connection
 		sendWebPageLayout()
+
+		// also force all running sensors to update their values
+		// this is useful for sebsors with long delays to send at least something
+		// to remote upon a connection
+		sensors.ForceReadAll()
 
 		// run websocket writer
 		for {
