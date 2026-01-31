@@ -13,7 +13,6 @@
 }
 
 body {
-	font-family: "Monaco", "Lucida Console", "Courier", "Courier New", "Consolas", monospace;
 	overscroll-behavior: contain; /* or none */
 	background: #303030ff;
 	background-image: url('bg/bg-gray.jpg');
@@ -30,6 +29,7 @@ body {
 	padding: 0;
 	padding-top: 0px;
 	padding-bottom: 0;
+	font-family: "Courier New", "Monaco", "Consolas", "Lucida Console", "Courier" monospace !important;
 }
 
 .main {

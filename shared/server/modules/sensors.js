@@ -79,7 +79,7 @@ function sensorAdd() {
 	var newSensorC = document.getElementById("sc-" + uuid);
 	var newSensorT = document.getElementById("st-" + uuid);
 	var randColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-	newSensorC.style.backgroundColor = randColor;
+	//newSensorC.style.backgroundColor = randColor;
 	newSensorT.style.backgroundColor = randColor;
 
 	// send new sensor to server via WS
@@ -117,7 +117,7 @@ function sensorClone() {
 	// indicate this is a "new" sensor
 	var clonedSensorT = document.getElementById("st-" + uuid);
 	var randColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-	clonedSensorC.style.backgroundColor = randColor;
+	//clonedSensorC.style.backgroundColor = randColor;
 	clonedSensorT.style.backgroundColor = randColor;
 
 	// send new sensor to server via WS

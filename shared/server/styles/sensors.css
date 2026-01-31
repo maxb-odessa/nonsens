@@ -54,10 +54,16 @@
 		}
 	}
 
-	/* custom style: no border */
+	/* custom style: flat, no border */
 	&.Flat {
 		border: 0;
+		border-radius: 4px;
+		/*padding: 2px;*/
+		margin-left: 2px;
+		margin-right: 2px;
+		margin-bottom: 2px;
 		.sensor-legend {
+			border: 0;
 			border-radius: 4px;
 			margin: 0 0.1em 0 0.1em;
 			padding: 0 0.1em 0 0.1em;
@@ -67,18 +73,6 @@
 		.sensor {
 		}
 	}
-
-	/* custom style: right-aligned title */
-	&.Right {
-		border: 0;
-		.sensor-legend {
-			/*float: right;*/
-			color: black;
-		}
-		.sensor {
-		}
-	}
-
 
 	/* add more styles */
 }
