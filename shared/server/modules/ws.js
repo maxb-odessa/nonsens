@@ -26,6 +26,7 @@ async function wsLoop() {
 	while (1) {
 
 		var reconnect = false;
+		var lastMsgTime;
 
 		// (re)create a websocket
 		wsocket = {};
@@ -33,6 +34,7 @@ async function wsLoop() {
 
 		wsocket.onopen = function() {
 			reconnect = false;
+			showInfo("", 0, 0);
 		};
 
 		wsocket.onmessage = function(msg) {
@@ -45,6 +47,8 @@ async function wsLoop() {
 				wsUpdateSensor(obj.id, obj.payload);
 			}
 			// ignore everything else
+
+			lastMsgTime = new Date();
 		};
 
 		wsocket.onerror = function(ev) {
@@ -53,6 +57,7 @@ async function wsLoop() {
 
 		wsocket.onclose = function(ev) {
 			reconnect = true;
+			showInfo("No Connection since " + lastMsgTime.toLocaleString(), true, 0);
 		};
 
 		// check ws connection every 1000 ms
