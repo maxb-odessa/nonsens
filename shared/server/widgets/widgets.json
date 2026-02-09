@@ -6,5 +6,10 @@
 	{
 		"name": "Vertical Bar",
 		"file": "vertical.html"
+	},
+	{
+		"name": "Battery",
+		"file": "battery.html"
 	}
+
 ]

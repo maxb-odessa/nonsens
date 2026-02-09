@@ -1,18 +1,55 @@
 <!-- sensor bar -->
-<div
-	style="
-		width: 100%;
+<div style="
+	border: 0;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	padding-left: 3px;
+	padding-bottom: 3px;
+	background-color: transparent;
+	">
+
+<div style="
+	border: solid 5px white;
+	border-radius: 10px;
+	width: 95%;
+	height: 100%;
+	position: relative;
+	box-sizing: border-box;
+	align-items: center;
+	display: flex;
+	background-color: #ffffff40;
+	">
+	<div style="
+		width: 95%;
 		height: 100%;
+		border: 0
 		position: absolute;
-		border: 0;
-		border-radius: 0px;
 		box-sizing: border-box;
 		background: linear-gradient(to right, ${options.widgetColor1}, ${options.widgetColor2} ${options.widgetColor2Percents}%, ${options.widgetColor3});
 		${options.widgetGradient == 'true' ? '' : 'background-size: 10000% auto; background-position: ' + data.percents + '% 0%;'
 		}
-		clip-path: inset(0% ${100 - data.percents}% 0% 0% round 0% 4px 4px 0%);
+		clip-path: inset(0 ${100 - data.percents}% 0 0 round 5px 5px 5px 5px);
 		z-index: 100;
+		">
+	</div>
+</div>
+
+<div style="
+	float: right;
+	vertical-align: middle;
+	border: solid 5px white;
+	border-left: 0;
+	border-radius: 0 10px 10px 0;
+	width: 3%;
+	height: 40%;
+	display: block;
 	">
+</div>
+
 </div>
 
 <!-- sensor value text over the bar -->
@@ -25,11 +62,11 @@
 		height: 100%;
 		max-height: 100vh;
 		margin: 0;
-		padding: 1px;
+		padding: 6px;
 		display: flex;
 		position: absolute;
 		z-index: 110;
-		background: #00000000;
+		background-color: transparent;
 		justify-content: center;
 		align-items: center;
 		vertical-align: middle;
@@ -42,7 +79,7 @@
 ">
 ${data.online
 ?
-"<span style='font-size: clamp(1rem, 50cqh, 10rem); white-space: preserve;'>" +
+"<span style='font-size: clamp(1rem, 40cqh, 10rem); white-space: preserve;'>" +
 data.value.toFixed(options.precision) +
 "<span style='font-size: 0.5em;'>" + (Math.sign(data.diff) == 1 ? "+" : "") + (data.diff != 0 ? data.diff.toFixed(options.precision) : "") + "</span>" +
 options.suffix +

@@ -1,279 +1,121 @@
 
-// based on:
-// https://stackoverflow.com/questions/24050738/javascript-how-to-dynamically-move-div-by-clicking-and-dragging
+function dragElement(ev) {
+	var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+	var target = ev.target;
 
-const gridContainerCols = 64 + 1;
-const gridContainerRows = 64 + 1;
+	var targetStyle = window.getComputedStyle(target, null);
 
-/*
-function dragResizePrepare() {
-	// get main grid dimensions (in cells)
-	let gridContainer = document.getElementById('main');
-	let gridContainerStyle = window.getComputedStyle(gridContainer);
-	gridContainerCols = gridContainerStyle.getPropertyValue('grid-template-columns').split(' ').length+1;
-	gridContainerRows = gridContainerStyle.getPropertyValue('grid-template-rows').split(' ').length+1;
-}
-*/
-
-function dragResize(e) {
-/*
-	// the DOM may not be ready yet, wait for it
-	if (gridContainerCols === undefined && gridContainerRows === undefined) {
-		dragResizePrepare();
+	// is this element movable?
+	if (targetStyle.cursor != "move") {
 		return;
 	}
-*/
-	let what = e.target;
-	let target = what.parentNode;
+	var parent = target.parentNode;
+	var container = parent.parentNode;
 
-	if (what.classList.contains("drag-handle")) {
-		dragObject(e, target);
-	} else if (what.classList.contains("resize-handle")) {
-		resizeObject(e, target);
-	}
+	var oldPos = getPos(ev);
+	pos3 = oldPos.X;
+	pos4 = oldPos.Y;
 
-//m = document.getElementById("main");
-//console.log(m.innerHTML);
-}
+	// get parent size
+	var parentStyle = window.getComputedStyle(parent, null);
+	var parentSize = {
+		Width: parentStyle.width.match(/\d+/)[0] * 1.0,
+		Height: parentStyle.height.match(/\d+/)[0] * 1.0,
+	};
 
-// drag the object
-function dragObject(e, t) {
+	// get top level container position and dimension
+	var containerStyle = window.getComputedStyle(container, null);
 
-	t.dragging = true;
+	var containerDim = {
+		Top:	containerStyle.top.match(/\d+/)[0] * 1.0,
+		Left:	containerStyle.left.match(/\d+/)[0] * 1.0,
+		Width:	containerStyle.width.match(/\d+/)[0] * 1.0,
+		Height:	containerStyle.height.match(/\d+/)[0] * 1.0,
+	};
 
-	document.onmousemove = drag;
-	document.ontouchmove = drag;
-
-
-	// get viewpoint dimensions - it could be resized anytime
-/*
-	vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-	vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-*/
-	let vw = t.parentNode.offsetWidth;
-	let vh = t.parentNode.offsetHeight;
-
-	// calc grid cell size in px
-	let gridW = Math.round(vw / gridContainerCols);
-	let gridH = Math.round(vh / gridContainerRows);
-
-
-	// Check if Mouse events exist on users' device
-	if (e.clientX) {
-		t.oldX = e.clientX; // If they exist then use Mouse input
-		t.oldY = e.clientY;
-	} else {
-		t.oldX = e.touches[0].clientX; // Otherwise use touch input
-		t.oldY = e.touches[0].clientY;
-	}
-
-	let cssObj = window.getComputedStyle(t, null);
-
-	let oldColStart = cssObj.getPropertyValue("grid-column-start") * 1;
-	let oldRowStart = cssObj.getPropertyValue("grid-row-start") * 1;
-
-	// get target dim (count in grid cells)
-	let colCnt = cssObj.getPropertyValue("grid-column-end") * 1 - oldColStart;
-	let rowCnt = cssObj.getPropertyValue("grid-row-end") * 1 - oldRowStart;
-
-	// move target above
-	let oldZIndex = cssObj.getPropertyValue("z-index");
-	t.style.zIndex = oldZIndex * 1 + 1000;
-
-	function drag(e) {
-
-		e.preventDefault();
-
-		if (! t.dragging) {
-			return;
-		}
-
-		if (e.clientX) {
-			t.distX = e.clientX - t.oldX;
-			t.distY = e.clientY - t.oldY;
-		} else {
-			t.distX = e.touches[0].clientX - t.oldX;
-			t.distY = e.touches[0].clientY - t.oldY;
-		}
-
-
-		let colOffset = Math.round(t.distX / gridW);
-		let rowOffset = Math.round(t.distY / gridH);
-
-		let newColStart = oldColStart + colOffset;
-		let newRowStart = oldRowStart + rowOffset;
-
-		// limits!
-		if (newColStart < 1) {
-			newColStart = 1;
-		}
-
-		if (newColStart + colCnt >= gridContainerCols) {
-			newColStart = gridContainerCols - colCnt;
-		}
-
-		if (newRowStart < 1) {
-			newRowStart = 1;
-		}
-
-		if (newRowStart + rowCnt >= gridContainerRows) {
-			newRowStart = gridContainerRows - rowCnt;
-		}
-
-		t.style.setProperty("grid-column-start", newColStart);
-		t.style.setProperty("grid-column-end", newColStart + colCnt);
-		t.style.setProperty("grid-row-start", newRowStart);
-		t.style.setProperty("grid-row-end", newRowStart + rowCnt);
-
-	}
-
-	function endDrag() {
-
-		t.dragging = false;
-
-		document.onmouseup = null;
-		document.onmousemove = null;
-
-		t.style.zIndex = oldZIndex;
-
-	}
+	document.onmousemove = elementDrag;
+	document.ontouchmove = elementDrag;
 
 	document.onmouseup = endDrag;
 	document.ontouchend = endDrag;
 
-}
+	target.dragging = true;
 
-// resize the object
-function resizeObject(e, t) {
+	function getPos(e) {
+		let clientX, clientY;
 
-	t.resizing = true;
+		// mouse or touchpad?
+		if (e.clientX) {
+			clientX = e.clientX;
+			clientY = e.clientY;
+		} else {
+			clientX = e.touches[0].clientX;
+			clientY = e.touches[0].clientY;
+		}
 
-	document.onmousemove = resize;
-	document.ontouchmove = resize;
-
-
-	// get viewpoint dimensions - it could be resized anytime
-/*
-	vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-	vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-*/
-	let vw = t.parentNode.offsetWidth;
-	let vh = t.parentNode.offsetHeight;
-
-	// calc grid cell size in px
-	let gridW = Math.round(vw / gridContainerCols);
-	let gridH = Math.round(vh / gridContainerRows);
-
-
-	// Check if Mouse events exist on users' device
-	if (e.clientX) {
-		t.oldX = e.clientX; // If they exist then use Mouse input
-		t.oldY = e.clientY;
-	} else {
-		t.oldX = e.touches[0].clientX; // Otherwise use touch input
-		t.oldY = e.touches[0].clientY;
+		return {X: clientX * 1.0, Y: clientY * 1.0};
 	}
 
-	let cssObj = window.getComputedStyle(t, null);
-
-	let oldColStart = cssObj.getPropertyValue("grid-column-start") * 1;
-	let oldRowStart = cssObj.getPropertyValue("grid-row-start") * 1;
-
-	// get target dim (count in grid cells)
-	let oldColEnd = cssObj.getPropertyValue("grid-column-end") * 1;
-	let oldRowEnd = cssObj.getPropertyValue("grid-row-end") * 1;
-
-/*
-	// get scale
-	oldScale = cssObj.getPropertyValue("scale").split(" ");
-	oldScaleX = oldScale[0];
-	if (oldScale.length > 1) {
-		oldScaleY = oldScale[1];
-	} else {
-		oldScaleY = oldScale[0];
-	}
-*/
-	// move target above
-	let oldZIndex = cssObj.getPropertyValue("z-index");
-	t.style.zIndex = oldZIndex * 1 + 1000;
-
-	function resize(e) {
+	function elementDrag(e) {
 
 		e.preventDefault();
 
-		if (! t.resizing) {
+		if (! target.dragging) {
 			return;
 		}
 
-		if (e.clientX) {
-			t.distX = e.clientX - t.oldX;
-			t.distY = e.clientY - t.oldY;
-		} else {
-			t.distX = e.touches[0].clientX - t.oldX;
-			t.distY = e.touches[0].clientY - t.oldY;
+
+		// calculate the new cursor position:
+		let pos = getPos(e);
+		pos1 = pos3 - pos.X;
+		pos2 = pos4 - pos.Y;
+		pos3 = pos.X;
+		pos4 = pos.Y;
+
+		// set the element's new position, obey top container position and size
+		let newTop = parent.offsetTop - pos2;
+		let newLeft = parent.offsetLeft - pos1;
+
+		if (newTop <= containerDim.Top) {
+			newTop = containerDim.Top;
 		}
 
-
-		let colOffset = Math.round(t.distX / gridW);
-		let rowOffset = Math.round(t.distY / gridH);
-
-		let newColEnd = oldColEnd + colOffset;
-		let newRowEnd = oldRowEnd + rowOffset;
-
-		// limits!
-		if (newColEnd < oldColStart) {
-			newColEnd = oldColStart;
+		if (newLeft <= containerDim.Left) {
+			newLeft = containerDim.Left;
 		}
 
-		if (newColEnd > gridContainerCols) {
-			newColEnd = gridContainerCols;
+		if (newTop + parentSize.Height >= containerDim.Height) {
+			newTop = containerDim.Height - parentSize.Height - 1;
 		}
 
-		if (newRowEnd < oldRowStart) {
-			newRowEnd = oldRowStart;
+		if (newLeft + parentSize.Width >= containerDim.Width) {
+			newLeft = containerDim.Width - parentSize.Width - 1;
 		}
 
-		if (newRowEnd > gridContainerRows) {
-			newRowEnd = gridContainerRows;
-		}
-/*
-console.log(oldColEnd);
-console.log(oldRowEnd);
-console.log(newColEnd);
-console.log(newRowEnd);
-console.log("==========");
-*/
-		t.style.removeProperty("top");
-		t.style.removeProperty("left");
-		t.style.setProperty("grid-column-end", newColEnd);
-		t.style.setProperty("grid-row-end", newRowEnd);
-
-		//t.style.transform = "scale(" + (newColEnd+1)/(oldColEnd+1) + ", " + (newRowEnd+1) / (oldRowEnd+1)+ ")";
-/*
-console.log(t.style.cssText);
-console.log("=========");
-*/
+		// set new and adjusted target's parent position
+		parent.style.top = newTop + "px";
+		parent.style.left = newLeft + "px";
 	}
 
-	function endResize() {
+	function endDrag() {
+		// position target with cqw/cqh instead of px
+		let newStyle = window.getComputedStyle(parent, null);
+// move to func
+		parent.style.top = Math.round(newStyle.top.match(/\d+/)[0]  / containerDim.Height * 100.0) + "cqh";
+		parent.style.left = Math.round(newStyle.left.match(/\d+/)[0] / containerDim.Width * 100.0) + "cqw";
 
-		t.resizing = false;
+		parent.style.height = Math.round(newStyle.height.match(/\d+/)[0] / containerDim.Height * 100.0) + "cqh";
+		parent.style.width = Math.round(newStyle.width.match(/\d+/)[0] / containerDim.Width * 100.0) + "cqw";
+
+		target.dragging = false;
 
 		document.onmouseup = null;
 		document.onmousemove = null;
-
-		// restore saved styles
-		t.style.zIndex = oldZIndex;
-
 	}
-
-	document.onmouseup = endResize;
-	document.ontouchend = endResize;
 
 }
 
+//function px2cq()... // TODO
 
-document.onmousedown = dragResize;
-document.ontouchstart = dragResize;
-
-
+document.onmousedown = dragElement;
+document.ontouchstart = dragElement;

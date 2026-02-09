@@ -1,64 +1,63 @@
 
-.group-container {
-	display: inline;
-	position: relative;
-	z-index: 10;
-	overflow: hidden;
-	border: 0;
-	padding: 0;
-	margin: 0;
-	gap: 0;
-	resize: none;
-	grid-column-start: 1;
-	grid-column-end: 20;
-	grid-row-start: 1;
-	grid-row-end: 35;
-	background-color: transparent;
-	.group-legend {
-		color: white;
-		background-color: transparent;
-	}
-	.group {
-		display: inline-grid;
-		grid-template-columns: repeat(64, 1fr);
-		grid-template-rows: repeat(64, 1fr);
+@container main (width > 0px) {
+	.group-container {
+		display: inline-block;
+		position: absolute;
+		z-index: 20;
+		overflow: hidden;
+		border: 0;
 		padding: 0;
 		margin: 0;
-		gap: 0;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		resize: none;
+		width: 30cqw;
+		height: 30cqh;
+		resize: both;
 		background-color: transparent;
-	}
-
-	/* NAME STYLES WITH CAPITAL LETTER ONLY! */
-
-	/* default style, must always be present */
-	&.Default {
-		border: solid black 1px;
-		border-radius: 4px;
-		/*box-shadow: 5px 3px 4px black;*/
 		.group-legend {
-			font-size: 0.9em;
-			border: solid white 0px; /* disable for now */
+			cursor: move;
+			color: white;
+			background-color: transparent;
+		}
+		.group {
+			container-type: size;
+			container-name: group;
+			position: absolute;
+			display: inline-block;
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			background-color: transparent;
+		}
+
+		/* NAME STYLES WITH CAPITAL LETTER ONLY! */
+
+		/* default style, must always be present */
+		&.Default {
+			border: solid black 1px;
 			border-radius: 4px;
-			margin-left: 4px;
+			/*box-shadow: 5px 3px 4px black;*/
+			.group-legend {
+				font-size: 0.8em;
+				border: solid white 0px; /* disable for now */
+				border-radius: 4px;
+				margin-left: 4px;
+			}
+			.group {
+			}
 		}
-		.group {
-		}
-	}
 
-	/* custom style: flat and transparent */
-	&.Flat-Right {
-		border: 0;
-		.group-legend {
-			float: right;
+		/* custom style: flat and transparent */
+		&.Flat-Right {
+			border: 0;
+			.group-legend {
+				float: right;
+			}
+			.group {
+			}
 		}
-		.group {
-		}
-	}
 
-	/* add more styles */
+		/* add more styles */
+	}
 }

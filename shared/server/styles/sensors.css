@@ -1,78 +1,75 @@
-
-.sensor-container {
-	display: inline;
-	position: relative;
-	z-index: 20;
-	overflow: hidden;
-	border: 0;
-	padding: 0;
-	margin: 0;
-	gap: 0;
-	resize: none;
-	grid-column-start: 1;
-	grid-column-end: 50;
-	grid-row-start: 1;
-	grid-row-end: 20;
-	background-color: transparent;
-	.sensor-legend {
-		color: white;
-		background-color: transparent;
-	}
-	.sensor {
+@container group (width > 0px) {
+	.sensor-container {
+		transform: rotate(0deg);
 		display: inline-block;
+		position: absolute;
+		z-index: 50;
+		overflow: hidden;
+		border: 0;
 		padding: 0;
 		margin: 0;
-		gap: 0;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		resize: none;
+		resize: both;
+		width: 50cqw;
+		height: 50cqh;
 		background-color: transparent;
-	}
-
-	/* NAME STYLES WITH CAPITAL LETTER ONLY! */
-
-	/* default style, must always be present */
-	&.Default {
-		border: solid white 1px;
-		border-radius: 4px;
-		/*box-shadow: 5px 3px 4px black;*/
 		.sensor-legend {
-			/*margin: 0 0.1em 0 0.1em;
-			padding: 0 0.1em 0 0.1em;
-			border: inherit;
-			border-radius: inherit;*/
-			font-size: 0.7em;
-			border: 0;
-			font-style: italic;
-			margin-left: 2px;
-			margin-bottom: 0;
-			padding-bottom: 0;
+			cursor: move;
+			color: white;
+			background-color: transparent;
 		}
 		.sensor {
+			display: inline-block;
+			position: absolute;
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+			resize: none;
+			background-color: transparent;
 		}
-	}
 
-	/* custom style: flat, no border */
-	&.Flat {
-		border: 0;
-		border-radius: 4px;
-		/*padding: 2px;*/
-		margin-left: 2px;
-		margin-right: 2px;
-		margin-bottom: 2px;
-		.sensor-legend {
+		/* NAME STYLES WITH CAPITAL LETTER ONLY! */
+
+		/* default style, must always be present */
+		&.Default {
+			border: solid white 1px;
+			border-radius: 4px;
+			box-shadow: 3px 3px 5px black;
+			.sensor-legend {
+				top: -1em;
+				font-size: 0.7em;
+				border: 0;
+				border-radius: 4px;
+				font-style: italic;
+				margin-left: 0.7em;
+				margin-bottom: 0;
+				padding-bottom: 0;
+			}
+			.sensor {
+			}
+		}
+
+		/* custom style: flat, no border */
+		&.Flat {
 			border: 0;
 			border-radius: 4px;
-			margin: 0 0.1em 0 0.1em;
-			padding: 0 0.1em 0 0.1em;
-			font-size: 0.8em;
-			font-style: italic;
+			/*padding: 2px;*/
+			margin-left: 2px;
+			margin-right: 2px;
+			margin-bottom: 2px;
+			.sensor-legend {
+				left: 50%;
+				border: 0;
+				border-radius: 4px;
+				margin: 0 0.1em 0 0.1em;
+				padding: 0 0.1em 0 0.1em;
+				font-size: 0.8em;
+				font-style: italic;
+			}
+			.sensor {
+			}
 		}
-		.sensor {
-		}
-	}
 
-	/* add more styles */
+		/* add more styles */
+	}
 }

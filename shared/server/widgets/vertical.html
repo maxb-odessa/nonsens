@@ -11,7 +11,7 @@
 		${options.widgetGradient == 'true' ? '' : 'background-size: 100% 10000%; background-position: 0% -' + data.percents + '%;'
 		}
 		clip-path: inset(${100 - data.percents}% 0% 0% 0% round 4px 4px 0% 0%);
-		z-index: 50;
+		z-index: 100;
 	">
 </div>
 
@@ -27,7 +27,7 @@
 		padding: 1px;
 		display: flex;
 		position: absolute;
-		z-index: 60;
+		z-index: 110;
 		background: #00000000;
 		justify-content: center;
 		align-items: center;
@@ -48,6 +48,6 @@ ${data.online
 data.value.toFixed(options.precision) + options.suffix + 
 "</span>"
 :
-"<div title='" + data.hint + "' style='display: flex; justify-content: center; align-items: center; position: absolute; z-index: 100; background-color: #00000050; width: 100cqw; height: 100cqh; font-size: clamp(0.5rem, 70cqw, 10rem); transform: rotate(-90deg);'>&osol;</div>"
+"<div title='" + data.hint + "' style='display: flex; justify-content: center; align-items: center; position: absolute; z-index: 199; background-color: #00000090; width: 100cqw; height: 100cqh; font-size: clamp(0.5rem, 70cqw, 10rem); transform: rotate(-90deg);'>&osol;</div>"
 }
 </div>

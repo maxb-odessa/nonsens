@@ -128,7 +128,23 @@
 				<legend>Sensor settings</legend>
 				<label for="sensor-edit-style">Style:</label>
 				<select id="sensor-edit-style" required>
-				</select>
+				</select>, rotate (deg): 
+				<input id="sensor-edit-rotate" style="width: 30%; accent-color: gray;" type="range" min="-90" max="90" step="15" list="sensRotateDegList" oninput="senRotateDeg.value = this.value;"> <output id="senRotateDeg"></output>&deg;
+				<datalist id="sensRotateDegList">
+					<option>-90</option>
+					<option>-75</option>
+					<option>-60</option>
+					<option>-45</option>
+					<option>-30</option>
+					<option>-15</option>
+					<option>0</option>
+					<option>15</option>
+					<option>30</option>
+					<option>45</option>
+					<option>60</option>
+					<option>75</option>
+					<option>90</option>
+				</datalist>
 				<br>
 				<label for="sensor-edit-title">Title:</label>
 				<input type="text" id="sensor-edit-title" minlength="0" maxlength="30">
@@ -138,7 +154,7 @@
 				<br>
 				<label for="sensor-edit-title-color">Title background color:</label>
 				<input id="sensor-edit-title-bg-color" type="color">
-				opacity,&percnt;:
+				, opacity (&percnt;):
 				<input id="sensor-edit-title-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="STBGAlphaList">
 				<datalist id="STBGAlphaList">
 					<option>0</option>

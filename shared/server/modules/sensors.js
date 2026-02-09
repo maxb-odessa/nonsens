@@ -20,6 +20,9 @@ window.saveSensorId = saveSensorId;
 // and styles/sensors.css
 // NB: ugly solution :(
 function sensorGetCustomStyles() {
+
+// TODO rework!
+return ["Default"];
 	// 0 - top css file (nonsens.css)
 	// 1 - second inluded file (styles/sensors.css)
 	// 0 - first class selector inside sensors.css file (.sensor-container)
@@ -45,11 +48,11 @@ function sensorAdd() {
 	// sensor template
 	var uuid = createUUID();
 	const template =
-		`<fieldset id="sc-${uuid}" class="sensor-container Default">
-			<legend id="st-${uuid}" data-menu="sensor-menu" class="drag-handle sensor-legend" onclick="saveSensorId('${uuid}');">New Sensor #${newSensorSeq}</legend>
-			<span id="s-${uuid}"></span>
-			<div class="resize-handle">&nbsp;</div>
-		</fieldset>`;
+		`<fieldset id="sc-${uuid}" class="sensor-container Default">` +
+			`<legend id="st-${uuid}" class="sensor-legend">New Sensor #${newSensorSeq}</legend>` +
+			`<div id="s-${uuid}" class="sensor"></div>` +
+			`<div data-menu="sensor-menu" onclick="saveSensorId('${uuid}');" style="position: absolute; width: 100cqh; height: 100cqh; z-index: 300; background-color: #00000000;"></div>` +
+		`</fieldset>`;
 	newSensorSeq ++;
 
 	// add to group, not to group container
@@ -148,6 +151,9 @@ function sensorEdit(editorId) {
 	// set current style
 	edStyles.value = sensorC.className.split(" ")[1];
 
+	if (sensorC.style.transform)
+		editor.querySelector("#sensor-edit-rotate").value = sensorC.style.transform.match(/-?\d+/)[0];
+
 	editor.querySelector("#sensor-edit-title").value = safeString(sensorT.innerHTML, false);
 
 	var titleStyle = window.getComputedStyle(sensorT);
@@ -203,11 +209,16 @@ function sensorApply(editorId) {
 	var oldStyle = sensorC.className.split(" ")[1];
 	sensorC.classList.replace(oldStyle, editor.querySelector("#sensor-edit-style").value);
 
+	// TODO: check sensor edges are out of group container and adjust sensor dims
+	sensorC.style.transform = "rotate(" + editor.querySelector("#sensor-edit-rotate").value + "deg)";
+
 	sensorT.innerHTML = safeString(editor.querySelector("#sensor-edit-title").value, true);
 	sensorT.style.color = editor.querySelector("#sensor-edit-title-color").value;
 	var titleBgColor = parseColor(editor.querySelector("#sensor-edit-title-bg-color").value);
 	titleBgColor.a = editor.querySelector("#sensor-edit-title-bg-color-alpha").value;
 	sensorT.style.backgroundColor = makeColor(titleBgColor).rgba;
+	sensorT.style.borderColor = sensorT.style.backgroundColor;
+	sensorC.style.borderColor = sensorT.style.backgroundColor;
 
 	// store sensor data
 	sensor.dataset.path = editor.querySelector("#sensor-edit-source-path").value;

@@ -1,0 +1,20 @@
+z-index:
+
+0 = main
+
+20 = group container
+
+50 = sensor container
+60 = sensor
+100-200 = sensor widget (bar, text, offline div, etc)
+300 = sensor container menu click
+
+400 = drag, resize handles
+
+500 = menu
+
+1000 = editors
+
+9999 = info popup
+
+

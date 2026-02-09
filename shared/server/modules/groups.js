@@ -19,6 +19,7 @@ window.saveGroupId = saveGroupId;
 // and styles/groups.css
 // TODO optimize: make function like getStylesForContainer('group-container'), use it for sensors too
 function groupGetCustomStyles() {
+return;
 	// 0 - top css file (nonsens.css)
 	// 0 - second inluded file (styles/groups.css)
 	// 0 - first class selector inside groups.css file (.group-container)
@@ -44,11 +45,10 @@ function groupAdd(containerId) {
 	// group template
 	var uuid = createUUID();
 	const template = 
-		`<fieldset id="gc-${uuid}" class="group-container Default">
-			<legend id="gt-${uuid}" data-menu="group-menu" class="drag-handle group-legend" onclick="saveGroupId('${uuid}');">New Group #${newGroupSeq}</legend>
-			<div id="g-${uuid}" class="group"></div>
-			<div class="resize-handle">&nbsp;</div>
-		</fieldset>`;
+		`<fieldset id="gc-${uuid}" class="group-container Default">`+
+			`<legend id="gt-${uuid}" class="group-legend">New Group #${newGroupSeq}</legend>` +
+			`<div id="g-${uuid}" class="group" data-menu="group-menu" onclick="saveGroupId('${uuid}');"></div>` +
+		`</fieldset>`;
 	newGroupSeq ++;
 
 	document.getElementById(containerId).innerHTML += template;
