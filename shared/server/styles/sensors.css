@@ -12,12 +12,15 @@
 		width: 50cqw;
 		height: 50cqh;
 		background-color: transparent;
+		box-sizing: border-box;
 		.sensor-legend {
 			cursor: move;
 			color: white;
 			background-color: transparent;
 		}
 		.sensor {
+			container-type: size;
+			container-name: sensor;
 			display: inline-block;
 			position: absolute;
 			padding: 0;
@@ -26,6 +29,7 @@
 			height: 100%;
 			resize: none;
 			background-color: transparent;
+			box-sizing: border-box;
 		}
 
 		/* NAME STYLES WITH CAPITAL LETTER ONLY! */

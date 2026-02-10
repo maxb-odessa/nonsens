@@ -1,5 +1,5 @@
 
-import { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor } from './utils.js';
+import { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor, getCustomStyles } from './utils.js';
 import { wsSaveSensor } from './ws.js'
 
 export var selectedGroupId = "";
@@ -14,29 +14,7 @@ function saveGroupId(id) {
 
 window.saveGroupId = saveGroupId;
 
-// get all custom group styles names (classes) from loaded CSS file
-// see nonsens.css
-// and styles/groups.css
-// TODO optimize: make function like getStylesForContainer('group-container'), use it for sensors too
-function groupGetCustomStyles() {
-return;
-	// 0 - top css file (nonsens.css)
-	// 0 - second inluded file (styles/groups.css)
-	// 0 - first class selector inside groups.css file (.group-container)
-	// all custom classes are inside .group-container and start with '&.[A-Z]'
-	const rules = document.styleSheets[0].cssRules[0].styleSheet.cssRules[0].cssRules;
-	var styles = [];
-
-	for (let i = 0; i < rules.length; i ++) {
-		if (rules[i] && rules[i].selectorText.match(/^&\.[A-Z]/)) {
-			styles.push(rules[i].selectorText.split(".")[1]);
-		}
-	}
-
-	return styles;
-}
-
-var customGroupStyles = groupGetCustomStyles();
+var customGroupStyles = getCustomStyles(".group-container");
 
 
 // generate new group html code and insert it

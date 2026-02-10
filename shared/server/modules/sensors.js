@@ -1,5 +1,5 @@
 
-import { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor } from './utils.js';
+import { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor, getCustomStyles } from './utils.js';
 import { selectedGroupId } from './groups.js';
 import { widgetsData } from './widgets.js';
 import { wsSaveSensor } from './ws.js';
@@ -15,32 +15,7 @@ function saveSensorId(id) {
 
 window.saveSensorId = saveSensorId;
 
-// get all custom sensors styles names (classes) from loaded CSS file
-// see nonsens.css
-// and styles/sensors.css
-// NB: ugly solution :(
-function sensorGetCustomStyles() {
-
-// TODO rework!
-return ["Default"];
-	// 0 - top css file (nonsens.css)
-	// 1 - second inluded file (styles/sensors.css)
-	// 0 - first class selector inside sensors.css file (.sensor-container)
-	// all custom classes are inside .sensor-container and start with '&.[A-Z]'
-	const rules = document.styleSheets[0].cssRules[1].styleSheet.cssRules[0].cssRules;
-	var styles = [];
-
-	for (let i = 0; i < rules.length; i ++) {
-		if (rules[i] && rules[i].selectorText.match(/^&\.[A-Z]/)) {
-			styles.push(rules[i].selectorText.split(".")[1]);
-		}
-	}
-
-	return styles;
-}
-
-var customSensorStyles = sensorGetCustomStyles();
-
+var customSensorStyles = getCustomStyles(".sensor-container");
 
 // add new sensor
 function sensorAdd() {

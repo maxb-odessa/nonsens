@@ -167,5 +167,35 @@ function showEditor(editorId, show, noteAfter, noteDelayMs) {
 
 window.showEditor = showEditor;
 
+// get all custom child CSS styles for given parent
+// custom styles name must start with a capital letter
+function getCustomStyles(topClass) {
 
-export { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor };
+	var styles = [];
+
+	// all custom classes are inside .sensor-container and start with '&.[A-Z]'
+
+	for (let i of document.styleSheets[0].cssRules) {
+		if (! i.styleSheet)
+			continue;
+		for (let j of i.styleSheet.cssRules) {
+			if (! j.cssRules)
+				continue;
+			for (let k of j.cssRules) {
+				if (k.selectorText != topClass)
+					continue;
+				for (let n of k.cssRules) {
+					let name = n.selectorText.split("&.")[1];
+					if (name) {
+						styles.push(name);
+					}
+				}
+			}
+		}
+	}
+
+	return styles;
+}
+
+
+export { createUUID, safeString, maskBelow, showEditor, parseColor, makeColor, getCustomStyles };

@@ -17,15 +17,22 @@ function dragElement(ev) {
 	pos4 = oldPos.Y;
 
 	// get parent size
+	var parentSize = parent.getBoundingClientRect();
 	var parentStyle = window.getComputedStyle(parent, null);
-	var parentSize = {
-		Width: parentStyle.width.match(/\d+/)[0] * 1.0,
-		Height: parentStyle.height.match(/\d+/)[0] * 1.0,
+	var parentDim = {
+		Top:	parentStyle.top.match(/\d+/)[0] * 1.0,
+		Left:	parentStyle.left.match(/\d+/)[0] * 1.0,
+		Width:	parentStyle.width.match(/\d+/)[0] * 1.0,
+		Height:	parentStyle.height.match(/\d+/)[0] * 1.0,
 	};
 
-	// get top level container position and dimension
-	var containerStyle = window.getComputedStyle(container, null);
+	// calc half diff of parent size and parent rect box in case of parent was rotated
+	parentDim.WDiff2 = Math.round((parentSize.width - parentDim.Width) / 2);
+	parentDim.HDiff2 = Math.round((parentSize.height - parentDim.Height) / 2);
 
+	// get top level container position and dimension
+	var containerSize = container.getBoundingClientRect();
+	var containerStyle = window.getComputedStyle(container, null);
 	var containerDim = {
 		Top:	containerStyle.top.match(/\d+/)[0] * 1.0,
 		Left:	containerStyle.left.match(/\d+/)[0] * 1.0,
@@ -64,7 +71,6 @@ function dragElement(ev) {
 			return;
 		}
 
-
 		// calculate the new cursor position:
 		let pos = getPos(e);
 		pos1 = pos3 - pos.X;
@@ -76,20 +82,21 @@ function dragElement(ev) {
 		let newTop = parent.offsetTop - pos2;
 		let newLeft = parent.offsetLeft - pos1;
 
-		if (newTop <= containerDim.Top) {
-			newTop = containerDim.Top;
+		if (newTop <= containerDim.Top + parentDim.HDiff2) {
+			newTop = containerDim.Top + parentDim.HDiff2;
 		}
 
-		if (newLeft <= containerDim.Left) {
-			newLeft = containerDim.Left;
+		//if (newLeft <= containerDim.Left) {
+		if (newLeft <= containerDim.Left + parentDim.WDiff2) {
+			newLeft = containerDim.Left + parentDim.WDiff2;
 		}
 
-		if (newTop + parentSize.Height >= containerDim.Height) {
-			newTop = containerDim.Height - parentSize.Height - 1;
+		if (newTop + parentSize.height >= containerSize.height + parentDim.HDiff2) {
+			newTop = containerDim.Height - parentSize.height + parentDim.HDiff2 - 1;
 		}
 
-		if (newLeft + parentSize.Width >= containerDim.Width) {
-			newLeft = containerDim.Width - parentSize.Width - 1;
+		if (newLeft + parentSize.width >= containerDim.Width - parentDim.WDiff2) {
+			newLeft = containerDim.Width - parentSize.width - parentDim.WDiff2 - 1;
 		}
 
 		// set new and adjusted target's parent position
@@ -100,12 +107,13 @@ function dragElement(ev) {
 	function endDrag() {
 		// position target with cqw/cqh instead of px
 		let newStyle = window.getComputedStyle(parent, null);
-// move to func
-		parent.style.top = Math.round(newStyle.top.match(/\d+/)[0]  / containerDim.Height * 100.0) + "cqh";
-		parent.style.left = Math.round(newStyle.left.match(/\d+/)[0] / containerDim.Width * 100.0) + "cqw";
 
-		parent.style.height = Math.round(newStyle.height.match(/\d+/)[0] / containerDim.Height * 100.0) + "cqh";
-		parent.style.width = Math.round(newStyle.width.match(/\d+/)[0] / containerDim.Width * 100.0) + "cqw";
+		parent.style.top = Math.round(newStyle.top.match(/-?\d+/)[0]  / containerSize.height * 100.0) + "cqh";
+		parent.style.left = Math.round(newStyle.left.match(/-?\d+/)[0] / containerSize.width * 100.0) + "cqw";
+
+		// just a translation from px to cq
+		parent.style.height = Math.round(newStyle.height.match(/-?\d+/)[0] / containerSize.height * 100.0) + "cqh";
+		parent.style.width = Math.round(newStyle.width.match(/-?\d+/)[0] / containerSize.width * 100.0) + "cqw";
 
 		target.dragging = false;
 
@@ -114,8 +122,6 @@ function dragElement(ev) {
 	}
 
 }
-
-//function px2cq()... // TODO
 
 document.onmousedown = dragElement;
 document.ontouchstart = dragElement;
