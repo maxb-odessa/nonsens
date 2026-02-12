@@ -1,5 +1,5 @@
 
-import './modules/drag.js';
+import './modules/mouse.js';
 import './modules/menues.js';
 import './modules/groups.js';
 import './modules/sensors.js';

@@ -10,7 +10,6 @@
 		margin: 0;
 		width: 30cqw;
 		height: 30cqh;
-		resize: both;
 		background-color: transparent;
 		box-sizing: border-box;
 		.group-legend {
@@ -62,4 +61,5 @@
 
 		/* add more styles */
 	}
+
 }

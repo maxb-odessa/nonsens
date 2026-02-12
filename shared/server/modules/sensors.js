@@ -23,7 +23,7 @@ function sensorAdd() {
 	// sensor template
 	var uuid = createUUID();
 	const template =
-		`<fieldset id="sc-${uuid}" class="sensor-container Default">` +
+		`<fieldset id="sc-${uuid}" class="sensor-container resizable Default">` +
 			`<legend id="st-${uuid}" class="sensor-legend">New Sensor #${newSensorSeq}</legend>` +
 			`<div id="s-${uuid}" class="sensor"></div>` +
 			`<div data-menu="sensor-menu" onclick="saveSensorId('${uuid}');" style="position: absolute; width: 100cqh; height: 100cqh; z-index: 300; background-color: #00000000;"></div>` +
@@ -99,7 +99,7 @@ function sensorClone() {
 	clonedSensorT.style.backgroundColor = randColor;
 
 	// send new sensor to server via WS
-	wsSaveSensor("s-"+uuid, sensorDataToJson(clonedSensor), "add");
+	wsSaveSensor("s-"+uuid, sensorDataToJson(clonedSensorC), "add");
 
 	// save whole layout!
 	saveLayout();
@@ -123,8 +123,9 @@ function sensorEdit(editorId) {
 		var style = customSensorStyles[i];
 		edStyles.innerHTML += `<option value="${style}">${style}</option>`;
 	}
-	// set current style
-	edStyles.value = sensorC.className.split(" ")[1];
+	// set current style (must be the last in the list)
+	var sensorStyles = sensorC.className.split(" ");
+	edStyles.value = sensorStyles[sensorStyles.length - 1];
 
 	if (sensorC.style.transform)
 		editor.querySelector("#sensor-edit-rotate").value = sensorC.style.transform.match(/-?\d+/)[0];
