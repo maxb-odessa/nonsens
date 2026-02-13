@@ -1,65 +1,61 @@
-
-@container main (width > 0px) {
-	.group-container {
-		display: inline-block;
+.group-container {
+	display: inline-block;
+	position: absolute;
+	z-index: 20;
+	overflow: hidden;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	width: 30vw;
+	height: 30vh;
+	background-color: transparent;
+	box-sizing: border-box;
+	.group-legend {
+		color: white;
+		background-color: transparent;
+		cursor: move;
+	}
+	.group {
 		position: absolute;
-		z-index: 20;
-		overflow: hidden;
-		border: 0;
+		display: inline-block;
 		padding: 0;
 		margin: 0;
-		width: 30cqw;
-		height: 30cqh;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
 		background-color: transparent;
 		box-sizing: border-box;
-		.group-legend {
-			cursor: move;
-			color: white;
-			background-color: transparent;
-		}
-		.group {
-			container-type: size;
-			container-name: group;
-			position: absolute;
-			display: inline-block;
-			padding: 0;
-			margin: 0;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			left: 0;
-			background-color: transparent;
-			box-sizing: border-box;
-		}
-
-		/* NAME STYLES WITH CAPITAL LETTER ONLY! */
-
-		/* default style, must always be present */
-		&.Default {
-			border: solid black 1px;
-			border-radius: 4px;
-			/*box-shadow: 5px 3px 4px black;*/
-			.group-legend {
-				font-size: 0.8em;
-				border: solid white 0px; /* disable for now */
-				border-radius: 4px;
-				margin-left: 4px;
-			}
-			.group {
-			}
-		}
-
-		/* custom style: flat and transparent */
-		&.Flat-Right {
-			border: 0;
-			.group-legend {
-				float: right;
-			}
-			.group {
-			}
-		}
-
-		/* add more styles */
 	}
 
+	/* NAME STYLES WITH CAPITAL LETTER ONLY! */
+
+	/* default style, must always be present */
+	&.Default {
+		border: solid black 1px;
+		border-radius: 0 5px 5px 5px;
+		/*box-shadow: 5px 3px 4px black;*/
+		.group-legend {
+			margin-top: -1rem;
+			font-size: 0.7rem;
+			border: solid black 1px; /* disable for now */
+			border-radius: 5px 8px 0 0;
+			margin-left: 0;
+		}
+		.group {
+		}
+	}
+
+	/* custom style: flat and transparent */
+	&.Flat-Right {
+		border: 0;
+		.group-legend {
+			float: right;
+		}
+		.group {
+		}
+	}
+
+	/* add more styles */
 }
+

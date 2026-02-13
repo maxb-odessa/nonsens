@@ -26,7 +26,7 @@ function sensorAdd() {
 		`<fieldset id="sc-${uuid}" class="sensor-container resizable Default">` +
 			`<legend id="st-${uuid}" class="sensor-legend">New Sensor #${newSensorSeq}</legend>` +
 			`<div id="s-${uuid}" class="sensor"></div>` +
-			`<div data-menu="sensor-menu" onclick="saveSensorId('${uuid}');" style="position: absolute; width: 100cqh; height: 100cqh; z-index: 300; background-color: #00000000;"></div>` +
+			`<div data-menu="sensor-menu" onclick="saveSensorId('${uuid}');" style="position: absolute; width: 100%; height: 100%; z-index: 300; background-color: #00000000;"></div>` +
 		`</fieldset>`;
 	newSensorSeq ++;
 
@@ -182,7 +182,8 @@ function sensorApply(editorId) {
 	var sensorT = sensorC.querySelector("#st-"+selectedSensorId);
 	var sensor = sensorC.querySelector("#s-"+selectedSensorId);
 
-	var oldStyle = sensorC.className.split(" ")[1];
+	var sensorStyles = sensorC.className.split(" ");
+	var oldStyle = sensorStyles[sensorStyles.length - 1]; // the last one is a custom style
 	sensorC.classList.replace(oldStyle, editor.querySelector("#sensor-edit-style").value);
 
 	// TODO: check sensor edges are out of group container and adjust sensor dims

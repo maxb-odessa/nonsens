@@ -32,11 +32,14 @@ function dragElement(ev) {
 	var target = ev.target;
 
 	var parent = target.parentNode;
+	var main = document.getElementById("main");
 	var container = parent.parentNode;
 
 	var oldPos = getPos(ev);
 	pos3 = oldPos.X;
 	pos4 = oldPos.Y;
+
+	var mainRect = main.getBoundingClientRect();
 
 	// get parent size
 	var parentSize = parent.getBoundingClientRect();
@@ -121,24 +124,33 @@ function dragElement(ev) {
 		let newStyle = window.getComputedStyle(parent, null);
 		let newDim = getElemDim(newStyle);
 
-		parent.style.top = Math.round(newDim.Top  / containerRect.height * 100.0) + "cqh";
-		parent.style.left = Math.round(newDim.Left / containerRect.width * 100.0) + "cqw";
+		parent.style.top = Math.round(newDim.Top  / mainRect.height * 100.0) + "vh";
+		parent.style.left = Math.round(newDim.Left / mainRect.width * 100.0) + "vw";
 
 		// just a translation from px to cq
-		parent.style.height = Math.round(newDim.Height / containerRect.height * 100.0) + "cqh";
-		parent.style.width = Math.round(newDim.Width / containerRect.width * 100.0) + "cqw";
+		parent.style.height = Math.round(newDim.Height / mainRect.height * 100.0) + "vh";
+		parent.style.width = Math.round(newDim.Width / mainRect.width * 100.0) + "vw";
 
 		target.dragging = false;
 
 		document.onmouseup = null;
+		document.ontouchend = null;
+
 		document.onmousemove = null;
+		document.ontouchmove = null;
 	}
 }
 
 
 // the element was resized
+// TODO check resied element boudaries: must be <= container size
 function resizeElement(ev) {
 	var target = ev.target;
+
+// TODO
+// if e.shiftKey then set style to fixed top, left, width and heigh values, not cqw/cqh
+// to resize ONLY container, not touching children sizes 
+// ALL CHILDREN?! DISABLE  RESPONSIVE RESIZING?!
 
 	// resizing done, recalculate target size
 	// convert elem size from px to cqh/cqw
@@ -146,11 +158,23 @@ function resizeElement(ev) {
 		var targetStyle = window.getComputedStyle(target, null);
 		var targetDim = getElemDim(targetStyle);
 
-		var containerStyle = window.getComputedStyle(target.parentNode, null);
+		var main = document.getElementById("main");
+		var mainStyle = window.getComputedStyle(main, null);
+		var mainDim = getElemDim(mainStyle);
+
+		var container = e.target.parentNode;
+		var containerStyle = window.getComputedStyle(container, null);
 		var containerDim = getElemDim(containerStyle);
 
-		//target.style.height = Math.round(targetDim.Height / containerDim.Height * 100.0) + "cqh";
-		//target.style.width = Math.round(targetDim.Width / containerDim.Width * 100.0) + "cqw";
+		// limit sized elem to container
+		if (targetDim.Top + targetDim.Height >= containerDim.Height)
+			targetDim.Height = containerDim.Height - targetDim.Top;
+
+		if (targetDim.Left + targetDim.Width >= containerDim.Width)
+			targetDim.Width = containerDim.Width - targetDim.Left;
+
+		target.style.height = Math.round(targetDim.Height / mainDim.Height * 100.0) + "vh";
+		target.style.width = Math.round(targetDim.Width / mainDim.Width * 100.0) + "vw";
 
 		document.onmouseup = null;
 		document.ontouchend = null;

@@ -171,9 +171,19 @@ window.showEditor = showEditor;
 // custom styles name must start with a capital letter
 function getCustomStyles(topClass) {
 
-	var styles = [];
 
 	// all custom classes are inside .sensor-container and start with '&.[A-Z]'
+
+	function getStyles(c) {
+		var styles = [];
+		for (let i of c.cssRules) {
+			let name = i.selectorText.split("&.")[1];
+			if (name) {
+				styles.push(name);
+			}
+		}
+		return styles;
+	}
 
 	for (let i of document.styleSheets[0].cssRules) {
 		if (! i.styleSheet)
@@ -181,20 +191,18 @@ function getCustomStyles(topClass) {
 		for (let j of i.styleSheet.cssRules) {
 			if (! j.cssRules)
 				continue;
+			if (j.selectorText == topClass) {
+				return getStyles(j);
+			}
 			for (let k of j.cssRules) {
-				if (k.selectorText != topClass)
-					continue;
-				for (let n of k.cssRules) {
-					let name = n.selectorText.split("&.")[1];
-					if (name) {
-						styles.push(name);
-					}
+				if (k.selectorText == topClass) {
+					return getStyles(k);
 				}
 			}
 		}
 	}
 
-	return styles;
+	return [];
 }
 
 

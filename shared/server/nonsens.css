@@ -32,8 +32,6 @@ body {
 }
 
 .main {
-	container-type: size;
-	container-name: main;
 	display: block;
 	position: absolute;
 	z-index: 0;
