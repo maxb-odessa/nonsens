@@ -143,14 +143,11 @@ function dragElement(ev) {
 
 
 // the element was resized
-// TODO check resied element boudaries: must be <= container size
+// TODO check resised element boudaries: must be <= container size
 function resizeElement(ev) {
 	var target = ev.target;
 
-// TODO
-// if e.shiftKey then set style to fixed top, left, width and heigh values, not cqw/cqh
-// to resize ONLY container, not touching children sizes 
-// ALL CHILDREN?! DISABLE  RESPONSIVE RESIZING?!
+	// TODO responsive resizin on e.shiftKey ?
 
 	// resizing done, recalculate target size
 	// convert elem size from px to cqh/cqw
