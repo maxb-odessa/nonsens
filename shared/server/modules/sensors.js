@@ -127,8 +127,11 @@ function sensorEdit(editorId) {
 	var sensorStyles = sensorC.className.split(" ");
 	edStyles.value = sensorStyles[sensorStyles.length - 1];
 
-	if (sensorC.style.transform)
+	if (sensorC.style.transform) {
 		editor.querySelector("#sensor-edit-rotate").value = sensorC.style.transform.match(/-?\d+/)[0];
+	} else {
+		editor.querySelector("#sensor-edit-rotate").value = "0";
+	}
 
 	editor.querySelector("#sensor-edit-title").value = safeString(sensorT.innerHTML, false);
 
@@ -137,6 +140,11 @@ function sensorEdit(editorId) {
 	var titleBgColor = parseColor(titleStyle.backgroundColor);
 	editor.querySelector("#sensor-edit-title-bg-color").value = titleBgColor.hex;
 	editor.querySelector("#sensor-edit-title-bg-color-alpha").value = titleBgColor.a;
+
+	var contStyle = window.getComputedStyle(sensorC);
+	var contBgColor = parseColor(contStyle.backgroundColor);
+	editor.querySelector("#sensor-edit-bg-color").value = contBgColor.hex;
+	editor.querySelector("#sensor-edit-bg-color-alpha").value = contBgColor.a;
 
 	var sensorStyle = window.getComputedStyle(sensor);
 
@@ -196,6 +204,10 @@ function sensorApply(editorId) {
 	sensorT.style.backgroundColor = makeColor(titleBgColor).rgba;
 	sensorT.style.borderColor = sensorT.style.backgroundColor;
 	sensorC.style.borderColor = sensorT.style.backgroundColor;
+
+	var contBgColor = parseColor(editor.querySelector("#sensor-edit-bg-color").value);
+	contBgColor.a = editor.querySelector("#sensor-edit-bg-color-alpha").value;
+	sensorC.style.backgroundColor = makeColor(contBgColor).rgba;
 
 	// store sensor data
 	sensor.dataset.path = editor.querySelector("#sensor-edit-source-path").value;

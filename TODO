@@ -6,4 +6,4 @@
 - add ram, swap, la sensors
 + responsive sensor fonts
 - security: check for ../ in cmd paths
-- sensor container backgroud color and alpha
++ sensor container backgroud color and alpha

@@ -177,9 +177,11 @@ function getCustomStyles(topClass) {
 	function getStyles(c) {
 		var styles = [];
 		for (let i of c.cssRules) {
-			let name = i.selectorText.split("&.")[1];
-			if (name) {
-				styles.push(name);
+			if (! i.selectorText)
+				continue;
+			let name = i.selectorText.split("&.");
+			if (name[1] && name[1].match(/^[A-Z]+/)) {
+				styles.push(name[1]);
 			}
 		}
 		return styles;
