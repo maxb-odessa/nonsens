@@ -162,10 +162,14 @@ func (in *Input) parsePath(path string, inType string) error {
 		return fmt.Errorf("invalid input type")
 	}
 
-	in.path = parts[2]
-
 	if inType == inTypeCmd {
-		in.path = def.DataDir + "/" + def.CmdDir + "/" + in.path
+		// disallow relative paths
+		if strings.Contains(parts[2], "../") == true {
+			return fmt.Errorf("no double-dots allowed in cmd paths")
+		}
+		in.path = def.DataDir + "/" + def.CmdDir + "/" + parts[2]
+	} else {
+		in.path = parts[2]
 	}
 
 	return nil

@@ -121,7 +121,7 @@ func (s *Sensor) start() error {
 			s.Value.Hint = "Failed: " + s.runtime.values[0].Err.Error()
 			return
 		} else {
-			s.Value.Hint = "Healthy"
+			s.Value.Hint = ""
 		}
 
 		// if no errors: store new value and calc diff

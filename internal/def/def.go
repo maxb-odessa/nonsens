@@ -19,6 +19,6 @@ const (
 // defaults and limits
 const (
 	SensorMinPollInterval = 100 * time.Millisecond
-	ServerReadTimeout     = 15 * time.Second
-	ServerWriteTimeout    = 15 * time.Second
+	ServerReadTimeout     = 10 * time.Second
+	ServerWriteTimeout    = 10 * time.Second
 )
