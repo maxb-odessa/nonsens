@@ -35,7 +35,7 @@ async function loadWidgets() {
 
 		var template = await wObj.text();
 
-		var templateFunc = new Function('data', 'options', 'return ' + "`" + template + "`");
+		var templateFunc = new Function('data', 'options', 'history', 'return ' + "`" + template + "`");
 
 		widgetsData.set(wList[i].name, templateFunc);
 

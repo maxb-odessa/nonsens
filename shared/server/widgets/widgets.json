@@ -8,6 +8,10 @@
 		"file": "vertical.html"
 	},
 	{
+		"name": "Graph",
+		"file": "graph.html"
+	},
+	{
 		"name": "Battery",
 		"file": "battery.html"
 	}

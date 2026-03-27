@@ -76,8 +76,8 @@
 				<br>
 				<label for="group-edit-bg-color">Backgroud color:</label>
 				<input id="group-edit-bg-color" type="color">
-				opacity,&percnt;:
-				<input id="group-edit-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="AlphaList">
+				&nbsp;opacity:
+				<input id="group-edit-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="AlphaList">&percnt;
 				<br>
 			</fieldset>
 			<input type="button" value="Appy" onclick="groupApply('group-editor'); showEditor('group-editor', false);">
@@ -124,7 +124,7 @@
 				<legend>Sensor settings</legend>
 				<label for="sensor-edit-style">Style:</label>
 				<select id="sensor-edit-style" required>
-				</select>, rotate (deg): 
+				</select>&nbsp;rotate: 
 				<input id="sensor-edit-rotate" style="width: 30%; accent-color: gray;" type="range" min="-90" max="90" step="15" list="sensRotateDegList" oninput="senRotateDeg.value = this.value;"> <output id="senRotateDeg"></output>&deg;
 				<datalist id="sensRotateDegList">
 					<option>-90</option>
@@ -150,12 +150,12 @@
 				<br>
 				<label for="sensor-edit-title-color">Title background color:</label>
 				<input id="sensor-edit-title-bg-color" type="color">
-				, opacity (&percnt;):
-				<input id="sensor-edit-title-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="AlphaList">
+				&nbsp;opacity:
+				<input id="sensor-edit-title-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="AlphaList">&percnt;
 				<label for="sensor-edit-bg-color">Backgroud color:</label>
 				<input id="sensor-edit-bg-color" type="color">
-				, opacity (&percnt;):
-				<input id="sensor-edit-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="AlphaList">
+				&nbsp;opacity:
+				<input id="sensor-edit-bg-color-alpha" style="width: 30%; accent-color: gray;" type="range" min="0" max="255" step="5" list="AlphaList">&percnt;
 				<hr>
 				<label for="sensor-edit-source-type">Source type/path:</label>
 				<select id="sensor-edit-source-type" style="width: 10%;" required>
@@ -207,7 +207,7 @@
 				<select id="sensor-edit-widget" required>
 				</select>
 				<br>
-				<label for="sensor-edit-widget-bar-color1">Bar colors:</label>
+				<label for="sensor-edit-widget-bar-color1">Colors:</label>
 				<div id="widget-bar-color-picker" style="padding: 3px; margin: 0; display: inline-block; width: 65%; text-align: center; border: solid black 1px; border-radius: 4px;">
 				<script>
 					// ugly, not reusable, bound to specific elements
@@ -238,7 +238,7 @@
 					<option>90</option>
 				</datalist>
 				</div>
-				<label for="sensor-edit-widget-bar-gradient">Show bar as gradient:</label>
+				<label for="sensor-edit-widget-bar-gradient">Show as gradient:</label>
 				<input id="sensor-edit-widget-bar-gradient" type="checkbox">
 			</fieldset>
 			<input type="submit" value="Apply">

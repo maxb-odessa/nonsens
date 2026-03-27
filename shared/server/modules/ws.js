@@ -89,6 +89,9 @@ function wsUpdateLayout(content) {
 	document.getElementById('main').innerHTML = content;
 }
 
+// save some historical data (percents) for each sensor to draw graphs
+var histData = new Map();
+
 // update sensor data
 function wsUpdateSensor(id, data) {
 
@@ -106,8 +109,22 @@ function wsUpdateSensor(id, data) {
 		return;
 	}
 
+	// update sensor historical data
+	// use 100-percents for svg images (here 'percents' are Y coordinates)
+	var history = histData.get(id);
+	if (! history) {
+		history = new Array(100).fill(100);
+		history[0] = 100 - data.percents;
+		histData.set(id, history);
+	} else {
+		// keep history size limited
+		if (history.unshift(100 - data.percents) > 100) {
+			history.pop();
+		}
+	}
+
 	// apply values and options to template + inject new html code into sensor container
-	s.innerHTML = widgetTemplateFunc(data, s.dataset);
+	s.innerHTML = widgetTemplateFunc(data, s.dataset, history);
 }
 
 // save sensor
