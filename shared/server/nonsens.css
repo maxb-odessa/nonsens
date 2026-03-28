@@ -14,7 +14,7 @@
 body {
 	overscroll-behavior: contain; /* or none */
 	background: #303030ff;
-	background-image: url('bg/bg-gray.jpg');
+	background-image: url('bg/bg-gray1.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-size: 100vw 100vh;

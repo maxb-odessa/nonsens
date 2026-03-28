@@ -1,33 +1,75 @@
-<div style="width: 100%; height: 100%; position: absolute: display: flex;">
-
-<svg preserveAspectRatio="none" height="100%" width="100%" viewBox="0 0 99 99">
-
+<div
+	style="
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		position: absolute;
+		display: flex;
+		z-index: 100;
+">
+<svg
+	preserveAspectRatio="none"
+	height="100%"
+	width="100%"
+	viewBox="0 0 99 99"
+	overflow="hidden"
+>
 <defs>
-<linearGradient id="grad1" gradientUnits="userSpaceOnUse" x1="100%" y1="100%" x2="100%" y2="0%">
+<linearGradient id="grad-${aux.uuid}" gradientUnits="userSpaceOnUse" x1="100%" y1="100%" x2="100%" y2="0%">
 	<stop offset="0%" style="stop-color: ${options.widgetColor1};" />
 	<stop offset="${options.widgetColor2Percents}%" style="stop-color: ${options.widgetColor2};" />
 	<stop offset="100%" style="stop-color: ${options.widgetColor3};" />
 </linearGradient>
 </defs>
 
-<!-- TODO 
-grid lines (for color 'color: red: filter: invert()')
-value text
-off/on line
--->
-
-
-<polyline points="99,${history[0]} 98,${history[1]} 97,${history[2]} 96,${history[3]} 95,${history[4]} 94,${history[5]} 93,${history[6]} 92,${history[7]} 91,${history[8]} 90,${history[9]} 89,${history[10]} 88,${history[11]} 87,${history[12]} 86,${history[13]} 85,${history[14]} 84,${history[15]} 83,${history[16]} 82,${history[17]} 81,${history[18]} 80,${history[19]} 79,${history[20]} 78,${history[21]} 77,${history[22]} 76,${history[23]} 75,${history[24]} 74,${history[25]} 73,${history[26]} 72,${history[27]} 71,${history[28]} 70,${history[29]} 69,${history[30]} 68,${history[31]} 67,${history[32]} 66,${history[33]} 65,${history[34]} 64,${history[35]} 63,${history[36]} 62,${history[37]} 61,${history[38]} 60,${history[39]} 59,${history[40]} 58,${history[41]} 57,${history[42]} 56,${history[43]} 55,${history[44]} 54,${history[45]} 53,${history[46]} 52,${history[47]} 51,${history[48]} 50,${history[49]} 49,${history[50]} 48,${history[51]} 47,${history[52]} 46,${history[53]} 45,${history[54]} 44,${history[55]} 43,${history[56]} 42,${history[57]} 41,${history[58]} 40,${history[59]} 39,${history[60]} 38,${history[61]} 37,${history[62]} 36,${history[63]} 35,${history[64]} 34,${history[65]} 33,${history[66]} 32,${history[67]} 31,${history[68]} 30,${history[69]} 29,${history[70]} 28,${history[71]} 27,${history[72]} 26,${history[73]} 25,${history[74]} 24,${history[75]} 23,${history[76]} 22,${history[77]} 21,${history[78]} 20,${history[79]} 19,${history[80]} 18,${history[81]} 17,${history[82]} 16,${history[83]} 15,${history[84]} 14,${history[85]} 13,${history[86]} 12,${history[87]} 11,${history[88]} 10,${history[89]} 9,${history[90]} 8,${history[91]} 7,${history[92]} 6,${history[93]} 5,${history[94]} 4,${history[95]} 3,${history[96]} 2,${history[97]} 1,${history[98]} 0,${history[99]} 0,100 100,100 100,${history[0]}"
-stroke="url(#grad1)"
-fill="${options.widgetGradient == 'true' ? 'url(#grad1)' : 'none'}"
-fill-rule="nonzero"
-stroke-width="3"
-vector-effect="non-scaling-stroke"
-style="
-stroke-linejoin: miter;
-  stroke-miterlimit: 10;
-  paint-order: stroke;
-"
-/>
+<polyline
+	points="99,${aux.historyR[0]} 98,${aux.historyR[1]} 97,${aux.historyR[2]} 96,${aux.historyR[3]} 95,${aux.historyR[4]} 94,${aux.historyR[5]} 93,${aux.historyR[6]} 92,${aux.historyR[7]} 91,${aux.historyR[8]} 90,${aux.historyR[9]} 89,${aux.historyR[10]} 88,${aux.historyR[11]} 87,${aux.historyR[12]} 86,${aux.historyR[13]} 85,${aux.historyR[14]} 84,${aux.historyR[15]} 83,${aux.historyR[16]} 82,${aux.historyR[17]} 81,${aux.historyR[18]} 80,${aux.historyR[19]} 79,${aux.historyR[20]} 78,${aux.historyR[21]} 77,${aux.historyR[22]} 76,${aux.historyR[23]} 75,${aux.historyR[24]} 74,${aux.historyR[25]} 73,${aux.historyR[26]} 72,${aux.historyR[27]} 71,${aux.historyR[28]} 70,${aux.historyR[29]} 69,${aux.historyR[30]} 68,${aux.historyR[31]} 67,${aux.historyR[32]} 66,${aux.historyR[33]} 65,${aux.historyR[34]} 64,${aux.historyR[35]} 63,${aux.historyR[36]} 62,${aux.historyR[37]} 61,${aux.historyR[38]} 60,${aux.historyR[39]} 59,${aux.historyR[40]} 58,${aux.historyR[41]} 57,${aux.historyR[42]} 56,${aux.historyR[43]} 55,${aux.historyR[44]} 54,${aux.historyR[45]} 53,${aux.historyR[46]} 52,${aux.historyR[47]} 51,${aux.historyR[48]} 50,${aux.historyR[49]} 49,${aux.historyR[50]} 48,${aux.historyR[51]} 47,${aux.historyR[52]} 46,${aux.historyR[53]} 45,${aux.historyR[54]} 44,${aux.historyR[55]} 43,${aux.historyR[56]} 42,${aux.historyR[57]} 41,${aux.historyR[58]} 40,${aux.historyR[59]} 39,${aux.historyR[60]} 38,${aux.historyR[61]} 37,${aux.historyR[62]} 36,${aux.historyR[63]} 35,${aux.historyR[64]} 34,${aux.historyR[65]} 33,${aux.historyR[66]} 32,${aux.historyR[67]} 31,${aux.historyR[68]} 30,${aux.historyR[69]} 29,${aux.historyR[70]} 28,${aux.historyR[71]} 27,${aux.historyR[72]} 26,${aux.historyR[73]} 25,${aux.historyR[74]} 24,${aux.historyR[75]} 23,${aux.historyR[76]} 22,${aux.historyR[77]} 21,${aux.historyR[78]} 20,${aux.historyR[79]} 19,${aux.historyR[80]} 18,${aux.historyR[81]} 17,${aux.historyR[82]} 16,${aux.historyR[83]} 15,${aux.historyR[84]} 14,${aux.historyR[85]} 13,${aux.historyR[86]} 12,${aux.historyR[87]} 11,${aux.historyR[88]} 10,${aux.historyR[89]} 9,${aux.historyR[90]} 8,${aux.historyR[91]} 7,${aux.historyR[92]} 6,${aux.historyR[93]} 5,${aux.historyR[94]} 4,${aux.historyR[95]} 3,${aux.historyR[96]} 2,${aux.historyR[97]} 1,${aux.historyR[98]} 0,${aux.historyR[99]} -10,110 110,110 110,${aux.historyR[0]}"
+	stroke="url(#grad-${aux.uuid})"
+	stroke-width="2"
+	stroke-linejoin="round"
+	${data.online ? "" :  'stroke-dasharray="10,10" d="M5 40 l215 0"'}
+	fill="${options.widgetGradient == 'true' ? 'url(#grad-' + aux.uuid + ')' : 'none'}"
+	fill-rule="nonzero"
+	paint-order="stroke"
+	vector-effect="non-scaling-stroke"
+"/>
 </svg>
+</div>
+
+<!-- sensor value text over the bar -->
+<div title="${data.hint}"
+	style="
+		container-type: size;
+		border: 0;
+		width: 100%;
+		max-width: 100vw;
+		height: 100%;
+		max-height: 100vh;
+		margin: 0;
+		padding: 1px;
+		display: flex;
+		position: absolute;
+		z-index: 110;
+		background: #00000000;
+		justify-content: center;
+		align-items: center;
+		vertical-align: middle;
+		flex-flow: row nowrap;
+		box-sizing: border-box;
+		text-shadow: 0 0 2px black,0 0 1px black,
+		0 0 2px black,0 0 1px black,
+		0 0 2px black,0 0 1px black,
+		0 0 2px black,0 0 1px black;
+">
+${data.online
+?
+"<span style='font-size: clamp(1rem, 50cqh, 10rem); white-space: preserve;'>" +
+data.value.toFixed(options.precision) +
+"<span style='font-size: 0.5em;'>" + (Math.sign(data.diff) == 1 ? "+" : "") + (data.diff != 0 ? data.diff.toFixed(options.precision): "") + "</span>" +
+options.suffix +
+"</span>"
+:
+"<div title='" + data.hint + "' style='display: flex; justify-content: center; align-items: center; position: absolute; z-index: 199; background: transparent; width: 100%; height: 100%; font-size: clamp(1rem, 80cqh, 10rem);'>&osol;</div>"
+}
+
 </div>

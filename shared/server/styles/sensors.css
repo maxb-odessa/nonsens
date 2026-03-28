@@ -31,6 +31,11 @@
 		width: 100%;
 		height: 100%;
 		box-sizing: border-box;
+		&.grid {
+			background: url("/img/grid-100x100.svg");
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+		}
 	}
 
 	/* NAME STYLES WITH CAPITAL LETTER ONLY! */

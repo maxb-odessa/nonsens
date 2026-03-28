@@ -145,6 +145,7 @@ function sensorEdit(editorId) {
 	var contBgColor = parseColor(contStyle.backgroundColor);
 	editor.querySelector("#sensor-edit-bg-color").value = contBgColor.hex;
 	editor.querySelector("#sensor-edit-bg-color-alpha").value = contBgColor.a;
+	editor.querySelector("#sensor-edit-bg-grid").checked = sensor.classList.contains("grid");
 
 	var sensorStyle = window.getComputedStyle(sensor);
 
@@ -208,6 +209,9 @@ function sensorApply(editorId) {
 	var contBgColor = parseColor(editor.querySelector("#sensor-edit-bg-color").value);
 	contBgColor.a = editor.querySelector("#sensor-edit-bg-color-alpha").value;
 	sensorC.style.backgroundColor = makeColor(contBgColor).rgba;
+	if (editor.querySelector("#sensor-edit-bg-grid").checked) {
+		sensor.classList.add("grid");
+	}
 
 	// store sensor data
 	sensor.dataset.path = editor.querySelector("#sensor-edit-source-path").value;
