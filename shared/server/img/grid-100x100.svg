@@ -1,28 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="99%" width="100%" viewBox="0 0 99 99" overflow="hidden">
+<svg xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" overflow="hidden">
+
 <style>
-line {
-vector-effect: non-scaling-stroke;
-stroke: gray;
-stroke-width: 0.3;
-}
+	line, text, tspan {
+		vector-effect: non-scaling-stroke;
+		stroke: gray;
+		stroke-width: 0.3;
+		fill: gray;
+	}
 </style>
 
-<line x1="0" y1="0"  x2="99" y2="0"  style="stroke-width:0.7" />
-<line x1="0" y1="25" x2="99" y2="25" />
-<line x1="0" y1="50" x2="99" y2="50" style="stroke-width:0.7" />
-<line x1="0" y1="75" x2="99" y2="75" />
-<line x1="0" y1="99" x2="99" y2="99" style="stroke-width:0.7" />
+<line x1="0%" y1="0%"   x2="100%" y2="0%"  style="stroke-width:0.7" />
+<line x1="0%" y1="25%"  x2="100%" y2="25%" />
+<line x1="2%" y1="50%"  x2="100%" y2="50%" style="stroke-width:0.7" />
+<line x1="0%" y1="75%"  x2="100%" y2="75%" />
+<line x1="0%" y1="100%" x2="100%" y2="100%" style="stroke-width:0.7" />
 
-<line x1="0"  y1="0" x2="0"  y2="99" style="stroke:gray;stroke-width:0.7" />
-<line x1="10" y1="0" x2="10" y2="99" />
-<line x1="20" y1="0" x2="20" y2="99" />
-<line x1="30" y1="0" x2="30" y2="99" />
-<line x1="40" y1="0" x2="40" y2="99" />
-<line x1="50" y1="0" x2="50" y2="99" style="stroke:gray;stroke-width:0.7" />
-<line x1="60" y1="0" x2="60" y2="99" />
-<line x1="70" y1="0" x2="70" y2="99" />
-<line x1="80" y1="0" x2="80" y2="99" />
-<line x1="90" y1="0" x2="90" y2="99" />
-<line x1="99" y1="0" x2="99" y2="99" style="stroke:gray;stroke-width:0.7" />
+<line x1="0%"   y1="0%" x2="0%"   y2="100%" style="stroke:gray;stroke-width:0.7" />
+<line x1="10%"  y1="0%" x2="10%"  y2="100%" />
+<line x1="20%"  y1="0%" x2="20%"  y2="100%" />
+<line x1="30%"  y1="0%" x2="30%"  y2="100%" />
+<line x1="40%"  y1="0%" x2="40%"  y2="100%" />
+<line x1="50%"  y1="0%" x2="50%"  y2="100%" style="stroke:gray;stroke-width:0.7" />
+<line x1="60%"  y1="0%" x2="60%"  y2="100%" />
+<line x1="70%"  y1="0%" x2="70%"  y2="100%" />
+<line x1="80%"  y1="0%" x2="80%"  y2="100%" />
+<line x1="90%"  y1="0%" x2="90%"  y2="100%" />
+<line x1="100%" y1="0%" x2="100%" y2="100%" style="stroke:gray;stroke-width:0.7" />
+
+<svg preserveAspectRatio="xMinYMin meet" height="100%" width="100%" viewBox="0 0 99 99" overflow="hidden">
+<text font-size="8" alignment-baseline="baseline">
+	<tspan x="1" y="8">100</tspan>
+	<tspan x="1" y="52">50</tspan>
+	<tspan x="1" y="96">0</tspan>
+</text>
+</svg>
 
 </svg>

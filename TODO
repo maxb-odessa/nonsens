@@ -11,8 +11,8 @@
 - Makefile: system install
 - TODOs in internal/*
 - update README.md
-- sensor history? good for graphs building, disable if not graph sensor?
-- graph sensors
++ sensor history? good for graphs building, disable if not graph sensor?
++ graph sensors
 - lock layout (top transparent div to prevent clicks?)
 - battery widget responsivness is very bad
 - sensor setup error messages -> display them

@@ -211,6 +211,8 @@ function sensorApply(editorId) {
 	sensorC.style.backgroundColor = makeColor(contBgColor).rgba;
 	if (editor.querySelector("#sensor-edit-bg-grid").checked) {
 		sensor.classList.add("grid");
+	} else {
+		sensor.classList.remove("grid");
 	}
 
 	// store sensor data
