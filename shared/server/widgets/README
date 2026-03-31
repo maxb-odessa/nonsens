@@ -1,12 +1,21 @@
-- "Default" widget MUST always be present
-- data:
-	value float
-	diff float
-	percents int
-	online bool
-	hint string
-- options:
-	min float
-	max float
-	precision int
-	suffix string
+1.  "Default" widget MUST always be present
+
+2. Widget passed variables:
+- data{
+	value    float  // curr sensor value
+	diff     float  // diff between prev and curr value
+	percents int    // calculated percents of min-max and value
+	online   bool   // sensor operative?
+	hint     string // sensor diag/other string
+  }
+- options{
+	min       float  // min value
+	max       float  // max value
+	precision int    // display precision (like 1, 1.23, etc)
+	suffix    string // sensor value legend (MBytes, GHz, %, etc)
+  }
+- aux{
+	id       string     // sensor uniq id
+	history  [100]float // last 100 stored 'percent' values
+	historyR [100]float // last 100 stored '(100 - percent)' values
+  }

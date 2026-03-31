@@ -43,9 +43,9 @@
 ">
 ${data.online
 ?
-"<span style='font-size: clamp(0.5rem, 50cqw, 10rem); white-space: preserve; white-space: nowrap;'>" +
+"<span style='font-size: clamp(0.5rem, 40cqw, 10rem); white-space: preserve; white-space: nowrap;'>" +
 "<span style='font-size: 0.7em;'>" + (Math.sign(data.diff) == 1 ? "&rarr;" : "&larr;") + "</span>" +
-data.value.toFixed(options.precision) + options.suffix + 
+data.value.toFixed(options.precision) + "<span style='font-size: 0.8rem;'>" + options.suffix + "</span>" +
 "</span>"
 :
 "<div title='" + data.hint + "' style='display: flex; justify-content: center; align-items: center; position: absolute; z-index: 199; background-color: #00000090; width: 100cqw; height: 100cqh; font-size: clamp(0.5rem, 70cqw, 10rem); transform: rotate(-90deg);'>&osol;</div>"

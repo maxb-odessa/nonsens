@@ -1,18 +1,22 @@
 - move sensor to another group (?)
-+ deal with long polling sensors: no init data upon client connection
-+ "not connected" message
 - sensors device ids shifted after each boot (i.e. hwmon4 becames hwmon5 and so on)
 - add hostname to index page title
 - add ram, swap, la sensors to cmd/
-+ responsive sensor fonts
 - security: check for '..' in cmd paths (done, VERIFY!)
-+ sensor container backgroud color and alpha
 - probe.sh is not finished
 - Makefile: system install
 - TODOs in internal/*
 - update README.md
-+ sensor history? good for graphs building, disable if not graph sensor?
-+ graph sensors
 - lock layout (top transparent div to prevent clicks?)
 - battery widget responsivness is very bad
 - sensor setup error messages -> display them
+- analog gauge widget
+- force-run/redraw widget (menu option?)
+
++ deal with long polling sensors: no init data upon client connection
++ smaller widget value suffix text
++ "not connected" message
++ sensor history? good for graphs building, disable if not graph sensor?
++ graph sensors
++ sensor container backgroud color and alpha
++ responsive sensor fonts

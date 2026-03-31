@@ -79,8 +79,8 @@ ${data.online
 ?
 "<span style='font-size: clamp(1rem, 40cqh, 10rem); white-space: preserve;'>" +
 data.value.toFixed(options.precision) +
-"<span style='font-size: 0.5em;'>" + (Math.sign(data.diff) == 1 ? "+" : "") + (data.diff != 0 ? data.diff.toFixed(options.precision) : "") + "</span>" +
-options.suffix +
+  "<span style='font-size: 0.5em;'>" + (Math.sign(data.diff) == 1 ? "+" : "") + (data.diff != 0 ? data.diff.toFixed(options.precision) : "") + "</span><span style='font-size: 0.8rem;'>" + options.suffix +
+  "</span>" +
 "</span>"
 :
 "<div title='" + data.hint + "' style='display: flex; justify-content: center; align-items: center; position: absolute; z-index: 199; background: #00000090; top: 6%; left: 5%; width: 90%; height: 90%; font-size: clamp(1rem, 80cqh, 10rem);'>&osol;</div>"
