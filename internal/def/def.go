@@ -21,4 +21,6 @@ const (
 	SensorMinPollInterval = 100 * time.Millisecond
 	ServerReadTimeout     = 10 * time.Second
 	ServerWriteTimeout    = 10 * time.Second
+	InputLineMax          = 100
+	InputPosMax           = 100
 )

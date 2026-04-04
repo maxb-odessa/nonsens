@@ -10,9 +10,13 @@ all: build
 build:
 	go build ./cmd/nonsens
 
-install:
+install-all: install-bin install-data
+
+install-bin:
 	go env -w GOBIN=${GOBIN}
 	go install ./cmd/nonsens
+
+install-data:
 	mkdir -p ${SHAREDIR}
 	cp -a shared/* ${SHAREDIR}
 	cp -a nonsens.service ${HOME}/.config/systemd/user/

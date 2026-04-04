@@ -1,7 +1,6 @@
 - move sensor to another group (?)
 - sensors device ids shifted after each boot (i.e. hwmon4 becames hwmon5 and so on)
 - add hostname to index page title
-- add ram, swap, la sensors to cmd/
 - security: check for '..' in cmd paths (done, VERIFY!)
 - probe.sh is not finished
 - Makefile: system install
@@ -12,6 +11,12 @@
 - sensor setup error messages -> display them
 - analog gauge widget
 - force-run/redraw widget (menu option?)
+- save/load dedicated backup (layout and sensors)
+- per-client config (cookie-based? login? other?)
+- separate system state ws packets: hostname, top10 processes, last10 dmesg lines, uptime, etc (non-numeric values)
+- BUG: widget hint not shown
+- BUG: dragged sensor moves over group boundaries
+- BUG: menus do not respect screen edges (must stay within viewport)
 
 + deal with long polling sensors: no init data upon client connection
 + smaller widget value suffix text

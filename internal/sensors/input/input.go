@@ -95,9 +95,9 @@ func (in *Input) Get() *InputValue {
 		fScanner := bufio.NewScanner(fd)
 		fScanner.Split(bufio.ScanLines)
 
-		// skip N lines
+		// skip N lines but do not read too many lines
 		var line uint32
-		for line = 0; line < in.line && fScanner.Scan(); line++ {
+		for line = 0; fScanner.Scan() && line < in.line && line < def.InputLineMax; line++ {
 		}
 
 		if line != in.line {
@@ -105,12 +105,15 @@ func (in *Input) Get() *InputValue {
 		}
 
 		strValue = fScanner.Text()
+
 	}
 
-	// get data from pos P
+	// get data from pos P, but ignore line with too many fields
 	fields := strings.Fields(strValue)
 	if len(fields) < int(in.pos) {
 		return &InputValue{Err: fmt.Errorf("requested line pos %d, but only %d positions present", in.pos, len(fields))}
+	} else if len(fields) > def.InputPosMax {
+		return &InputValue{Err: fmt.Errorf("requested line pos %d is too large ", in.pos)}
 	} else {
 		// reuse the var
 		strValue = fields[in.pos]
