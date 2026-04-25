@@ -50,8 +50,8 @@ ${data.online == false
 
 "<span style='font-size: clamp(1rem, 40cqh, 10rem); white-space: preserve;'>" +
   (
-  !options.widgetValueAbs || options.widgetValueAbs == true
-  ?
+  options.widgetValueAbs !== "false"
+  ? 
     data.value.toFixed(options.precision) +
     "<span style='font-size: 0.5em;'>" +
     (Math.sign(data.diff) == 1 ? "+" : "") + (data.diff != 0 ? data.diff.toFixed(options.precision) : "") +
