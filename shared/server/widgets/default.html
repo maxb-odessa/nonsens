@@ -49,15 +49,22 @@ ${data.online == false
 :
 
 "<span style='font-size: clamp(1rem, 40cqh, 10rem); white-space: preserve;'>" +
-  (options.widgetValueAbs == true ? 
-    data.value.toFixed(options.precision) + 
+  (
+  !options.widgetValueAbs || options.widgetValueAbs == true
+  ?
+    data.value.toFixed(options.precision) +
     "<span style='font-size: 0.5em;'>" +
-    (Math.sign(data.diff) == 1 ? "+" : "") + (data.diff != 0 ? data.diff.toFixed(options.precision) : "") + "</span>"
+    (Math.sign(data.diff) == 1 ? "+" : "") + (data.diff != 0 ? data.diff.toFixed(options.precision) : "") +
+    "</span>"
   :
     data.diff.toFixed(options.precision)
   ) +
-"<span style='font-size: 0.8em;'>" + options.suffix + "</span>" +
+  "<span style='font-size: 0.8em;'>" + options.suffix + "</span>" +
 "</span>"
 }
 
 </div>
+<!-- TODO:
+  the above "!options.widgetValueAbs || options.widgetValueAbs == true" is a temp solution,
+  not all sensors yet have widgetValueAbs dataset present
+-->
