@@ -10,7 +10,7 @@ all: build
 build:
 	go build ./cmd/nonsens
 
-install-all: install-bin install-data
+install: install-bin install-data
 
 install-bin:
 	go env -w GOBIN=${GOBIN}
@@ -18,7 +18,8 @@ install-bin:
 
 install-data:
 	mkdir -p ${SHAREDIR}
-	cp -a shared/* ${SHAREDIR}
+	cp -a shared/cmd ${SHAREDIR}
+	cp -a shared/server ${SHAREDIR}
 	cp -a nonsens.service ${HOME}/.config/systemd/user/
 	systemctl --user daemon-reload
 	systemctl --user enable nonsens

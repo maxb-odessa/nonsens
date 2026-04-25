@@ -47,6 +47,7 @@ function sensorAdd() {
 	newSensor.dataset.precision = 1.0;
 	newSensor.dataset.suffix = "";
 	newSensor.dataset.widget = "Default";
+	newSensor.dataset.widgetValueAbs = true;
 	newSensor.dataset.widgetColor1 = "green";
 	newSensor.dataset.widgetColor2 = "yellow";
 	newSensor.dataset.widgetColor2Percents = "50";
@@ -170,6 +171,7 @@ function sensorEdit(editorId) {
 	);
 	edWidget.value = sensor.dataset.widget;
 
+	editor.querySelector("#sensor-edit-widget-value-abs").value = sensor.dataset.widgetValueAbs;
 	editor.querySelector("#sensor-edit-widget-bar-color1").value = sensor.dataset.widgetColor1;
 	editor.querySelector("#sensor-edit-widget-bar-color2").value = sensor.dataset.widgetColor2;
 	editor.querySelector("#sensor-edit-widget-bar-color2-percents").value = sensor.dataset.widgetColor2Percents;
@@ -226,6 +228,7 @@ function sensorApply(editorId) {
 	sensor.dataset.precision = editor.querySelector("#sensor-edit-value-precision").value;
 	sensor.dataset.suffix = safeString(editor.querySelector("#sensor-edit-value-suffix").value, true);
 	sensor.dataset.widget = editor.querySelector("#sensor-edit-widget").value;
+	sensor.dataset.widgetValueAbs = editor.querySelector("#sensor-edit-widget-value-abs").value == 'true';
 	sensor.dataset.widgetColor1 = editor.querySelector("#sensor-edit-widget-bar-color1").value;
 	sensor.dataset.widgetColor2 = editor.querySelector("#sensor-edit-widget-bar-color2").value;
 	sensor.dataset.widgetColor2Percents = editor.querySelector("#sensor-edit-widget-bar-color2-percents").value;

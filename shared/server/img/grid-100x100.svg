@@ -29,9 +29,9 @@
 
 <svg preserveAspectRatio="xMinYMin meet" height="100%" width="100%" viewBox="0 0 99 99" overflow="hidden">
 <text font-size="8" alignment-baseline="baseline">
-	<tspan x="1" y="8">100</tspan>
-	<tspan x="1" y="52">50</tspan>
-	<tspan x="1" y="96">0</tspan>
+	<tspan x="1" y="8">max</tspan>
+	<tspan x="1" y="52">50%</tspan>
+	<tspan x="1" y="96">min</tspan>
 </text>
 </svg>
 
