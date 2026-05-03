@@ -17,6 +17,8 @@
 	border-radius: 10px;
 	width: 97%;
 	height: 100%;
+	max-width: 100vw;
+	max-height: 100vh;
 	position: relative;
 	box-sizing: border-box;
 	align-items: center;
@@ -83,6 +85,6 @@ data.value.toFixed(options.precision) +
   "</span>" +
 "</span>"
 :
-"<div title='" + data.hint + "' style='display: flex; justify-content: center; align-items: center; position: absolute; z-index: 199; background: #00000090; top: 6%; left: 5%; width: 90%; height: 90%; font-size: clamp(1rem, 80cqh, 10rem);'>&osol;</div>"
+"<div title='" + data.hint + "' style='display: flex; justify-content: center; align-items: center; position: absolute; z-index: 199; background: #00000090; top: 0; left: 0; width: 100%; height: 100%; font-size: clamp(1rem, 80cqh, 10rem);'>&osol;</div>"
 }
 </div>

@@ -136,11 +136,14 @@ async function showInfo(text, show, timeOut) {
 	if (show) {
 		textArea.innerHTML = text;
 		popup.style.display = "block";
+		maskBelow(popup.id, true);
 		if (timeOut > 0) {
 			await popupDelay(timeOut);
+			maskBelow(popup.id, false);
 			popup.style.display = "none"
 		}
 	} else {
+		maskBelow(popup.id, false);
 		popup.style.display = "none";
 	}
 }

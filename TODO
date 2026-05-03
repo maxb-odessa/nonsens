@@ -2,7 +2,7 @@
 - sensors device ids shifted after each boot (i.e. hwmon4 becames hwmon5 and so on)
 - add hostname to index page title
 - security: check for '..' in cmd paths (done, VERIFY!)
-- security: discard cmd arguments
+- security: discard cmd arguments, backticks, dollars, (spaces?), etc
 - min/max values autoscaling
 - rework editors (group and sensor)
 - probe.sh is not finished
@@ -25,6 +25,7 @@
 - unify editor: build it from template for group/sensor/widget?
 - grid (for graph widget) should show real min/max labels instead of 0,50,100%. Make it dynamic?
 - keep diff history in ws.js along with values history
+- rotated battery widget is not responsive (use SVG to draw it)
 
 + deal with long polling sensors: no init data upon client connection
 + smaller widget value suffix text

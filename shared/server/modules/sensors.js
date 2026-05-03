@@ -39,7 +39,7 @@ function sensorAdd() {
 
 	newSensor.dataset.type = "file";
 	newSensor.dataset.path = "0:0:/path/to/file";
-	newSensor.dataset.keepOpen =  true;
+	newSensor.dataset.keepOpen = true;
 	newSensor.dataset.pollMs = 1000;
 	newSensor.dataset.min = 0.0;
 	newSensor.dataset.max = 100.0;
@@ -153,7 +153,7 @@ function sensorEdit(editorId) {
 	// get sensor settings
 	editor.querySelector("#sensor-edit-source-type").value = sensor.dataset.type;
 	editor.querySelector("#sensor-edit-source-path").value = sensor.dataset.path;
-	editor.querySelector("#sensor-edit-source-keepopen").checked = sensor.dataset.keepOpen;
+	editor.querySelector("#sensor-edit-source-keepopen").checked = (sensor.dataset.keepOpen == "true");
 	editor.querySelector("#sensor-edit-source-pollms").value = sensor.dataset.pollMs;
 	editor.querySelector("#sensor-edit-value-min").value = sensor.dataset.min;
 	editor.querySelector("#sensor-edit-value-max").value = sensor.dataset.max;
