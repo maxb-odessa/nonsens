@@ -41,9 +41,26 @@ function showMenu(e, id, doShow) {
 	let pos = getPointerPos(e);
 
 	// show the menu and position it next to the pointer
-	menu.style.top = (pos.pointerY - 20) * 1 + "px";
-	menu.style.left = (pos.pointerX - 20) * 1 + "px";
+	var top = pos.pointerY * 1;
+	var left = pos.pointerX * 1;
+
+	// display the menu first at 0:0 position for its dimension to be calculated
+	menu.style.top = 0;
+	menu.style.left = 0;
 	menu.style.display = "inline-block";
+
+	// keep the menu within viewport
+	if (menu.clientWidth + left > document.documentElement.clientWidth) {
+		left = document.documentElement.clientWidth - menu.clientWidth;
+	}
+
+	if (menu.clientHeight + top > document.documentElement.clientHeight) {
+		top = document.documentElement.clientHeight - menu.clientHeight;
+	}
+
+	menu.style.top = top + "px";
+	menu.style.left = left + "px";
+
 }
 
 window.toggleMenu = toggleMenu;

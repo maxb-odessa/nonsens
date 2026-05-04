@@ -44,6 +44,7 @@ function sensorAdd() {
 	newSensor.dataset.min = 0.0;
 	newSensor.dataset.max = 100.0;
 	newSensor.dataset.divider = 1.0;
+	newSensor.dataset.autoScale = false;
 	newSensor.dataset.precision = 1.0;
 	newSensor.dataset.suffix = "";
 	newSensor.dataset.widget = "Default";
@@ -158,6 +159,7 @@ function sensorEdit(editorId) {
 	editor.querySelector("#sensor-edit-value-min").value = sensor.dataset.min;
 	editor.querySelector("#sensor-edit-value-max").value = sensor.dataset.max;
 	editor.querySelector("#sensor-edit-value-divider").value = sensor.dataset.divider;
+	editor.querySelector("#sensor-edit-value-autoscale").checked = (sensor.dataset.autoScale == "true");
 	editor.querySelector("#sensor-edit-value-precision").value = sensor.dataset.precision;
 	editor.querySelector("#sensor-edit-value-suffix").value = safeString(sensor.dataset.suffix, false);
 
@@ -225,6 +227,7 @@ function sensorApply(editorId) {
 	sensor.dataset.min = editor.querySelector("#sensor-edit-value-min").value;
 	sensor.dataset.max = editor.querySelector("#sensor-edit-value-max").value;
 	sensor.dataset.divider = editor.querySelector("#sensor-edit-value-divider").value;
+	sensor.dataset.autoScale = editor.querySelector("#sensor-edit-value-autoscale").checked;
 	sensor.dataset.precision = editor.querySelector("#sensor-edit-value-precision").value;
 	sensor.dataset.suffix = safeString(editor.querySelector("#sensor-edit-value-suffix").value, true);
 	sensor.dataset.widget = editor.querySelector("#sensor-edit-widget").value;
@@ -269,6 +272,7 @@ function sensorDataToJson(s) {
 		"poll_ms": s.dataset.pollMs * 1,
 		"min": s.dataset.min * 1.0,
 		"max": s.dataset.max * 1.0,
+		"auto_scale": s.dataset.autoScale && true,
 		"divider": s.dataset.divider * 1.0,
 	});
 }

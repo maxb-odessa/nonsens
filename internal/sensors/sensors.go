@@ -15,6 +15,7 @@ var toServerCh chan *Sensor
 var sensorsMap map[string]*Sensor
 var sensorsFile string
 var mutex sync.Mutex
+var allMutex sync.Mutex
 
 func Start(ch chan *Sensor) error {
 
@@ -60,6 +61,9 @@ func stopAll() {
 
 // save all configured sensors
 func saveAll() {
+	allMutex.Lock()
+	defer allMutex.Unlock()
+
 	if jsens, err := json.MarshalIndent(sensorsMap, "\t", "\t"); err != nil {
 		log.Err("sensorsMap[] to JSON failed: %s", err)
 	} else {

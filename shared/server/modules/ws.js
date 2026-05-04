@@ -151,6 +151,9 @@ function wsSaveSensor(id, data, action) {
 		msg.action = WS_MSG_ACTION_DELETE;
 	} else if (action === "add") {
 		msg.action = WS_MSG_ACTION_ADD;
+	} else {
+		console.log("WS: Invalid action " + action);
+		return;
 	}
 
 	wsSend(msg);

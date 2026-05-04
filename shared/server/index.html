@@ -98,12 +98,16 @@
 							
 					}
 					// ensure that MIN always <= than MAX 
-					function setMinMax(t, w, min) {
-						var what = document.getElementById(w);
-						if (min) {
-							what.setAttribute("min", t.value);
-						} else {
-							what.setAttribute("max", t.value);
+					function checkMin(t) {
+						var max = document.getElementById("sensor-edit-value-max").value * 1.0;
+						if (t.value >= max) {
+							t.value = max - 1.0;
+						}
+					}
+					function checkMax(t) {
+						var min = document.getElementById("sensor-edit-value-min").value * 1.0;
+						if (t.value <= min) {
+							t.value = min + 1.0;
 						}
 					}
 					// do not allow zero values
@@ -173,9 +177,12 @@
 				<input id="sensor-edit-source-keepopen" type="checkbox">
 				<br>
 				<label for="sensor-edit-value-min">Min/Max/Divider:</label>
-				<input id="sensor-edit-value-min" type="number" step="any" onchange="setMinMax(this, 'sensor-edit-value-max', true);" required>
-				<input id="sensor-edit-value-max" type="number" step="any" onchange="setMinMax(this, 'sensor-edit-value-min', false);" required>
+				<input id="sensor-edit-value-min" type="number" step="any" onchange="checkMin(this)" required>
+				<input id="sensor-edit-value-max" type="number" step="any" onchange="checkMax(this)" required>
 				<input id="sensor-edit-value-divider" type="number" step="any" onchange="forbidZero(this)" required>
+				<br>
+				<label for="sensor-edit-value-autoscale">Min/Max Autoscale:</label>
+				<input id="sensor-edit-value-autoscale" type="checkbox">
 				<hr>
 				<label for="sensor-edit-value-precision">Display value format:</label>
 				<select id="sensor-edit-value-precision" required>

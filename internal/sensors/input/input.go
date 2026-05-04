@@ -153,6 +153,11 @@ func (in *Input) parsePath(path string, inType string) error {
 		in.pos = uint32(pos)
 	}
 
+	// disallow relative paths
+	if strings.Contains(parts[2], "../") {
+		return fmt.Errorf("path can not be relative")
+	}
+
 	if inType == inTypeFile {
 		if parts[2][0] != '/' {
 			return fmt.Errorf("file path must be absolute")
@@ -166,10 +171,6 @@ func (in *Input) parsePath(path string, inType string) error {
 	}
 
 	if inType == inTypeCmd {
-		// disallow relative paths
-		if strings.Contains(parts[2], "../") == true {
-			return fmt.Errorf("no double-dots allowed in cmd paths")
-		}
 		in.path = def.DataDir + "/" + def.CmdDir + "/" + parts[2]
 	} else {
 		in.path = parts[2]

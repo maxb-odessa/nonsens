@@ -18,13 +18,14 @@ type Value struct {
 }
 
 type Config struct {
-	InType       string  `json:"type"`      // input type: "file" or "cmd"
-	Path         string  `json:"path"`      // full path to file or command
-	KeepOpen     bool    `json:"keep_open"` // for files: keep it open for readings
-	PollInterval int     `json:"poll_ms"`   // milliseconds
-	Min          float64 `json:"min"`       // min input value, divider applied
-	Max          float64 `json:"max"`       // max input value, divider applied
-	Divider      float64 `json:"divider"`   // input value divider (can be negaive)
+	InType       string  `json:"type"`       // input type: "file" or "cmd"
+	Path         string  `json:"path"`       // full path to file or command
+	KeepOpen     bool    `json:"keep_open"`  // for files: keep it open for readings
+	PollInterval int     `json:"poll_ms"`    // milliseconds
+	Min          float64 `json:"min"`        // min input value, divider applied
+	Max          float64 `json:"max"`        // max input value, divider applied
+	AutoScale    bool    `json:"auto_scale"` // allow min/max value autoscaling
+	Divider      float64 `json:"divider"`    // input value divider (can be negaive)
 }
 
 type Sensor struct {
@@ -124,8 +125,33 @@ func (s *Sensor) start() error {
 			s.Value.Hint = ""
 		}
 
-		// if no errors: store new value and calc diff
+		// normalize value with divider
 		s.Value.Val = s.runtime.values[0].Val / s.Config.Divider
+
+		// autoscale if needed
+		if s.Config.AutoScale {
+
+			autoScaled := false
+
+			if s.Value.Val > s.Config.Max {
+				s.Config.Max = s.Value.Val
+				autoScaled = true
+			}
+
+			if s.Value.Val < s.Config.Min {
+				s.Config.Min = s.Value.Val
+				autoScaled = true
+			}
+
+			// recalc some options if auto scaling occured
+			if autoScaled {
+				log.Debug(1, "autoscaled sensor %s: val:%+v min:%+v max:%+v", s.Uid, s.Value.Val, s.Config.Min, s.Config.Max)
+				s.runtime.maxMinDiff = (s.Config.Max - s.Config.Min) / 100.0
+				saveAll()
+			}
+		}
+
+		// if no errors in teh past - calc diff
 		if s.runtime.values[1].Err == nil {
 			s.Value.Diff = (s.runtime.values[0].Val - s.runtime.values[1].Val) / s.Config.Divider
 		}
